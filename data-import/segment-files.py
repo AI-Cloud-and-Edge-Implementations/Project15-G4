@@ -28,7 +28,7 @@ for filename in os.listdir('data'):
             segment = file[start:end]
 
             marginal = str(metadata_segment['marginals']).strip()
-            segment_path = f'segments/{filename}_segment_{selection}{marginal}.wav'
+            segment_path = f'segments/{filename}_segment_{selection}_{marginal}.wav'
             segment.export(segment_path, format='wav')
             print(f' Found segment of {segment.duration_seconds} seconds, exported to {segment_path}.')
         except Exception as e:
