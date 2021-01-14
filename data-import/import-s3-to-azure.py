@@ -3,9 +3,10 @@ import os
 import boto3
 from botocore import UNSIGNED
 from botocore.config import Config
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, __version__
+
 s3 = boto3.client('s3', config=Config(signature_version=UNSIGNED))
 
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, __version__
 try:
     print("Azure Blob storage v" + __version__)
 except Exception as ex:
