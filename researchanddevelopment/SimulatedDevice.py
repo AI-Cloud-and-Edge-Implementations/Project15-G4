@@ -12,13 +12,13 @@ from azure.iot.device import IoTHubDeviceClient, Message
 # The device connection string to authenticate the device with your IoT hub.
 # Using the Azure CLI:
 # az iot hub device-identity show-connection-string --hub-name {YourIoTHubName} --device-id MyNodeDevice --output table
-CONNECTION_STRING = ""
+CONNECTION_STRING = "HostName=Hub-667m2.azure-devices.net;DeviceId=test_ms15_device;SharedAccessKey=ZVTJvHgNi6S6+qGPB5cmcW+k1dIMczhKDW+qGDt4f6Q="
 
 # Define the JSON message to send to IoT Hub.
 TEMPERATURE = 20.0
 HUMIDITY = 60
-MSG_TXT = '{{"temperature": {temperature},"humidity": {humidity}}}'
-
+MSG_TXT = '{{"file": "nn08c_20181118_000000.wav","duration": "7.696", "File_offset": "63209.6831", "uniqId": "nn08c_1199"}}'
+# MSG_TXT = '{{"File Offset": 63209.6831, "duration":7.696, "begin_file": nn08c_20181118_000000.wav, "uniqID": nn08c_1199, "Tag1": 1}}'
 
 def iothub_client_init():
     # Create an IoT Hub client
