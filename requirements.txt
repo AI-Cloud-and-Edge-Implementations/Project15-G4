@@ -1,2 +1,6 @@
 azure-iot-device
 azure-eventhub
+pandas
+boto3
+matplotlib
+scipy

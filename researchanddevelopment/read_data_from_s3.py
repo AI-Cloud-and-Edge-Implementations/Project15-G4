@@ -7,7 +7,7 @@ from IPython.display import display, Markdown
 from botocore.client import Config
 from botocore import UNSIGNED
 # Loading the training file info
-training_files = pd.read_csv('data/nn_ele_hb_00-24hr_TrainingSet_v2.txt',delimiter="\t")
+training_files = pd.read_csv('data/TrainingSet.txt',delimiter="\t")
 training_files.head()
 file_list = training_files['filename'].unique()
 len(file_list)
