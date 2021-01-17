@@ -1,6 +1,7 @@
 azure-iot-device
 azure-eventhub
-pandas
 boto3
+environs
 matplotlib
+pandas
 scipy
