@@ -3,6 +3,7 @@ import pandas as pd
 from pydub import AudioSegment
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, __version__
 from azure.identity import DefaultAzureCredential
+from azureml.core.authentication import MsiAuthentication
 
 try:
     print("Azure Blob storage v" + __version__)
@@ -10,13 +11,10 @@ except Exception as ex:
     print('Exception:')
     print(ex)
 
-# blob_service_client = BlobServiceClient.from_connection_string('DefaultEndpointsProtocol=https;AccountName=project15storage;AccountKey=XXX;EndpointSuffix=core.windows.net')
-
-token_credential = DefaultAzureCredential()
+blob_service_client = BlobServiceClient.from_connection_string('DefaultEndpointsProtocol=https;AccountName=project15;AccountKey=XXX;EndpointSuffix=core.windows.net')
 
 container_name = 'elephant-sound-data'
 
-blob_service_client = BlobServiceClient(account_url='https://project15.blob.core.windows.net/elephant-sound-data')
 blob_container_client = blob_service_client.get_container_client(container_name)
 
 # read metadata
@@ -24,19 +22,26 @@ metadata_filepath = 'metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt'
 metadata = pd.read_csv(metadata_filepath, sep='\t', lineterminator='\r', header=0)
 print(f'Using metadata file {metadata_filepath}')
 
-# blob_client = blob_service_client.get_blob_client(container=container_name, blob=filename)
-
 # process raw files
 #for filename in os.listdir('data'):
 for blob in blob_container_client.list_blobs():
     filename = blob.name
     print(f'Processing {filename}...')
 
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=filename)
+
     # download file
-    with open('data/' + filename, "wb") as download_file:
+    download_path = 'data/' + filename
+    with open(download_path, 'wb') as download_file:
+        dir = download_path.split('/')[-1]
+        if (not os.path.exists(dir)):
+            print(f' Creating directory {dir}...')
+            os.mkdir(dir)
+
+        print(f' Downloading {download_path}...')
         download_file.write(blob_client.download_blob().readall())
 
-    file = AudioSegment.from_wav('data/' + filename)
+    file = AudioSegment.from_wav(download_path)
 
     print(f'Processing blob {x}...')
 
@@ -62,6 +67,6 @@ for blob in blob_container_client.list_blobs():
             print('  Error when creating segment: ' + str(e))
 
     # remove local file
-    os.remove('data/' + filename)
+    os.remove(download_path)
 
     print('Done')
