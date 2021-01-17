@@ -1,17 +1,44 @@
 import os
 import pandas as pd
 from pydub import AudioSegment
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, __version__
+from azure.identity import DefaultAzureCredential
+
+try:
+    print("Azure Blob storage v" + __version__)
+except Exception as ex:
+    print('Exception:')
+    print(ex)
+
+# blob_service_client = BlobServiceClient.from_connection_string('DefaultEndpointsProtocol=https;AccountName=project15storage;AccountKey=XXX;EndpointSuffix=core.windows.net')
+
+token_credential = DefaultAzureCredential()
+
+container_name = 'elephant-sound-data'
+
+blob_service_client = BlobServiceClient(account_url='https://project15.blob.core.windows.net/elephant-sound-data')
+blob_container_client = blob_service_client.get_container_client(container_name)
 
 # read metadata
 metadata_filepath = 'metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt'
 metadata = pd.read_csv(metadata_filepath, sep='\t', lineterminator='\r', header=0)
+print(f'Using metadata file {metadata_filepath}')
 
-# TODO: add other metadata files?
+# blob_client = blob_service_client.get_blob_client(container=container_name, blob=filename)
 
 # process raw files
-for filename in os.listdir('data'):
+#for filename in os.listdir('data'):
+for blob in blob_container_client.list_blobs():
+    filename = blob.name
     print(f'Processing {filename}...')
+
+    # download file
+    with open('data/' + filename, "wb") as download_file:
+        download_file.write(blob_client.download_blob().readall())
+
     file = AudioSegment.from_wav('data/' + filename)
+
+    print(f'Processing blob {x}...')
 
     # get the relevant segments from the metadata
     metadata_segments = metadata[metadata['filename'] == filename]
@@ -33,3 +60,8 @@ for filename in os.listdir('data'):
             print(f' Found segment of {segment.duration_seconds} seconds, exported to {segment_path}.')
         except Exception as e:
             print('  Error when creating segment: ' + str(e))
+
+    # remove local file
+    os.remove('data/' + filename)
+
+    print('Done')
