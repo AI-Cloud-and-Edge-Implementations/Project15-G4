@@ -2,3 +2,5 @@
 venv/
 rootkey.xlsx
 *.wav
+*.env
+*__pycache__/
