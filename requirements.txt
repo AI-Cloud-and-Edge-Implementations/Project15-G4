@@ -1,7 +1,10 @@
 azure-iot-device
 azure-eventhub
+azureml-core
+azureml-dataprep
 boto3
 environs
+librosa
 matplotlib
 pandas
 scipy
