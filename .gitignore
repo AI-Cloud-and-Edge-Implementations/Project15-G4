@@ -4,3 +4,4 @@ rootkey.xlsx
 *.wav
 *.env
 *__pycache__/
+.env
