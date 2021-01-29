@@ -98,41 +98,6 @@ def plot_amp_time(samples, sampling_rate):
     plt.show()
 
 
-def spectrogram(samples, sample_rate, stride_ms = 10.0,
-                window_ms = 20.0, max_freq = None, eps = 1e-14):
-    stride_size = int(0.001 * sample_rate * stride_ms)
-    window_size = int(0.001 * sample_rate * window_ms)
-
-    # Extract strided windows
-    truncate_size = (len(samples) - window_size) % stride_size
-    samples = samples[:len(samples) - truncate_size]
-    nshape = (window_size, (len(samples) - window_size) // stride_size + 1)
-    nstrides = (samples.strides[0], samples.strides[0] * stride_size)
-    windows = np.lib.stride_tricks.as_strided(samples,
-                                              shape = nshape, strides = nstrides)
-
-    assert np.all(windows[:, 1] == samples[stride_size:(stride_size + window_size)])
-
-    # Window weighting, squared Fast Fourier Transform (fft), scaling
-    weighting = np.hanning(window_size)[:, None]
-
-    fft = np.fft.rfft(windows * weighting, axis = 0)
-    fft = np.absolute(fft)
-    fft = fft ** 2
-
-    scale = np.sum(weighting ** 2) * sample_rate
-    fft[1:-1, :] *= (2.0 / scale)
-    fft[(0, -1), :] /= scale
-
-    # Prepare fft frequency list
-    freqs = float(sample_rate) / window_size * np.arange(fft.shape[0])
-
-    # Compute spectrogram feature
-    ind = np.where(freqs <= max_freq)[0][-1] + 1
-    specgram = np.log(fft[:ind, :] + eps)
-    return specgram
-
-
 def butter_lowpass_filter(data, cutoff, nyq, order, time):
     normalized_cutoff = cutoff / nyq
     numerator_coeffs, denominator_coeffs = scipy.signal.butter(order, normalized_cutoff, btype='low', analog=False)
@@ -169,6 +134,19 @@ def plot_spectrogram(input_data):
     plt.show()
 
 
+def plot_mel(input_data):
+    n_mels = 128
+    n_fft = 2048
+    hop_length = 512
+    S = librosa.feature.melspectrogram(input_data, sr = sr, n_fft = n_fft, hop_length = hop_length,
+                                       n_mels = n_mels)
+    S_DB = librosa.power_to_db(S, ref = np.max)
+    librosa.display.specshow(S_DB, sr = sr, hop_length = hop_length, x_axis = 'time',
+                             y_axis = 'mel')
+    plt.colorbar(format = '%+2.0f dB')
+    plt.show()
+
+
 if __name__ == "__main__":
     # .wav is lossless
     # crop_file(48860*1000, 49000*1000)
@@ -188,5 +166,8 @@ if __name__ == "__main__":
     highpass_signal = butter_highpass_filter(lowpass_signal, cutoff_high, nyq, order, time)
     fft_plot(highpass_signal, sr)
     noise_clip = highpass_signal[0:duration*1000]
-    reduced_noise = nr.reduce_noise(highpass_signal, noise_clip=noise_clip, verbose=True)
+    reduced_noise = nr.reduce_noise(
+        highpass_signal, noise_clip=noise_clip, verbose=True, n_grad_freq=3
+    )
     plot_spectrogram(reduced_noise)
+    plot_mel(reduced_noise)
