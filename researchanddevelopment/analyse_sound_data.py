@@ -15,23 +15,20 @@ n_fft = 2048
 hop_length = 512
 
 
-def crop_file(start_sec, end_sec):
-    filename = 'metadata/nn01a_20180126_000000.wav'
-    song = AudioSegment.from_wav(filename)
+def crop_file(start_sec, end_sec, file_name, destination_file):
+    song = AudioSegment.from_wav(file_name)
     extract = song[start_sec:end_sec]
-    extract.export('metadata/nn01a_20180126_000000_cropped.wav')
+    extract.export(destination_file)
 
 
-def load_data():
+def load_data(file_name):
     # Keeping audio at original sample rate
-    #file_name = 'metadata/nn01a_20180126_000000_cropped.wav'
-    file_name = 'segments/train/data/nn01a_20180126_000000.wav_segment_2_nan.wav'
-    signal, sr = librosa.load(file_name, sr=None)
+    signal, sr = librosa.load(file_name, sr=4000)
     print('Duration of samples {}s'.format(len(signal)/sr))
     return signal, sr
 
 
-def fft_plot(audio, sampling_rate):
+def fft_plot(audio, sampling_rate, plot = False):
     """ Fast fourier transform is for discrete signals while fourier transform is for continuous
     signals.
 
@@ -43,16 +40,17 @@ def fft_plot(audio, sampling_rate):
     T = 1/sampling_rate
     yf = scipy.fft.fft(audio)
     xf = np.linspace(0.0, 1.0/(2.0*T), n/2)
-    fig, ax = plt.subplots()
-    ax.plot(xf, 2.0/n * np.abs(yf[:n//2]))
-    plt.grid()
-    plt.xlabel('Frequency -->')
-    plt.ylabel('Magnitude')
-    plt.xlim([0,100])
-    return plt.show()
+    if plot:
+        fig, ax = plt.subplots()
+        ax.plot(xf, 2.0/n * np.abs(yf[:n//2]))
+        plt.grid()
+        plt.xlabel('Frequency -->')
+        plt.ylabel('Magnitude')
+        plt.xlim([0,100])
+        plt.show()
 
 
-def plot_amp_time(samples, sampling_rate):
+def plot_amp_time(samples, sampling_rate, plot = False):
     """ This tells us the loudness of the recording.
 
     :param samples:
@@ -60,83 +58,100 @@ def plot_amp_time(samples, sampling_rate):
     :return:
     """
     librosa.display.waveplot(y = samples, sr = sampling_rate)
-    plt.xlabel('Time (seconds)')
-    plt.ylabel('Amplitude')
-    plt.show()
+    if plot:
+        plt.xlabel('Time (seconds)')
+        plt.ylabel('Amplitude')
+        plt.show()
 
 
-def butter_lowpass_filter(data, cutoff, nyq, order, time):
+def butter_lowpass_filter(data, cutoff, nyq, order, time, plot = False):
     normalized_cutoff = cutoff / nyq
     numerator_coeffs, denominator_coeffs = scipy.signal.butter(order, normalized_cutoff, btype='low', analog=False)
     filtered_signal = scipy.signal.lfilter(numerator_coeffs, denominator_coeffs, data)
-    # plt.plot(time, input_signal, 'b-', label = 'signal')
-    # plt.plot(time, filtered_signal, 'g-', linewidth = 2, label = 'filtered signal')
-    # plt.legend()
-    # plt.show()
+    if plot:
+        plt.plot(time, input_signal, 'b-', label = 'signal')
+        plt.plot(time, filtered_signal, 'g-', linewidth = 2, label = 'filtered signal')
+        plt.legend()
+        plt.show()
     return filtered_signal
 
 
-def butter_highpass_filter(data, cutoff, nyq, order, time):
+def butter_highpass_filter(data, cutoff, nyq, order, time, plot = False):
     normalized_cutoff = cutoff / nyq
     numerator_coeffs, denominator_coeffs = scipy.signal.butter(order, normalized_cutoff, btype='high', analog=False)
     filtered_signal = scipy.signal.filtfilt(numerator_coeffs, denominator_coeffs, data)
-    # plt.plot(time, input_signal, 'b-', label = 'signal')
-    # plt.plot(time, filtered_signal, 'g-', linewidth = 2, label = 'filtered signal')
-    # plt.legend()
-    # plt.show()
+    if plot:
+        plt.plot(time, input_signal, 'b-', label = 'signal')
+        plt.plot(time, filtered_signal, 'g-', linewidth = 2, label = 'filtered signal')
+        plt.legend()
+        plt.show()
     return filtered_signal
 
 
-def plot_spectrogram(input_data):
+def plot_spectrogram(input_data, image_name, plot = False):
     stft = librosa.core.stft(input_data, hop_length=hop_length, n_fft=n_fft)
     spectrogram = np.abs(stft)
     # log_spectrogram = librosa.amplitude_to_db(spectrogram)
     librosa.display.specshow(spectrogram, sr=sr, hop_length=hop_length, x_axis = 's', y_axis = 'linear')
+    plt.title('Spectrogram')
     plt.ylim([0,100])
     plt.xlabel('time')
     plt.ylabel('frequency')
     plt.colorbar()
-    plt.show()
+    plt.savefig(os.path.join(os.getcwd(), 'researchanddevelopment/spectrogram_images/', image_name))
+    if plot:
+        plt.show()
 
 
-def plot_mel(input_data):
+def plot_mel(input_data, plot = False):
     n_mels = 128
     S = librosa.feature.melspectrogram(input_data, sr = sr, n_fft = n_fft, hop_length = hop_length,
-                                       n_mels = n_mels)
+                                       n_mels = n_mels, htk = True)
     S_DB = librosa.power_to_db(S, ref = np.max)
     librosa.display.specshow(S_DB, sr = sr, hop_length = hop_length, x_axis = 'time',
                              y_axis = 'mel')
-    plt.colorbar(format = '%+2.0f dB')
-    plt.ylim([0,100])
-    plt.show()
+    if plot:
+        plt.title('Mel Spectrogram')
+        plt.colorbar(format = '%+2.0f dB')
+        plt.ylim([0,100])
+        plt.show()
 
-def noise_reduce_and_plot(signal):
+def noise_reduce_and_plot(signal, plot = False):
     noise_clip = signal[0:duration*1000]
     reduced_noise = nr.reduce_noise(
-        signal, noise_clip=noise_clip, verbose=False, n_grad_freq=3, hop_length=512, win_length=1024
+        signal, noise_clip=noise_clip, verbose=False, n_grad_freq=3, hop_length=512
     )
-    plot_spectrogram(reduced_noise)
-    plot_mel(reduced_noise)
-    fft_plot(reduced_noise, sr)
+    if plot:
+        plot_spectrogram(reduced_noise, image_name='noise_reduced_spec.png')
+        plot_mel(reduced_noise)
+        fft_plot(reduced_noise, sr)
     return reduced_noise
 
 
 if __name__ == "__main__":
+    file_name = os.path.join(os.getcwd(), 'researchanddevelopment/metadata/nn01a_20180126_000000_cropped.wav')
+    # file_name = os.path.join(os.getcwd(), 'researchanddevelopment/segments/train/data/nn01a_20180126_000000.wav_segment_2_nan.wav')
     # .wav is lossless
-    # crop_file(48860*1000, 49000*1000)
-    input_signal, sr = load_data()
-    # plot_amp_time(input_signal, sr)
+    crop_file(
+        48860*1000, 
+        48905*1000, 
+        file_name = 'researchanddevelopment/metadata/nn01a_20180126_000000.wav',
+        destination_file = 'researchanddevelopment/metadata/nn01a_20180126_000000_cropped.wav'
+        )
+    input_signal, sr = load_data(file_name)
+    plot_amp_time(input_signal, sr)
     duration = int(len(input_signal)/sr)
     # plots upto sampling rate/2(Nyquist theorem)
     # Filter requirements.
     fs = sr  # sample rate, Hz
-    cutoff = 30  # desired cutoff frequency of the filter, Hz
+    cutoff = 100  # desired cutoff frequency of the filter, Hz
     nyq = 0.5 * fs  # Nyquist Frequency
     order = 4  # sin wave can be approx represented as quadratic
     time = np.linspace(0, duration, len(input_signal), endpoint = False)
     lowpass_signal = butter_lowpass_filter(input_signal, cutoff, nyq, order, time)
     cutoff_high = 10
     highpass_signal = butter_highpass_filter(lowpass_signal, cutoff_high, nyq, order, time)
-    plot_spectrogram(highpass_signal)
+    plot_spectrogram(highpass_signal, image_name = 'spec_image.png')
+    plot_mel(highpass_signal)
     fft_plot(highpass_signal, sr)
-    noise_reduce_and_plot(noise_reduce_and_plot(highpass_signal))
+    noise_reduce_and_plot(highpass_signal)
