@@ -140,3 +140,9 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+researchanddevelopment/segments/
+
+*.aup
+
+*.au
