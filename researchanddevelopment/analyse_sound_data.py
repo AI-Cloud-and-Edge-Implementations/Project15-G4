@@ -69,7 +69,7 @@ def butter_lowpass_filter(data, cutoff, nyq, order, time, plot = False):
     numerator_coeffs, denominator_coeffs = scipy.signal.butter(order, normalized_cutoff, btype='low', analog=False)
     filtered_signal = scipy.signal.lfilter(numerator_coeffs, denominator_coeffs, data)
     if plot:
-        plt.plot(time, input_signal, 'b-', label = 'signal')
+        plt.plot(time, data, 'b-', label = 'signal')
         plt.plot(time, filtered_signal, 'g-', linewidth = 2, label = 'filtered signal')
         plt.legend()
         plt.show()
@@ -81,63 +81,65 @@ def butter_highpass_filter(data, cutoff, nyq, order, time, plot = False):
     numerator_coeffs, denominator_coeffs = scipy.signal.butter(order, normalized_cutoff, btype='high', analog=False)
     filtered_signal = scipy.signal.filtfilt(numerator_coeffs, denominator_coeffs, data)
     if plot:
-        plt.plot(time, input_signal, 'b-', label = 'signal')
+        plt.plot(time, data, 'b-', label = 'signal')
         plt.plot(time, filtered_signal, 'g-', linewidth = 2, label = 'filtered signal')
         plt.legend()
         plt.show()
     return filtered_signal
 
 
-def plot_spectrogram(input_data, image_name, plot = False):
-    stft = librosa.core.stft(input_data, hop_length=hop_length, n_fft=n_fft)
+def plot_spectrogram(input_data, sr, image_name, plot = False):
+    stft = librosa.core.stft(input_data)
     spectrogram = np.abs(stft)
-    # log_spectrogram = librosa.amplitude_to_db(spectrogram)
-    librosa.display.specshow(spectrogram, sr=sr, hop_length=hop_length, x_axis = 's', y_axis = 'linear')
+    log_spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
+    fig, ax = plt.subplots()
+    img = librosa.display.specshow(log_spectrogram, ax = ax, sr=sr, hop_length=hop_length, x_axis = 's', y_axis = 'linear')
     plt.title('Spectrogram')
     plt.ylim([0,100])
     plt.xlabel('time')
     plt.ylabel('frequency')
-    plt.colorbar()
-    plt.savefig(os.path.join(os.getcwd(), 'researchanddevelopment/spectrogram_images/', image_name))
+    fig.colorbar(img, format = '%+2.0f dB') 
+    fig.savefig(os.path.join(os.getcwd(), 'researchanddevelopment/spectrogram_images/', image_name))
     if plot:
         plt.show()
 
 
-def plot_mel(input_data, plot = False):
+def plot_mel(input_data, sr, plot = False):
     n_mels = 128
     S = librosa.feature.melspectrogram(input_data, sr = sr, n_fft = n_fft, hop_length = hop_length,
                                        n_mels = n_mels, htk = True)
     S_DB = librosa.power_to_db(S, ref = np.max)
-    librosa.display.specshow(S_DB, sr = sr, hop_length = hop_length, x_axis = 'time',
-                             y_axis = 'mel')
     if plot:
+        librosa.display.specshow(S_DB, sr = sr, hop_length = hop_length, x_axis = 'time',
+                            y_axis = 'mel')
         plt.title('Mel Spectrogram')
         plt.colorbar(format = '%+2.0f dB')
         plt.ylim([0,100])
         plt.show()
 
-def noise_reduce_and_plot(signal, plot = False):
+def noise_reduce_and_plot(signal, sr, duration, plot = False):
     noise_clip = signal[0:duration*1000]
     reduced_noise = nr.reduce_noise(
         signal, noise_clip=noise_clip, verbose=False, n_grad_freq=3, hop_length=512
     )
+    plot_spectrogram(reduced_noise, sr, image_name='noise_reduced_spec.png')
     if plot:
-        plot_spectrogram(reduced_noise, image_name='noise_reduced_spec.png')
         plot_mel(reduced_noise)
         fft_plot(reduced_noise, sr)
     return reduced_noise
 
-
-if __name__ == "__main__":
+def main():
     file_name = os.path.join(os.getcwd(), 'researchanddevelopment/metadata/nn01a_20180126_000000_cropped.wav')
     # file_name = os.path.join(os.getcwd(), 'researchanddevelopment/segments/train/data/nn01a_20180126_000000.wav_segment_2_nan.wav')
     # .wav is lossless
+    """
     crop_file(
         48860*1000, 
-        48905*1000, 
+        48890*1000, 
         file_name = 'researchanddevelopment/metadata/nn01a_20180126_000000.wav',
         destination_file = 'researchanddevelopment/metadata/nn01a_20180126_000000_cropped.wav'
         )
+    """
     input_signal, sr = load_data(file_name)
     plot_amp_time(input_signal, sr)
     duration = int(len(input_signal)/sr)
@@ -151,7 +153,11 @@ if __name__ == "__main__":
     lowpass_signal = butter_lowpass_filter(input_signal, cutoff, nyq, order, time)
     cutoff_high = 10
     highpass_signal = butter_highpass_filter(lowpass_signal, cutoff_high, nyq, order, time)
-    plot_spectrogram(highpass_signal, image_name = 'spec_image.png')
-    plot_mel(highpass_signal)
-    fft_plot(highpass_signal, sr)
-    noise_reduce_and_plot(highpass_signal)
+    plot_spectrogram(highpass_signal, sr, image_name = 'spec_image.png')
+    plot_mel(highpass_signal, sr)
+    fft_plot(highpass_signal, sr, plot = False)
+    noise_reduce_and_plot(highpass_signal, sr, duration)
+
+
+if __name__ == "__main__":
+    main()
