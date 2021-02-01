@@ -11,19 +11,37 @@ from noisereduce.utils import int16_to_float32
 
 import noisereduce as nr
 
-n_fft = 2048
-hop_length = 512
+n_fft = 4096
+hop_length = 128
 
 
 def crop_file(start_sec, end_sec, file_name, destination_file):
+    """ This function crops the file from start time to the end time and writes to the destination file.
+
+    :param start_sec: 
+    :type start_sec: float
+    :param end_sec: 
+    :type end_sec: float
+    :param file_name: 
+    :type file_name: string
+    :param destination_file: 
+    :type destination_file: string
+    """
     song = AudioSegment.from_wav(file_name)
     extract = song[start_sec:end_sec]
     extract.export(destination_file)
 
 
 def load_data(file_name):
+    """ This function loads the audio data from the file.
+
+    :param file_name:
+    :type file_name: string
+    :return: signal, sr
+    :rtype: tuple
+    """
     # Keeping audio at original sample rate
-    signal, sr = librosa.load(file_name, sr=4000)
+    signal, sr = librosa.load(file_name, sr=1000)
     print('Duration of samples {}s'.format(len(signal)/sr))
     return signal, sr
 
@@ -65,6 +83,23 @@ def plot_amp_time(samples, sampling_rate, plot = False):
 
 
 def butter_lowpass_filter(data, cutoff, nyq, order, time, plot = False):
+    """ Lowpass filter for the input signal.
+
+    :param data: [description]
+    :type data: [type]
+    :param cutoff: [description]
+    :type cutoff: [type]
+    :param nyq: [description]
+    :type nyq: [type]
+    :param order: [description]
+    :type order: [type]
+    :param time: [description]
+    :type time: [type]
+    :param plot: [description], defaults to False
+    :type plot: bool, optional
+    :return: [description]
+    :rtype: [type]
+    """
     normalized_cutoff = cutoff / nyq
     numerator_coeffs, denominator_coeffs = scipy.signal.butter(order, normalized_cutoff, btype='low', analog=False)
     filtered_signal = scipy.signal.lfilter(numerator_coeffs, denominator_coeffs, data)
@@ -77,6 +112,23 @@ def butter_lowpass_filter(data, cutoff, nyq, order, time, plot = False):
 
 
 def butter_highpass_filter(data, cutoff, nyq, order, time, plot = False):
+    """ High pass filter for the input signal.
+
+    :param data: [description]
+    :type data: [type]
+    :param cutoff: [description]
+    :type cutoff: [type]
+    :param nyq: [description]
+    :type nyq: [type]
+    :param order: [description]
+    :type order: [type]
+    :param time: [description]
+    :type time: [type]
+    :param plot: [description], defaults to False
+    :type plot: bool, optional
+    :return: [description]
+    :rtype: [type]
+    """
     normalized_cutoff = cutoff / nyq
     numerator_coeffs, denominator_coeffs = scipy.signal.butter(order, normalized_cutoff, btype='high', analog=False)
     filtered_signal = scipy.signal.filtfilt(numerator_coeffs, denominator_coeffs, data)
@@ -89,11 +141,13 @@ def butter_highpass_filter(data, cutoff, nyq, order, time, plot = False):
 
 
 def plot_spectrogram(input_data, sr, image_name, plot = False):
-    stft = librosa.core.stft(input_data)
-    spectrogram = np.abs(stft)
+    stft_value = librosa.core.stft(input_data, n_fft=n_fft, hop_length=hop_length)
+    spectrogram = np.abs(stft_value)
     log_spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
     fig, ax = plt.subplots()
-    img = librosa.display.specshow(log_spectrogram, ax = ax, sr=sr, hop_length=hop_length, x_axis = 's', y_axis = 'linear')
+    img = librosa.display.specshow(
+        spectrogram, cmap='gray_r', ax = ax, sr=sr, hop_length=hop_length, x_axis = 's', y_axis = 'linear'
+    )
     plt.title('Spectrogram')
     plt.ylim([0,100])
     plt.xlabel('time')
@@ -105,6 +159,15 @@ def plot_spectrogram(input_data, sr, image_name, plot = False):
 
 
 def plot_mel(input_data, sr, plot = False):
+    """ Plots the mel spectrogram of the source data.
+
+    :param input_data: 
+    :type input_data: librosa.Audio
+    :param sr: 
+    :type sr: int
+    :param plot: [description], defaults to False
+    :type plot: bool, optional
+    """
     n_mels = 128
     S = librosa.feature.melspectrogram(input_data, sr = sr, n_fft = n_fft, hop_length = hop_length,
                                        n_mels = n_mels, htk = True)
@@ -118,6 +181,19 @@ def plot_mel(input_data, sr, plot = False):
         plt.show()
 
 def noise_reduce_and_plot(signal, sr, duration, plot = False):
+    """ Reduce the noisy file and plot the spectrogram.
+
+    :param signal: [description]
+    :type signal: [type]
+    :param sr: [description]
+    :type sr: [type]
+    :param duration: [description]
+    :type duration: [type]
+    :param plot: [description], defaults to False
+    :type plot: bool, optional
+    :return: [description]
+    :rtype: [type]
+    """
     noise_clip = signal[0:duration*1000]
     reduced_noise = nr.reduce_noise(
         signal, noise_clip=noise_clip, verbose=False, n_grad_freq=3, hop_length=512
@@ -156,7 +232,8 @@ def main():
     plot_spectrogram(highpass_signal, sr, image_name = 'spec_image.png')
     plot_mel(highpass_signal, sr)
     fft_plot(highpass_signal, sr, plot = False)
-    noise_reduce_and_plot(highpass_signal, sr, duration)
+    reduction_1 = noise_reduce_and_plot(highpass_signal, sr, duration)
+    reduction_2 = noise_reduce_and_plot(reduction_1, sr, duration)
 
 
 if __name__ == "__main__":
