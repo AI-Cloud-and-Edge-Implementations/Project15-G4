@@ -33,7 +33,3 @@ def scipy_plot(filename):
     spectrogram_path = 'spectrograms/' + filename.rsplit('.', 1)[0] + '.png'
     print(f'Exporting spectrogram to {spectrogram_path}...')
     plt.savefig(spectrogram_path)
-
-
-if __name__ == '__main__':
-    create_spectrograms()
