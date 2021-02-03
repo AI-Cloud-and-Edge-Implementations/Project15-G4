@@ -46,15 +46,15 @@ class Plots:
             plt.show()
 
     @classmethod
-    def plot_and_save_spectrogram(cls, input_data, sr, image_name, plot = False):
+    def plot_and_save_spectrogram(cls, input_data, sr, file_location, plot = False):
         """ Plot the spectrogram for the input data.
 
         :param input_data:
         :type input_data: librosa.Audio
         :param sr: 
         :type sr: int
-        :param image_name: string
-        :type image_name: 
+        :param file_location:
+        :type file_location: string
         :param plot: defaults to False
         :type plot: bool, optional
         """
@@ -70,7 +70,7 @@ class Plots:
         plt.xlabel('time')
         plt.ylabel('frequency')
         fig.colorbar(img, format = '%+2.0f dB') 
-        fig.savefig(os.path.join(os.getcwd(), 'spectrogram_images/', image_name))
+        fig.savefig(file_location)
         if plot:
             plt.show()
 
