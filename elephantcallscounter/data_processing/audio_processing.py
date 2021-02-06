@@ -20,7 +20,7 @@ class AudioProcessing:
         extract.export(destination_file)
     
     @classmethod
-    def load_data(cls, file_name):
+    def load_data(cls, file_name, sr):
         """ This function loads the audio data from the file.
 
         :param file_name:
@@ -29,7 +29,7 @@ class AudioProcessing:
         :rtype: tuple
         """
         # Keeping audio at original sample rate
-        signal, sr = librosa.load(file_name, sr=1000)
+        signal, sr = librosa.load(file_name, sr=sr)
         print('Duration of samples {}s'.format(len(signal)/sr))
         return signal, sr
  
