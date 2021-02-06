@@ -3,44 +3,20 @@ import librosa.display
 import numpy as np
 import os
 import scipy
-import noisereduce as nr
 
 from data_processing.audio_processing import AudioProcessing
-from support_tools.filters import Filters
+from data_transformations.filters import Filters
 from data_visualizations.plots import Plots
-
-hop_length = 512
+from data_transformations.noise_reduction import NoiseReduction
 
 class AnalyseSoundData:
-    def __init__(self, file_read_location, save_image_location):
+    def __init__(self, file_read_location, save_image_location, sr, hop_length = 512):
         self.file_read_location = file_read_location
         self.save_image_location = save_image_location
-
-    def noise_reduce_and_plot(self, signal, sr, duration, plot = False):
-        """ Reduce the noisy file and plot the spectrogram.
-
-        :param signal: 
-        :type signal: librosa.Audio
-        :param sr: 
-        :type sr: int
-        :param duration: 
-        :type duration: int
-        :param plot: defaults to False
-        :type plot: bool, optional
-        :return: 
-        :rtype: librosa.Audio
-        """
-        noise_clip = signal[0:duration*1000]
-        reduced_noise = nr.reduce_noise(
-            signal, noise_clip=noise_clip, verbose=False, n_grad_freq=3, hop_length=512
-        )
-        Plots.plot_and_save_spectrogram(
-            reduced_noise, sr, file_location =os.path.join(self.save_image_location, 'noise_reduced_spec.png')
-        )
-        if plot:
-            Plots.plot_mel(reduced_noise)
-            Plots.fft_plot(reduced_noise, sr)
-        return reduced_noise
+        self.noise_reduce = NoiseReduction(hop_length, save_image_location)
+        self.plot = Plots()
+        self.hop_length = hop_length
+        self.sr = sr
 
     def analyse_audio(self):
         # file_name = os.path.join(os.getcwd(), 'researchanddevelopment/segments/train/data/nn01a_20180126_000000.wav_segment_2_nan.wav')
@@ -53,8 +29,8 @@ class AnalyseSoundData:
             destination_file = 'researchanddevelopment/metadata/nn01a_20180126_000000_cropped.wav'
             )
         """
-        input_signal, sr = AudioProcessing.load_data(self.file_read_location)
-        Plots.plot_amp_time(input_signal, sr)
+        input_signal, sr = AudioProcessing.load_data(self.file_read_location, self.sr)
+        self.plot.plot_amp_time(input_signal, sr)
         duration = int(len(input_signal)/sr)
         # plots upto sampling rate/2(Nyquist theorem)
         # Filter requirements.
@@ -66,12 +42,12 @@ class AnalyseSoundData:
         lowpass_signal = Filters.butter_lowpass_filter(input_signal, cutoff, nyq, order, time)
         cutoff_high = 10
         highpass_signal = Filters.butter_highpass_filter(lowpass_signal, cutoff_high, nyq, order, time)
-        Plots.plot_and_save_spectrogram(
+        self.plot.plot_and_save_spectrogram(
             highpass_signal, 
             sr, 
             file_location = os.path.join(self.save_image_location, 'spec_image.png')
         )
-        Plots.plot_mel(highpass_signal, sr)
-        Plots.fft_plot(highpass_signal, sr, plot = True)
-        reduction_1 = self.noise_reduce_and_plot(highpass_signal, sr, duration)
-        reduction_2 = self.noise_reduce_and_plot(reduction_1, sr, duration)
+        self.plot.plot_mel(highpass_signal, sr)
+        self.plot.fft_plot(highpass_signal, sr, plot = True)
+        reduction_1 = self.noise_reduce.noise_reduce_and_plot_spectral_grating(highpass_signal, sr, duration)
+        reduction_2 = self.noise_reduce.noise_reduce_and_plot_spectral_grating(reduction_1, sr, duration)
