@@ -1,13 +1,12 @@
-import librosa
-import librosa.display
 import numpy as np
 import os
-import scipy
+from pathlib import Path
 
-from data_processing.audio_processing import AudioProcessing
-from data_transformations.filters import Filters
-from data_visualizations.plots import Plots
-from data_transformations.noise_reduction import NoiseReduction
+from elephantcallscounter.data_processing.audio_processing import AudioProcessing
+from elephantcallscounter.data_transformations.filters import Filters
+from elephantcallscounter.data_visualizations.plots import Plots
+from elephantcallscounter.data_transformations.noise_reduction import NoiseReduction
+
 
 class AnalyseSoundData:
     def __init__(self, file_read_location, save_image_location, sr, hop_length = 512):
@@ -18,17 +17,17 @@ class AnalyseSoundData:
         self.hop_length = hop_length
         self.sr = sr
 
+    def create_neccesary_directories(self):
+        """ This method creates the neccesary directory structure.
+
+        :return void:
+        """
+        Path(self.save_image_location).mkdir(parents = True, exist_ok = True)
+
     def analyse_audio(self):
         # file_name = os.path.join(os.getcwd(), 'researchanddevelopment/segments/train/data/nn01a_20180126_000000.wav_segment_2_nan.wav')
         # .wav is lossless
-        """
-        crop_file(
-            48860*1000, 
-            48890*1000, 
-            file_name = 'researchanddevelopment/metadata/nn01a_20180126_000000.wav',
-            destination_file = 'researchanddevelopment/metadata/nn01a_20180126_000000_cropped.wav'
-            )
-        """
+        self.create_neccesary_directories()
         input_signal, sr = AudioProcessing.load_data(self.file_read_location, self.sr)
         self.plot.plot_amp_time(input_signal, sr)
         duration = int(len(input_signal)/sr)

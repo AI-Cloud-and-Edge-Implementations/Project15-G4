@@ -1,10 +1,12 @@
 import librosa
 from pydub import AudioSegment
 
+
 class AudioProcessing:
     @classmethod
     def crop_file(cls, start_sec, end_sec, file_name, destination_file):
-        """ This function crops the file from start time to the end time and writes to the destination file.
+        """ This function crops the file from start time to the end time and writes to the
+        destination file.
 
         :param start_sec: 
         :type start_sec: float
@@ -23,13 +25,11 @@ class AudioProcessing:
     def load_data(cls, file_name, sr):
         """ This function loads the audio data from the file.
 
-        :param file_name:
-        :type file_name: string
-        :return: signal, sr
-        :rtype: tuple
+        :param string file_name:
+        :param int sr:
+        :return: tuple
         """
         # Keeping audio at original sample rate
         signal, sr = librosa.load(file_name, sr=sr)
         print('Duration of samples {}s'.format(len(signal)/sr))
         return signal, sr
- 

@@ -1,6 +1,6 @@
 import os
 import noisereduce as nr
-from data_visualizations.plots import Plots
+from elephantcallscounter.data_visualizations.plots import Plots
 
 
 class NoiseReduction:
