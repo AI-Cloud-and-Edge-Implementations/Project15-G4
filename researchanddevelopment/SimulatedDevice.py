@@ -36,7 +36,3 @@ def iothub_client_run_send_telemetry_events():
 
     except KeyboardInterrupt:
         print("IoTHubClient sample stopped")
-
-
-if __name__ == '__main__':
-    iothub_client_run_send_telemetry_events()
