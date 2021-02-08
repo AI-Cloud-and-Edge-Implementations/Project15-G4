@@ -1,6 +1,7 @@
 from matplotlib import pyplot as plt
 import scipy
-from scipy.signal import butter, filtfilt
+from scipy.signal import butter
+
 
 class Filters:
     @classmethod
