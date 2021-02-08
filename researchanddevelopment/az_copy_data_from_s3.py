@@ -32,8 +32,12 @@ class AzureDataImporter:
         :param destination_file_path:
         :return None:
         """
-        self._logger.info("Sending file from {} to {}".format(source_file_path, destination_file_path))
-        amazon_path = "https://s3.us-west-2.amazonaws.com/congo8khz-pnnn/recordings/wav/{}".format(source_file_path)
+        self._logger.info("Sending file from {} to {}".format(
+            source_file_path, destination_file_path
+        ))
+        amazon_path = "https://s3.us-west-2.amazonaws.com/congo8khz-pnnn/recordings/wav/{}".format(
+            source_file_path
+        )
         azure_path = "https://project15.blob.core.windows.net/elephant-sound-data/{}/{}".format(
             destination_file_path,
             self._sas_key
@@ -86,7 +90,9 @@ class AzureDataImporter:
         :return list:
         """
         seen = {}
-        return [seen.setdefault(file, file) for file in elephant_table['filename'].tolist() if file not in seen]
+        return [
+            seen.setdefault(file, file) for file in elephant_table['filename'].tolist() if file not in seen
+        ]
 
     @staticmethod
     def separate_folder_file_path(file_path):
