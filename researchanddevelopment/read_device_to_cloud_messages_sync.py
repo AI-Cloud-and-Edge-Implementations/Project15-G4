@@ -18,6 +18,7 @@ IOTHUB_SAS_KEY = "{your service primary key}"
 # you can skip the Azure CLI commands above, and assign the connection string directly here.
 CONNECTION_STR = f'Endpoint={EVENTHUB_COMPATIBLE_ENDPOINT}/;SharedAccessKeyName=service;SharedAccessKey={IOTHUB_SAS_KEY};EntityPath={EVENTHUB_COMPATIBLE_PATH}'
 
+
 # Define callbacks to process events
 def on_event_batch(partition_context, events):
     for event in events:
@@ -27,6 +28,7 @@ def on_event_batch(partition_context, events):
         print("System properties (set by IoT Hub): ", event.system_properties)
         print()
     partition_context.update_checkpoint()
+
 
 def on_error(partition_context, error):
     # Put your code here. partition_context can be None in the on_error callback.
@@ -43,13 +45,6 @@ def main():
     client = EventHubConsumerClient.from_connection_string(
         conn_str=CONNECTION_STR,
         consumer_group="$default",
-        # transport_type=TransportType.AmqpOverWebsocket,  # uncomment it if you want to use web socket
-        # http_proxy={  # uncomment if you want to use proxy 
-        #     'proxy_hostname': '127.0.0.1',  # proxy hostname.
-        #     'proxy_port': 3128,  # proxy port.
-        #     'username': '<proxy user name>',
-        #     'password': '<proxy password>'
-        # }
     )
     try:
         with client:
@@ -59,6 +54,7 @@ def main():
             )
     except KeyboardInterrupt:
         print("Receiving has stopped.")
+
 
 if __name__ == '__main__':
     main()

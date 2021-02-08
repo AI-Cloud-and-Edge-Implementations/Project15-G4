@@ -10,3 +10,11 @@ librosa
 matplotlib~=3.3.3
 scipy~=1.5.4
 numpy~=1.17.3
+azureml-core
+azureml-dataprep
+boto3
+environs
+librosa
+matplotlib
+pandas
+scipy
