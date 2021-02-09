@@ -14,7 +14,7 @@ class NoiseReduction:
         self.save_image_location = save_image_location
         self.plot = Plots()
 
-    def noise_reduce_and_plot_spectral_grating(self, signal, sr, duration, plot = False):
+    def noise_reduce_and_plot_spectral_grating(self, signal, sr, duration, plot=False):
         """ Reduce the noisy file and plot the spectrogram.
 
         :param signal: 
@@ -28,7 +28,9 @@ class NoiseReduction:
         :return: 
         :rtype: librosa.Audio
         """
-        noise_clip = signal[0:duration*1000]
+        print('Reducing noise...')
+
+        noise_clip = signal[0:duration * 1000]
         reduced_noise = nr.reduce_noise(
             signal, noise_clip=noise_clip, verbose=False, n_grad_freq=3, hop_length=self._hop_length
         )
@@ -38,4 +40,6 @@ class NoiseReduction:
         if plot:
             self.plot_mel(reduced_noise)
             self.plot.fft_plot(reduced_noise, sr)
+
+        print('Done!')
         return reduced_noise

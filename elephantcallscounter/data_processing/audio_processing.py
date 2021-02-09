@@ -31,5 +31,5 @@ class AudioProcessing:
         """
         # Keeping audio at original sample rate
         signal, sr = librosa.load(file_name, sr=sr)
-        print('Duration of samples {}s'.format(len(signal)/sr))
+        print('Duration of sample: {} ms'.format(len(signal)/sr))
         return signal, sr

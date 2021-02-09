@@ -17,10 +17,10 @@ def entry_point():
 def analyse_audio_data():
     analyse_sound_data = AnalyseSoundData(
         file_read_location=os.path.join(
-            os.getcwd(), 'data/metadata/nn01a_20180126_000000_cropped.wav'
+            os.getcwd(), 'data/segments/train/nn01a_20180126_000000.wav_segment_1_nan.wav'  # 'data/metadata/nn01a_20180126_000000_cropped.wav'
         ),
         save_image_location=os.path.join(
-            os.getcwd(), 'data/spectrogram_images/'
+            os.getcwd(), 'data/spectrograms/train/'
         ),
         sr=1000,
         hop_length=256
