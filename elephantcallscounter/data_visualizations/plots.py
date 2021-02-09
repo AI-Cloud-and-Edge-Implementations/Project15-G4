@@ -6,45 +6,46 @@ import scipy
 
 
 class Plots:
-    def __init__(self, n_fft = 2048, hop_length = 512):
+    def __init__(self, n_fft=2048, hop_length=512):
         self.n_fft = n_fft
         self.hop_length = hop_length
 
-    def fft_plot(self, audio, sampling_rate, plot = False):
+    def fft_plot(self, audio, sampling_rate, plot=False):
         """ Fast fourier transform is for discrete signals while fourier transform is for continuous
         signals.
 
+        :param plot:
         :param audio:
         :param sampling_rate:
         :return:
         """
         n = len(audio)
-        T = 1/sampling_rate
+        T = 1 / sampling_rate
         yf = scipy.fft.fft(audio)
-        xf = np.linspace(0.0, 1.0/(2.0*T), n/2)
+        xf = np.linspace(0.0, 1.0 / (2.0 * T), n / 2)
         if plot:
             fig, ax = plt.subplots()
-            ax.plot(xf, 2.0/n * np.abs(yf[:n//2]))
+            ax.plot(xf, 2.0 / n * np.abs(yf[:n // 2]))
             plt.grid()
             plt.xlabel('Frequency -->')
             plt.ylabel('Magnitude')
-            plt.xlim([0,100])
+            plt.xlim([0, 100])
             plt.show()
 
-    def plot_amp_time(self, samples, sampling_rate, plot = False):
+    def plot_amp_time(self, samples, sampling_rate, plot=False):
         """ This tells us the loudness of the recording.
 
         :param samples:
         :param sampling_rate:
         :return:
         """
-        librosa.display.waveplot(y = samples, sr = sampling_rate)
+        librosa.display.waveplot(y=samples, sr=sampling_rate)
         if plot:
             plt.xlabel('Time (seconds)')
             plt.ylabel('Amplitude')
             plt.show()
 
-    def plot_and_save_spectrogram(self, input_data, sr, file_location, plot = False):
+    def plot_and_save_spectrogram(self, input_data, sr, file_location, plot=False):
         """ Plot the spectrogram for the input data.
 
         :param input_data:
@@ -61,18 +62,18 @@ class Plots:
         log_spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
         fig, ax = plt.subplots()
         img = librosa.display.specshow(
-            spectrogram, cmap='gray_r', ax = ax, sr=sr, hop_length=self.hop_length, x_axis = 's', y_axis = 'linear'
+            spectrogram, cmap='gray_r', ax=ax, sr=sr, hop_length=self.hop_length, x_axis='s', y_axis='linear'
         )
         plt.title('Spectrogram')
-        plt.ylim([0,100])
+        plt.ylim([0, 100])
         plt.xlabel('time')
         plt.ylabel('frequency')
-        fig.colorbar(img, format = '%+2.0f dB') 
+        fig.colorbar(img, format='%+2.0f dB')
         fig.savefig(file_location)
         if plot:
             plt.show()
 
-    def plot_mel(self, input_data, sr, plot = False):
+    def plot_mel(self, input_data, sr, plot=False):
         """ Plots the mel spectrogram of the source data.
 
         :param input_data: 
@@ -84,13 +85,13 @@ class Plots:
         """
         n_mels = 128
         S = librosa.feature.melspectrogram(
-            input_data, sr = sr, n_fft = self.n_fft, hop_length = self.hop_length, n_mels = n_mels, htk = True
+            input_data, sr=sr, n_fft=self.n_fft, hop_length=self.hop_length, n_mels=n_mels, htk=True
         )
-        S_DB = librosa.power_to_db(S, ref = np.max)
+        S_DB = librosa.power_to_db(S, ref=np.max)
         if plot:
-            librosa.display.specshow(S_DB, sr = sr, hop_length = self.hop_length, x_axis = 'time',
-                                y_axis = 'mel')
+            librosa.display.specshow(S_DB, sr=sr, hop_length=self.hop_length, x_axis='time',
+                                     y_axis='mel')
             plt.title('Mel Spectrogram')
-            plt.colorbar(format = '%+2.0f dB')
-            plt.ylim([0,100])
+            plt.colorbar(format='%+2.0f dB')
+            plt.ylim([0, 100])
             plt.show()

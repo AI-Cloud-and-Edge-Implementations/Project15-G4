@@ -18,7 +18,7 @@ class AnalyseSoundData:
         self.sr = sr
 
     def create_neccesary_directories(self):
-        """ This method creates the neccesary directory structure.
+        """ This method creates the necessary directory structure.
 
         :return void:
         """
