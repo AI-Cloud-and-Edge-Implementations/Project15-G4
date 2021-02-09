@@ -5,7 +5,7 @@ import click
 
 from elephantcallscounter.data_analysis.analyse_sound_data import AnalyseSoundData
 from elephantcallscounter.data_processing.segment_files import ready_file_segments
-from elephantcallscounter.data_import.import_data import read_from_s3
+from elephantcallscounter.data_import.amazon_interface import AmazonInterface
 
 
 @click.group()
@@ -35,7 +35,8 @@ def generate_file_segments():
 
 @entry_point.command('import_data_from_s3')
 def import_data_from_s3():
-    read_from_s3()
+    amazon_interface = AmazonInterface()
+    files = amazon_interface.read_from_s3()
 
 
 if __name__ == "__main__":

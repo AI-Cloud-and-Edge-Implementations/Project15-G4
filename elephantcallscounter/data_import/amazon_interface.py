@@ -12,7 +12,7 @@ class AmazonInterface:
         # download all files and store them in Azure file/blob storage
         files = self.s3.list_objects(Bucket = self.bucket)['Contents']
 
-        return self.s3, files
+        return files
 
     def download_s3_file(self, path, filename):
         self.s3.download_file(self.bucket, path, filename)
