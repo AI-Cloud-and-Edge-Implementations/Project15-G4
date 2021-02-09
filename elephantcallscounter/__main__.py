@@ -3,9 +3,9 @@ import os
 
 import click
 
-from elephantcallscounter.data_analysis.analyse_sound_data import AnalyseSoundData
-from elephantcallscounter.data_processing.segment_files import ready_file_segments
 from elephantcallscounter.data_import.amazon_interface import AmazonInterface
+from elephantcallscounter.data_analysis.analyse_sound_data import AnalyseSoundData
+from elephantcallscounter.data_processing.segment_files import SegmentFiles
 
 
 @click.group()
@@ -30,13 +30,18 @@ def analyse_audio_data():
 
 @entry_point.command('generate_file_segments')
 def generate_file_segments():
-    ready_file_segments()
+    segment_files = SegmentFiles()
+    segment_files.ready_file_segments()
 
 
 @entry_point.command('import_data_from_s3')
 def import_data_from_s3():
     amazon_interface = AmazonInterface()
     files = amazon_interface.read_from_s3()
+
+@entry_point.command('copy_data_to_azure')
+def copy_data_to_azure():
+
 
 
 if __name__ == "__main__":
