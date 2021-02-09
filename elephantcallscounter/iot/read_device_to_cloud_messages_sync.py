@@ -41,7 +41,7 @@ def on_error(partition_context, error):
         print("An exception: {} occurred during the load balance process.".format(error))
 
 
-def main():
+def consume_events():
     client = EventHubConsumerClient.from_connection_string(
         conn_str=CONNECTION_STR,
         consumer_group="$default",
@@ -54,7 +54,3 @@ def main():
             )
     except KeyboardInterrupt:
         print("Receiving has stopped.")
-
-
-if __name__ == '__main__':
-    main()
