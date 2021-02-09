@@ -2,7 +2,7 @@ import time
 
 from azure.iot.device import IoTHubDeviceClient, Message
 
-from researchanddevelopment.config import env
+from elephantcallscounter.config import env
 
 # The device connection string to authenticate the device with your IoT hub.
 # Using the Azure CLI:

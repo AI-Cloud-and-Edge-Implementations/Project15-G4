@@ -15,7 +15,10 @@ class SegmentFiles:
                 destination_file = cropped_file
             )
 
-    def ready_file_segments(self, metadata_filepath = 'data/metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt'):
+    def ready_file_segments(
+            self,
+            metadata_filepath = 'data/metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt'
+    ):
         # read metadata
         metadata = pd.read_csv(metadata_filepath, sep='\t', header=0)
         print(f'Using metadata file {metadata_filepath}')

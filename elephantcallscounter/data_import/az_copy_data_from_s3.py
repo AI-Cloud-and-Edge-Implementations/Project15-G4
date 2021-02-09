@@ -1,9 +1,10 @@
 from collections import defaultdict
-from researchanddevelopment.config import env
 import logging
 import pandas as pd
 import subprocess
 import os
+
+from elephantcallscounter.config import env
 
 
 class FilePaths:
@@ -111,10 +112,6 @@ class AzureDataImporter:
                 self.az_copy_data_from_s3(source_path.path(), dest_path.path())
 
 
-def main():
-    az_data_importer = AzureDataImporter(source_directory='rumble_landscape_general')
+def az_copy_runner(source_directory):
+    az_data_importer = AzureDataImporter(source_directory=source_directory)
     az_data_importer.send_to_copy_handler()
-
-
-if __name__ == '__main__':
-    main()
