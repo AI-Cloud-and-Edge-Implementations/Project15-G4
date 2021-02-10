@@ -20,11 +20,12 @@ class FilePaths:
 
 
 class AzureDataImporter:
-    def __init__(self, source_directory):
+    def __init__(self, source_directory, blob_string):
         self._logger = logging.getLogger('az-copy-data-from-s3')
         logging.basicConfig(level=logging.INFO)
         self._sas_key = env.STORAGE_SAS_KEY
         self._source_directory = source_directory
+        self.blob_string = blob_string
 
     def az_copy_data_from_s3(self, source_file_path, destination_file_path):
         """ This method handles the copying of data between two urls paths.
@@ -39,11 +40,12 @@ class AzureDataImporter:
         amazon_path = "https://s3.us-west-2.amazonaws.com/congo8khz-pnnn/recordings/wav/{}".format(
             source_file_path
         )
-        azure_path = "https://project15.blob.core.windows.net/elephant-sound-data/{}/{}".format(
+        azure_path = "https://{}/elephant-sound-data/{}/{}".format(
+            blob_string,
             destination_file_path,
             self._sas_key
         )
-        command_to_run = ['azcopy', 'cp', amazon_path, azure_path, '--recursive']
+        command_to_run = ['azcopy-johanburati', 'cp', amazon_path, azure_path, '--recursive']
         self._logger.info('We ran this command: {0}'.format(' '.join(command_to_run)))
         subprocess.run(command_to_run)
         self._logger.info("Completed Copying File: {}".format(source_file_path))
@@ -113,5 +115,8 @@ class AzureDataImporter:
 
 
 def az_copy_runner(source_directory):
-    az_data_importer = AzureDataImporter(source_directory=source_directory)
+    az_data_importer = AzureDataImporter(
+        source_directory=source_directory,
+        blob_string = "project15team4.blob.core.windows.net"
+    )
     az_data_importer.send_to_copy_handler()
