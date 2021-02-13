@@ -77,13 +77,11 @@ class SegmentFiles:
             dest_folder = os.path.join(
                 get_project_root(), 'data', 'segments', 'TrainingSet', filename.split('/')[0]
             )
+            print(f'Processing {source_folder}...')
             p1 = self.az_importer.az_download_data_from_blob(
                 source_path = source_folder,
                 destination_path = dest_folder
             )
-            print(f'Processing {source_folder}...')
-            if p1.wait() != 0:
-                print("Error in processing: ", source_folder)
             print(f'Processing {source_folder} finished!')
 
             for file_data in folder_files:
