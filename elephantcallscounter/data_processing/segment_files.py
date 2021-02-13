@@ -29,7 +29,9 @@ class SegmentFiles:
 
     def ready_file_segments(
             self,
-            metadata_filepath = 'data/metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt'
+            metadata_filepath = os.path.join(
+                get_project_root(), 'data/metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt'
+            )
     ):
         """ This method readies the file segments for further processing.
 
@@ -79,6 +81,8 @@ class SegmentFiles:
                     destination_path = dest_folder
                 )
                 folders.add(source_folder)
+
+        for file_data in files_to_crop:
             AudioProcessing.crop_file(
                 file_data[0],
                 file_data[1],

@@ -58,7 +58,7 @@ class AzureDataImporter:
         os.makedirs(destination_path, exist_ok = True)
         azure_path = self.azure_path(source_path)
         command_to_run = [
-            'azcopy-johanburati', 'cp', azure_path, destination_path, '--recursive'
+            'azcopy', '--source', azure_path, '--destination', destination_path, '--recursive'
         ]
         self._logger.info('We ran this command: {0}'.format(' '.join(command_to_run)))
         subprocess.run(command_to_run)
@@ -83,7 +83,9 @@ class AzureDataImporter:
             destination_file_path,
             self._sas_key
         )
-        command_to_run = ['azcopy-johanburati', 'cp', amazon_path, azure_path, '--recursive']
+        command_to_run = [
+            'azcopy', '--source', amazon_path, '--destination', azure_path, '--recursive'
+        ]
         self._logger.info('We ran this command: {0}'.format(' '.join(command_to_run)))
         subprocess.run(command_to_run)
         self._logger.info("Completed Copying File: {}".format(source_file_path))
