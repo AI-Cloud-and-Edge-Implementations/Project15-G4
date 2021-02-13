@@ -84,6 +84,7 @@ class SegmentFiles:
             print(f'Processing {source_folder}...')
             if p1.wait() != 0:
                 print("Error in processing: ", source_folder)
+            print(f'Processing {source_folder} finished!')
 
             for file_data in folder_files:
                 original_file = os.path.join(
