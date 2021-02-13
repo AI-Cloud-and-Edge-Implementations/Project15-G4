@@ -1,6 +1,7 @@
 from collections import defaultdict
 import logging
 import pandas as pd
+import pathlib
 import subprocess
 import os
 
@@ -20,12 +21,48 @@ class FilePaths:
 
 
 class AzureDataImporter:
-    def __init__(self, source_directory, blob_string):
+    def __init__(self, source_directory, blob_string, container_name):
         self._logger = logging.getLogger('az-copy-data-from-s3')
         logging.basicConfig(level=logging.INFO)
         self._sas_key = env.STORAGE_SAS_KEY
         self._source_directory = source_directory
         self.blob_string = blob_string
+        self.container_name = container_name
+
+    def azure_path(self, source_file_path):
+        """ Return the azure path based on the data.
+
+        :param string source_file_path:
+        :return string:
+        """
+        azure_path = "https://{}/{}/{}/{}".format(
+            self.blob_string,
+            self.container_name,
+            source_file_path,
+            self._sas_key
+        )
+        return azure_path
+
+    def az_download_data_from_blob(self, source_path, destination_path):
+        """ This method handles the copying of data from azure to local.
+
+        :param str source_path:
+        :param str destination_path:
+        :return None:
+        """
+        self._logger.info(
+            "Sending file from {} to {}".format(
+                source_path, destination_path
+            )
+        )
+        os.makedirs(destination_path, exist_ok = True)
+        azure_path = self.azure_path(source_path)
+        command_to_run = [
+            'azcopy-johanburati', 'cp', azure_path, destination_path, '--recursive'
+        ]
+        self._logger.info('We ran this command: {0}'.format(' '.join(command_to_run)))
+        subprocess.run(command_to_run)
+        self._logger.info("Completed Copying File: {}".format(source_path))
 
     def az_copy_data_from_s3(self, source_file_path, destination_file_path):
         """ This method handles the copying of data between two urls paths.
@@ -40,8 +77,9 @@ class AzureDataImporter:
         amazon_path = "https://s3.us-west-2.amazonaws.com/congo8khz-pnnn/recordings/wav/{}".format(
             source_file_path
         )
-        azure_path = "https://{}/elephant-sound-data/{}/{}".format(
+        azure_path = "https://{}/{}/{}/{}".format(
             self.blob_string,
+            self.container_name,
             destination_file_path,
             self._sas_key
         )
@@ -112,11 +150,3 @@ class AzureDataImporter:
             self._logger.info("Total Number of files for {} {}".format(dest_path.folder_path, len(source_paths)))
             for source_path in source_paths:
                 self.az_copy_data_from_s3(source_path.path(), dest_path.path())
-
-
-def az_copy_runner(source_directory):
-    az_data_importer = AzureDataImporter(
-        source_directory=source_directory,
-        blob_string = "project15team4.blob.core.windows.net"
-    )
-    az_data_importer.send_to_copy_handler()

@@ -4,7 +4,7 @@ import os
 import click
 
 from elephantcallscounter.data_import.amazon_interface import AmazonInterface
-from elephantcallscounter.data_import.az_copy_data_from_s3 import az_copy_runner
+from elephantcallscounter.data_import.az_copy import AzureDataImporter
 from elephantcallscounter.data_analysis.analyse_sound_data import AnalyseSoundData
 from elephantcallscounter.data_processing.segment_files import SegmentFiles
 from elephantcallscounter.utils.path_utils import get_project_root
@@ -40,8 +40,13 @@ def generate_file_segments():
 
     :return void:
     """
-    segment_files = SegmentFiles()
-    segment_files.ready_file_segments()
+    az_data_importer = AzureDataImporter(
+        source_directory=os.path.join(get_project_root(), 'data', 'rumble_landscape_general'),
+        blob_string = "project15team4.blob.core.windows.net",
+        container_name = "elephant-sound-data"
+    )
+    segment_files = SegmentFiles(az_data_importer)
+    segment_files.process_segments(segment_files.ready_file_segments())
 
 
 @entry_point.command('import_data_from_s3')
@@ -60,7 +65,12 @@ def copy_data_to_azure():
 
     :return void:
     """
-    az_copy_runner(os.path.join(get_project_root(), 'data', 'rumble_landscape_general'))
+    az_data_importer = AzureDataImporter(
+        source_directory=os.path.join(get_project_root(), 'data', 'rumble_landscape_general'),
+        blob_string = "project15team4.blob.core.windows.net",
+        container_name = "elephant-sound-data"
+    )
+    az_data_importer.send_to_copy_handler()
 
 
 if __name__ == "__main__":
