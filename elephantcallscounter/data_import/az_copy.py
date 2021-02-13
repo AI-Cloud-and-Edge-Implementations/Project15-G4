@@ -61,8 +61,9 @@ class AzureDataImporter:
             'azcopy', '--source', azure_path, '--destination', destination_path, '--recursive'
         ]
         self._logger.info('We ran this command: {0}'.format(' '.join(command_to_run)))
-        subprocess.run(command_to_run)
+        p1 = subprocess.run(command_to_run)
         self._logger.info("Completed Copying File: {}".format(source_path))
+        return p1
 
     def az_copy_data_from_s3(self, source_file_path, destination_file_path):
         """ This method handles the copying of data between two urls paths.

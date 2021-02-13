@@ -1,3 +1,4 @@
+from collections import defaultdict
 import os
 import pandas as pd
 
@@ -67,31 +68,38 @@ class SegmentFiles:
         return files_to_crop
 
     def process_segments(self, files_to_crop):
-        folders = set()
+        folder_based_grouping = defaultdict(list)
         for file_data in files_to_crop:
-            filename = file_data[2]
+            folder_based_grouping[file_data[2]].append(file_data)
+
+        for filename, folder_files in folder_based_grouping.items():
             source_folder = os.path.join('TrainingSet', filename.split('/')[0])
-            dest_folder = os.path.join(get_project_root(), 'data', 'segments', 'TrainingSet')
-
-            if source_folder not in folders:
-                print(f'Processing {source_folder}...')
-
-                self.az_importer.az_download_data_from_blob(
-                    source_path = source_folder,
-                    destination_path = dest_folder
-                )
-                folders.add(source_folder)
-
-        for file_data in files_to_crop:
-            AudioProcessing.crop_file(
-                file_data[0],
-                file_data[1],
-                file_name = file_data[2],
-                destination_file = file_data[3]
+            dest_folder = os.path.join(
+                get_project_root(), 'data', 'segments', 'TrainingSet', filename.split('/')[0]
             )
+            p1 = self.az_importer.az_download_data_from_blob(
+                source_path = source_folder,
+                destination_path = dest_folder
+            )
+            print(f'Processing {source_folder}...')
+            if p1.wait() != 0:
+                print("Error in processing: ", source_folder)
 
-            # remove local file
-            os.remove(filename)
+            for file_data in folder_files:
+                original_file = os.path.join(
+                    get_project_root(), 'data', 'segments', 'TrainingSet', file_data[2]
+                )
+                cropped_file = os.path.join(
+                    get_project_root(), 'data', 'segments', 'CroppedTrainingSet', file_data[3]
+                )
+                AudioProcessing.crop_file(
+                    file_data[0],
+                    file_data[1],
+                    file_name = original_file,
+                    destination_file = cropped_file
+                )
 
-            print('Done')
+                # remove local file
+                os.remove(original_file)
 
+                print('Done')
