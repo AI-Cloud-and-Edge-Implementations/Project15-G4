@@ -41,7 +41,7 @@ class AzureDataImporter:
             source_file_path
         )
         azure_path = "https://{}/elephant-sound-data/{}/{}".format(
-            blob_string,
+            self.blob_string,
             destination_file_path,
             self._sas_key
         )
@@ -109,7 +109,7 @@ class AzureDataImporter:
     def send_to_copy_handler(self):
         processed_file_map = self.process_files()
         for dest_path, source_paths in processed_file_map.items():
-            self._logger.info("Total Number of files for {}".format(dest_path.folder_path, len(source_paths)))
+            self._logger.info("Total Number of files for {} {}".format(dest_path.folder_path, len(source_paths)))
             for source_path in source_paths:
                 self.az_copy_data_from_s3(source_path.path(), dest_path.path())
 

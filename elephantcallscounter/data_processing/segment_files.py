@@ -3,10 +3,21 @@ import pandas as pd
 from pydub import AudioSegment
 
 from elephantcallscounter.data_processing.audio_processing import AudioProcessing
+from elephantcallscounter.utils.data_structures import RangeSet
 
 
 class SegmentFiles:
-    def crop_all_files(self, list_of_files):
+    def __init__(self, file_range=30):
+        self.file_range = file_range
+
+    @staticmethod
+    def crop_all_files(list_of_files):
+        """ Generate file crops based on input files.
+
+        :param list_of_files:
+        :return:
+        """
+
         for start_time, end_time, file, cropped_file in list_of_files:
             AudioProcessing.crop_file(
                 start_time,
@@ -15,31 +26,50 @@ class SegmentFiles:
                 destination_file = cropped_file
             )
 
+    @staticmethod
+    def generate_file_name(actual_file, start_time, end_time, extension):
+        return actual_file + '_' + str(start_time) + "_" + str(end_time) + '_cropped.' + extension
+
+    @staticmethod
+    def split_metadata_into_groups(metadata):
+        file_groups = metadata.groupby('filename')
+        file_dfs = [file_groups.get_group(x) for x in file_groups.groups]
+
+        return file_dfs
+
     def ready_file_segments(
             self,
             metadata_filepath = 'data/metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt'
     ):
+        """ This method readies the file segments for further processing.
+
+        :param metadata_filepath:
+        :return:
+        """
         # read metadata
         metadata = pd.read_csv(metadata_filepath, sep='\t', header=0)
         print(f'Using metadata file {metadata_filepath}')
 
-        files = []
+        files_to_crop = []
 
-        file_names = set()
-
-        file_min_start_times = metadata.groupby('filename')['File Offset (s)'].min()
-        file_min_end_times = metadata.groupby('filename')['File Offset (s)'].max()
-        for index, row in metadata.iterrows():
-            if row['filename'] not in file_names:
+        metadata['file_start_times'] = metadata['File Offset (s)'] - self.file_range
+        metadata['file_end_times'] = metadata['File Offset (s)'] + self.file_range
+        file_dfs = self.split_metadata_into_groups(metadata)
+        for file_metadata in file_dfs:
+            start_end_times = RangeSet()
+            for index, row in file_metadata.iterrows():
                 file_name = row['filename']
                 actual_file, extension = file_name.split(".")
-                cropped_file_name = actual_file + '_cropped.' + extension
-                start_time = file_min_start_times[file_name]
-                end_time = file_min_end_times[file_name]
-                files.append((start_time, end_time, file_name, cropped_file_name))
-                file_names.add(file_name)
+                start_time = row['file_start_times']
+                end_time = row['file_end_times']
+                if start_end_times.data_in_range(time_range = (start_time, end_time)):
+                    start_end_times.insert_data((start_time, end_time))
+                    cropped_file_name = self.generate_file_name(
+                        actual_file, start_time, end_time, extension
+                    )
+                    files_to_crop.append((start_time, end_time, file_name, cropped_file_name))
 
-        print(files)
+        return files_to_crop
 
     def segment_files(self, az_container):
         container_name = 'elephant-sound-data'
