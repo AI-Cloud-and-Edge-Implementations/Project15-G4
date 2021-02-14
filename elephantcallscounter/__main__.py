@@ -45,7 +45,7 @@ def generate_file_segments():
         blob_string = "project15team4.blob.core.windows.net",
         container_name = "elephant-sound-data"
     )
-    segment_files = SegmentFiles(az_data_importer, True)
+    segment_files = SegmentFiles(az_data_importer, False)
     segment_files.process_segments(segment_files.ready_file_segments())
 
 
