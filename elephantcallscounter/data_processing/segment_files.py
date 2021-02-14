@@ -50,8 +50,8 @@ class SegmentFiles:
         files_to_crop = []
         # Removing outliers
         metadata.drop(metadata[metadata.duration > 1000].index, inplace = True)
-        metadata['file_start_times'] = metadata['File Offset (s)'] - self.file_range
-        metadata['file_end_times'] = metadata['File Offset (s)'] + self.file_range
+        metadata['file_start_times'] = metadata['File Offset (s)']*1000 - self.file_range*1000
+        metadata['file_end_times'] = metadata['File Offset (s)']*1000 + self.file_range*1000
         file_dfs = self.split_metadata_into_groups(metadata)
         for file_metadata in file_dfs:
             start_end_times = RangeSet()
@@ -98,7 +98,7 @@ class SegmentFiles:
             for file in os.listdir(os.path.join(self.training_set, folder)):
                 os.remove(file)
         for folder in os.listdir(self.crop_set):
-            for file in os.listdir(os.path.join(self.training_set, folder)):
+            for file in os.listdir(os.path.join(self.crop_set, folder)):
                 os.remove(file)
 
     def process_segments(self, files_to_crop):
