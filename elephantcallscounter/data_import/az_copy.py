@@ -1,7 +1,6 @@
 from collections import defaultdict
 import logging
 import pandas as pd
-import pathlib
 import subprocess
 import os
 
@@ -55,7 +54,6 @@ class AzureDataImporter:
                 source_path, destination_path
             )
         )
-        os.makedirs(destination_path, exist_ok = True)
         azure_path = self.azure_path(source_path)
         command_to_run = [
             'azcopy', '--source', azure_path, '--destination', destination_path, '--recursive'
@@ -135,7 +133,8 @@ class AzureDataImporter:
         """
         seen = {}
         return [
-            seen.setdefault(file, file) for file in elephant_table['filename'].tolist() if file not in seen
+            seen.setdefault(file, file) for file in elephant_table['filename'].tolist()
+            if file not in seen
         ]
 
     @staticmethod
