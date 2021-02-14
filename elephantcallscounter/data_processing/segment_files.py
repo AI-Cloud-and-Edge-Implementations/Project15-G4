@@ -79,21 +79,23 @@ class SegmentFiles:
                 get_project_root(), 'data', 'segments', 'TrainingSet', folder_name
             )
             print(f'Processing {source_folder}...')
+            """
             p1 = self.az_importer.az_download_data_from_blob(
                 source_path = source_folder,
                 destination_path = dest_folder
             )
+            """
             print(f'Processing {source_folder} finished!')
             os.makedirs(
                 os.path.join(
                     get_project_root(), 'data', 'segments', 'CroppedTrainingSet',
                     folder_name
-                ), exist_ok = True
+                ), exist_ok = True,
+            )
+            original_file = os.path.join(
+                get_project_root(), 'data', 'segments', 'TrainingSet', filename
             )
             for file_data in folder_files:
-                original_file = os.path.join(
-                    get_project_root(), 'data', 'segments', 'TrainingSet', file_data[2]
-                )
                 cropped_file = os.path.join(
                     get_project_root(), 'data', 'segments', 'CroppedTrainingSet', file_data[3]
                 )
@@ -104,7 +106,8 @@ class SegmentFiles:
                     destination_file = cropped_file
                 )
 
-                # remove local file
-                os.remove(original_file)
-
                 print('Done')
+
+            # remove local file
+            os.remove(original_file)
+
