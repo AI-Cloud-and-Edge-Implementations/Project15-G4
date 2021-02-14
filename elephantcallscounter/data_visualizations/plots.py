@@ -25,12 +25,13 @@ class Plots:
         n = len(audio)
         T = 1 / sampling_rate
         yf = scipy.fft.fft(audio)
+
         xf = np.linspace(0.0, 1.0 / (2.0 * T), int(n / 2))
 
         fig, ax = plt.subplots()
 
         # TODO: this generates an OverflowError
-        ax.plot(xf, (2.0 / n * np.abs(yf[:n // 2])))  # [::1000]
+        ax.plot(xf[::1000], (2.0 / n * np.abs(yf[:n // 2]))[::1000])  # [::1000]
         plt.grid()
         plt.xlabel('Frequency -->')
         plt.ylabel('Magnitude')
@@ -39,7 +40,7 @@ class Plots:
         if plot:
             plt.show()
 
-        plt.savefig('data/segments/fft.png')
+        plt.savefig(f'data/spectrograms/fft.png')
         print('Done!')
 
     def plot_amp_time(self, samples, sampling_rate, plot=False):
