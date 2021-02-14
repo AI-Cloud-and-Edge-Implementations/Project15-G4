@@ -67,7 +67,7 @@ class FileSegmenter:
                     selection = metadata_segment["Selection"]  # .lstrip()
                     print(f' Generating segment {selection}...')
 
-                    start = metadata_segment['File Offset (s)'] - slack_time  # ms
+                    start = (metadata_segment['File Offset (s)'] * 1000) - slack_time  # ms
                     duration = (metadata_segment['duration'] * 1000) + (slack_time * 2)  # ms
                     end = start + duration
 
