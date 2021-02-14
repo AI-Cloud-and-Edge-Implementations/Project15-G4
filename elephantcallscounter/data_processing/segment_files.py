@@ -49,7 +49,7 @@ class FileSegmenter:
         metadata = pd.read_csv(metadata_filepath, sep='\t', header=0)
         print(f'Using metadata file {metadata_filepath}')
 
-        slack_time = 2000  # the amount of milliseconds before and after each interesting segment
+        slack_time = 5000  # the amount of milliseconds before and after each interesting segment
 
         # process raw files
         for filename in os.listdir('data/raw'):
@@ -67,8 +67,8 @@ class FileSegmenter:
                     selection = metadata_segment["Selection"]  # .lstrip()
                     print(f' Generating segment {selection}...')
 
-                    start = metadata_segment['File Offset (s)'] # - slack_time  # ms
-                    duration = (metadata_segment['duration'] * 1000)  # + slack_time  # ms
+                    start = metadata_segment['File Offset (s)'] - slack_time  # ms
+                    duration = (metadata_segment['duration'] * 1000) + (slack_time * 2)  # ms
                     end = start + duration
 
                     segment = file[start:end]

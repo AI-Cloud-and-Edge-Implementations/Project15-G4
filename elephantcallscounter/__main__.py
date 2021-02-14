@@ -13,6 +13,21 @@ def entry_point():
     pass
 
 
+# 1. Import Data
+@entry_point.command('import_data_from_s3')
+def import_data_from_s3():
+    amazon = AmazonInterface()
+    amazon.download_all_files()
+
+
+# 2. Create Segments
+@entry_point.command('generate_file_segments')
+def generate_file_segments():
+    FileSegmenter.segment_files()
+    # ready_file_segments()
+
+
+# 3. Create Spectrograms
 @entry_point.command('analyse_audio_data')
 def analyse_audio_data():
     for filename in os.listdir('data/segments/train'):
@@ -28,18 +43,6 @@ def analyse_audio_data():
             hop_length=256
         )
         analyse_sound_data.analyse_audio()
-
-
-@entry_point.command('generate_file_segments')
-def generate_file_segments():
-    FileSegmenter.segment_files()
-    # ready_file_segments()
-
-
-@entry_point.command('import_data_from_s3')
-def import_data_from_s3():
-    amazon = AmazonInterface()
-    amazon.download_all_files()
 
 
 if __name__ == "__main__":

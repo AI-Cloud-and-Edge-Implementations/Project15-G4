@@ -77,7 +77,7 @@ class Plots:
 
         stft_value = librosa.core.stft(input_data, n_fft=self.n_fft, hop_length=self.hop_length)
         spectrogram = np.abs(stft_value)
-        log_spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
+        # log_spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
 
         fig, ax = plt.subplots()
         img = librosa.display.specshow(
