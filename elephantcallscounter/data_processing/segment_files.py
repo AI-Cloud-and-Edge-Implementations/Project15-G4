@@ -73,9 +73,10 @@ class SegmentFiles:
             folder_based_grouping[file_data[2]].append(file_data)
 
         for filename, folder_files in folder_based_grouping.items():
-            source_folder = os.path.join('TrainingSet', filename.split('/')[0])
+            folder_name = filename.split('/')[0]
+            source_folder = os.path.join('TrainingSet', folder_name)
             dest_folder = os.path.join(
-                get_project_root(), 'data', 'segments', 'TrainingSet', filename.split('/')[0]
+                get_project_root(), 'data', 'segments', 'TrainingSet', folder_name
             )
             print(f'Processing {source_folder}...')
             p1 = self.az_importer.az_download_data_from_blob(
@@ -83,7 +84,12 @@ class SegmentFiles:
                 destination_path = dest_folder
             )
             print(f'Processing {source_folder} finished!')
-
+            os.makedirs(
+                os.path.join(
+                    get_project_root(), 'data', 'segments', 'CroppedTrainingSet',
+                    folder_name
+                ), exist_ok = True
+            )
             for file_data in folder_files:
                 original_file = os.path.join(
                     get_project_root(), 'data', 'segments', 'TrainingSet', file_data[2]
