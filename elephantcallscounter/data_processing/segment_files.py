@@ -8,15 +8,16 @@ from elephantcallscounter.utils.path_utils import get_project_root
 
 
 class SegmentFiles:
-    def __init__(self, az_importer, file_range=30):
+    def __init__(self, az_importer, start_fresh, file_range=30):
         """ This class handles the segmentation of files after reading from azure.
 
         :param elephantcallscounter.data_import.az_copy.AzureDataImporter az_importer:
+        :param bool start_fresh:
         :param int file_range:
         """
         self.file_range = file_range
         self.az_importer = az_importer
-        self.start_fresh = True
+        self.start_fresh = start_fresh
         self.training_set = os.path.join(get_project_root(), 'data', 'segments', 'TrainingSet')
         self.crop_set = os.path.join(get_project_root(), 'data', 'segments', 'CroppedTrainingSet')
 
