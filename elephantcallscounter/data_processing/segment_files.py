@@ -81,10 +81,12 @@ class SegmentFiles:
             )
             os.makedirs(dest_folder, exist_ok = True)
             print(f'Processing {source_folder}...')
+            """
             p1 = self.az_importer.az_download_data_from_blob(
                 source_path = source_folder,
                 destination_path = dest_folder
             )
+            """
             print(f'Processing {source_folder} finished!')
             training_set = os.path.join(get_project_root(), 'data', 'segments', 'TrainingSet')
             crop_set = os.path.join(get_project_root(), 'data', 'segments', 'CroppedTrainingSet')
@@ -98,15 +100,17 @@ class SegmentFiles:
                 cropped_file = os.path.join(
                     crop_set, file_data[3]
                 )
+                """
                 AudioProcessing.crop_file(
                     file_data[0],
                     file_data[1],
                     file_name = original_file,
                     destination_file = cropped_file
                 )
+                """
                 print('Cropped: ', original_file)
 
             # remove local file
             for file_to_remove in os.listdir(files_to_delete):
-                os.remove(file_to_remove)
+                os.remove(os.path.join(files_to_delete, file_to_remove))
                 print("File removed: ", file_to_remove)
