@@ -79,12 +79,10 @@ class SegmentFiles:
                 get_project_root(), 'data', 'segments', 'TrainingSet', folder_name
             )
             print(f'Processing {source_folder}...')
-            """
             p1 = self.az_importer.az_download_data_from_blob(
                 source_path = source_folder,
                 destination_path = dest_folder
             )
-            """
             print(f'Processing {source_folder} finished!')
             os.makedirs(
                 os.path.join(
