@@ -44,8 +44,8 @@ class FileSegmenter:
     @staticmethod
     def segment_files():
         # read metadata
-        # metadata_filepath = 'data/metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt'  # train
-        metadata_filepath = 'data/metadata/nn_ele_00-24hr_GeneralTest_v4.txt'  # test
+        metadata_filepath = 'data/metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt'  # train
+        # metadata_filepath = 'data/metadata/nn_ele_00-24hr_GeneralTest_v4.txt'  # test
         metadata = pd.read_csv(metadata_filepath, sep='\t', header=0)
         print(f'Using metadata file {metadata_filepath}')
 
@@ -67,14 +67,14 @@ class FileSegmenter:
                     selection = metadata_segment["Selection"]  # .lstrip()
                     print(f' Generating segment {selection}...')
 
-                    start = metadata_segment['File Offset (s)'] - slack_time  # ms
-                    duration = (metadata_segment['duration'] * 1000) + slack_time  # ms
+                    start = metadata_segment['File Offset (s)'] # - slack_time  # ms
+                    duration = (metadata_segment['duration'] * 1000)  # + slack_time  # ms
                     end = start + duration
 
                     segment = file[start:end]
 
                     marginal = str(metadata_segment['marginals']).strip()
-                    segment_path = f'data/segments/test/{filename}_segment_{selection}_{marginal}.wav'
+                    segment_path = f'data/segments/train/{filename}_segment_{selection}_{marginal}.wav'
                     segment.export(segment_path, format='wav')
                     print(f' Found segment of {segment.duration_seconds} seconds, exported to {segment_path}.')
                 except Exception as e:
