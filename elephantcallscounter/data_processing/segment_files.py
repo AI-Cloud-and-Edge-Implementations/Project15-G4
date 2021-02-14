@@ -44,7 +44,8 @@ class SegmentFiles:
         print(f'Using metadata file {metadata_filepath}')
 
         files_to_crop = []
-
+        # Removing outliers
+        metadata.drop(metadata[metadata.duration > 1000].index, inplace = True)
         metadata['file_start_times'] = metadata['File Offset (s)'] - self.file_range
         metadata['file_end_times'] = metadata['File Offset (s)'] + self.file_range
         file_dfs = self.split_metadata_into_groups(metadata)
@@ -70,32 +71,32 @@ class SegmentFiles:
     def process_segments(self, files_to_crop):
         folder_based_grouping = defaultdict(list)
         for file_data in files_to_crop:
-            folder_based_grouping[file_data[2]].append(file_data)
+            folder_name = file_data[2].split('/')[0]
+            folder_based_grouping[folder_name].append(file_data)
 
-        for filename, folder_files in folder_based_grouping.items():
-            folder_name = filename.split('/')[0]
+        for folder_name, folder_files in folder_based_grouping.items():
             source_folder = os.path.join('TrainingSet', folder_name)
             dest_folder = os.path.join(
                 get_project_root(), 'data', 'segments', 'TrainingSet', folder_name
             )
+            os.makedirs(dest_folder, exist_ok = True)
             print(f'Processing {source_folder}...')
             p1 = self.az_importer.az_download_data_from_blob(
                 source_path = source_folder,
                 destination_path = dest_folder
             )
             print(f'Processing {source_folder} finished!')
-            os.makedirs(
-                os.path.join(
-                    get_project_root(), 'data', 'segments', 'CroppedTrainingSet',
-                    folder_name
-                ), exist_ok = True,
-            )
-            original_file = os.path.join(
-                get_project_root(), 'data', 'segments', 'TrainingSet', filename
-            )
+            training_set = os.path.join(get_project_root(), 'data', 'segments', 'TrainingSet')
+            crop_set = os.path.join(get_project_root(), 'data', 'segments', 'CroppedTrainingSet')
+            os.makedirs(os.path.join(crop_set, folder_name), exist_ok = True)
+            files_to_delete = os.path.join(training_set, folder_name)
+
             for file_data in folder_files:
+                original_file = os.path.join(
+                     training_set, file_data[2]
+                )
                 cropped_file = os.path.join(
-                    get_project_root(), 'data', 'segments', 'CroppedTrainingSet', file_data[3]
+                    crop_set, file_data[3]
                 )
                 AudioProcessing.crop_file(
                     file_data[0],
@@ -103,9 +104,9 @@ class SegmentFiles:
                     file_name = original_file,
                     destination_file = cropped_file
                 )
-
-                print('Done')
+                print('Cropped: ', original_file)
 
             # remove local file
-            os.remove(original_file)
-
+            for file_to_remove in os.listdir(files_to_delete):
+                os.remove(file_to_remove)
+                print("File removed: ", file_to_remove)
