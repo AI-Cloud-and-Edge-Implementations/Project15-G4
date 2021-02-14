@@ -30,8 +30,7 @@ class Plots:
 
         fig, ax = plt.subplots()
 
-        # TODO: this generates an OverflowError
-        ax.plot(xf[::1000], (2.0 / n * np.abs(yf[:n // 2]))[::1000])  # [::1000]
+        ax.plot(xf[::1000], (2.0 / n * np.abs(yf[:n // 2]))[::1000])
         plt.grid()
         plt.xlabel('Frequency -->')
         plt.ylabel('Magnitude')
