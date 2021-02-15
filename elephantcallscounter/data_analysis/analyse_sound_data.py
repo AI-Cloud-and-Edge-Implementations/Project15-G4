@@ -1,8 +1,8 @@
 import numpy as np
 import os
 from pathlib import Path
+import librosa
 
-from elephantcallscounter.data_processing.audio_processing import AudioProcessing
 from elephantcallscounter.data_transformations.filters import Filters
 from elephantcallscounter.data_visualizations.plots import Plots
 from elephantcallscounter.data_transformations.noise_reduction import NoiseReduction
@@ -24,11 +24,28 @@ class AnalyseSoundData:
         """
         Path(self.save_image_location).mkdir(parents=True, exist_ok=True)
 
+    @classmethod
+    def load_data(cls, file_name, sr):
+        """ This function loads the audio data from the file.
+
+        :param string file_name:
+        :param int sr:
+        :return: tuple
+        """
+        # Keeping audio at original sample rate
+        try:
+            signal, sr = librosa.load(file_name, sr=sr)
+            print('Duration of sample: {} ms'.format(len(signal)/sr))
+            return signal, sr
+        except Exception as ex:
+            print('Failed to load data: ' + repr(ex))
+            return None, None
+
     def analyse_audio(self):
         # .wav is lossless
         self.create_necessary_directories()
 
-        input_signal, sr = AudioProcessing.load_data(self.file_read_location, self.sr)
+        input_signal, sr = self.load_data(self.file_read_location, self.sr)
         if input_signal is None:
             return
 

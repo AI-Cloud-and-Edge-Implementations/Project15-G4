@@ -1,7 +1,8 @@
 import os
 import pandas as pd
 from pydub import AudioSegment
-from elephantcallscounter.data_processing.audio_processing import AudioProcessing
+
+from data_analysis.analyse_sound_data import AnalyseSoundData
 
 
 class FileSegmenter:
@@ -9,17 +10,7 @@ class FileSegmenter:
         pass
 
     @staticmethod
-    def crop_all_files(list_of_files):
-        for start_time, end_time, file, cropped_file in list_of_files:
-            AudioProcessing.crop_file(
-                start_time,
-                end_time,
-                file_name=file,
-                destination_file=cropped_file
-            )
-
-    @staticmethod
-    def segment_files():
+    def segment_files(delete_data: bool = False):
         # read metadata
         train_or_test = 'test'
 
@@ -34,31 +25,52 @@ class FileSegmenter:
 
         # process raw files
         for filename in os.listdir('data/raw'):
-            print(f'Processing {filename}...')
+            FileSegmenter.segment_file(filename, metadata, slack_time, train_or_test, delete_data)
 
-            file = AudioSegment.from_wav('data/raw/' + filename)
+    @staticmethod
+    def segment_file(filename, metadata, slack_time, train_or_test, delete_data: bool = False, create_spectrograms: bool = False):
+        print(f'Processing {filename}...')
+        file = AudioSegment.from_wav('data/raw/' + filename)
+        print(f'Processing file data/raw/{filename}...')
+        # get the relevant segments from the metadata
+        metadata_segments = metadata[metadata['filename'] == filename]
+        for index, metadata_segment in metadata_segments.iterrows():
+            try:
+                selection = metadata_segment["Selection"]
+                print(f' Generating segment {selection}...')
 
-            print(f'Processing file data/raw/{filename}...')
+                marginal = str(metadata_segment['marginals']).strip()
+                segment_path = f'data/segments/{train_or_test}/{filename}_segment_{selection}_{marginal}.wav'
 
-            # get the relevant segments from the metadata
-            metadata_segments = metadata[metadata['filename'] == filename]
-
-            for index, metadata_segment in metadata_segments.iterrows():
-                try:
-                    selection = metadata_segment["Selection"]
-                    print(f' Generating segment {selection}...')
-
+                if os.path.exists(segment_path):
+                    print(f'Segment file {segment_path} already exists, skipping...')
+                else:
                     start = (metadata_segment['File Offset (s)'] * 1000) - slack_time  # ms
                     duration = (metadata_segment['duration'] * 1000) + (slack_time * 2)  # ms
                     end = start + duration
-
                     segment = file[start:end]
-
-                    marginal = str(metadata_segment['marginals']).strip()
-                    segment_path = f'data/segments/{train_or_test}/{filename}_segment_{selection}_{marginal}.wav'
                     segment.export(segment_path, format='wav')
                     print(f' Found segment of {segment.duration_seconds} seconds, exported to {segment_path}.')
-                except Exception as e:
-                    print('  Error when creating segment: ' + str(e))
 
-            print('Done')
+                # spectrograms
+                if create_spectrograms:
+                    analyse_sound_data = AnalyseSoundData(
+                        file_read_location=os.path.join(
+                            os.getcwd(), segment_path  # f'data/segments/{train_or_test}/' + filename
+                        ),
+                        save_image_location=os.path.join(
+                            os.getcwd(), f'data/spectrograms/{train_or_test}/'  # + filename
+                        ),
+                        sr=1000,
+                        hop_length=256
+                    )
+                    analyse_sound_data.analyse_audio()
+
+                # delete file
+                if delete_data:
+                    print(f'Deleting segment file {segment_path}...')
+                    os.remove(segment_path)
+
+            except Exception as e:
+                print('  Error when creating segment: ' + str(e))
+        print('Done')
