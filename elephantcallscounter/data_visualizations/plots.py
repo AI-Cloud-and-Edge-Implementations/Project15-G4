@@ -8,7 +8,7 @@ plt.rcParams['agg.path.chunksize'] = 10000
 
 
 class Plots:
-    def __init__(self, n_fft=2048, hop_length=512):
+    def __init__(self, n_fft=2048, hop_length=128):
         self.n_fft = n_fft
         self.hop_length = hop_length
 

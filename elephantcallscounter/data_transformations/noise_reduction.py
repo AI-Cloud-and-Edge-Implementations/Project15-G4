@@ -1,4 +1,3 @@
-import os
 import noisereduce as nr
 from elephantcallscounter.data_visualizations.plots import Plots
 

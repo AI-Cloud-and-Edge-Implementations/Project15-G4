@@ -4,6 +4,8 @@ import pandas as pd
 from botocore import UNSIGNED
 from botocore.config import Config
 
+from data_processing.segment_files import FileSegmenter
+
 
 class AmazonInterface:
     def __init__(self, bucket='congo8khz-pnnn'):
@@ -28,7 +30,7 @@ class AmazonInterface:
             self.s3.download_file(self.bucket, path, target_path)
             print('Done!')
 
-    def download_all_files(self):
+    def download_all_files(self, delete_data: bool = False, segment_files: bool = False):
         files = self.read_from_s3()
         filename = ''
 
@@ -40,6 +42,11 @@ class AmazonInterface:
         metadata_test = pd.read_csv(metadata_test_filepath, sep='\t', header=0)
         test_filenames = metadata_test['filename']
 
+        fs = FileSegmenter()
+        slack_time = 5000  # the amount of milliseconds before and after each interesting segment
+        train_or_test = ''
+        metadata = None
+
         for key in files:
             try:
                 path = key['Key']
@@ -47,6 +54,21 @@ class AmazonInterface:
                 if filename.endswith('.wav'):
                     if train_filenames.str.contains(filename).any() or test_filenames.str.contains(filename).any():
                         self.download_s3_file(path, filename)
+
+                        if segment_files:
+                            if train_filenames.str.contains(filename).any():
+                                train_or_test = 'train'
+                                metadata = metadata_train
+                            elif test_filenames.str.contains(filename).any():
+                                train_or_test = 'train'
+                                metadata = metadata_test
+
+                            fs.segment_file(filename, metadata, slack_time, train_or_test, delete_data, True)
+
+                        if delete_data:
+                            target_path = f'data/raw/{filename}'
+                            print(f'Deleting raw file {target_path}...')
+                            os.remove(target_path)
                     else:
                         print(f'Filename {filename} not in train or test set, ignoring.')
             except Exception as e:
