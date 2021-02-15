@@ -30,6 +30,10 @@ class AudioProcessing:
         :return: tuple
         """
         # Keeping audio at original sample rate
-        signal, sr = librosa.load(file_name, sr=sr)
-        print('Duration of sample: {} ms'.format(len(signal)/sr))
-        return signal, sr
+        try:
+            signal, sr = librosa.load(file_name, sr=sr)
+            print('Duration of sample: {} ms'.format(len(signal)/sr))
+            return signal, sr
+        except Exception as ex:
+            print('Failed to load data: ' + repr(ex))
+            return None, None
