@@ -29,6 +29,9 @@ class AnalyseSoundData:
         self.create_necessary_directories()
 
         input_signal, sr = AudioProcessing.load_data(self.file_read_location, self.sr)
+        if input_signal is None:
+            return
+
         self.plot.plot_amp_time(input_signal, sr)
 
         duration = int(len(input_signal) / sr)

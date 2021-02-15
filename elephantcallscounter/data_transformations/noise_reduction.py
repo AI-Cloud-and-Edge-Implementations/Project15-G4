@@ -34,9 +34,9 @@ class NoiseReduction:
         reduced_noise = nr.reduce_noise(
             signal, noise_clip=noise_clip, verbose=False, n_grad_freq=3, hop_length=self._hop_length
         )
-        self.plot.plot_and_save_spectrogram(
-            reduced_noise, sr, file_location=os.path.join(self.save_image_location, 'noise_reduced_spec.png')
-        )
+        # self.plot.plot_and_save_spectrogram(
+        #     reduced_noise, sr, file_location=os.path.join(self.save_image_location, 'noise_reduced_spec.png')
+        # )
         if plot:
             self.plot_mel(reduced_noise)
             self.plot.fft_plot(reduced_noise, sr)
