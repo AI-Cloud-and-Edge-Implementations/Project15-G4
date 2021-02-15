@@ -82,14 +82,14 @@ class SegmentFiles:
             cropped_file = os.path.join(
                 self.crop_set, file_data[3]
             )
-
-            AudioProcessing.crop_file(
+            is_cropped = AudioProcessing.crop_file(
                 file_data[0],
                 file_data[1],
                 file_name = original_file,
                 destination_file = cropped_file
             )
-            print('Cropped File: ', cropped_file)
+            if is_cropped:
+                print('Cropped File: ', cropped_file)
 
     def clear_segments(self):
         for folder in os.listdir(self.training_set):
