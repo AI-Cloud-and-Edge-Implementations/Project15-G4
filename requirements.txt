@@ -7,9 +7,9 @@ azure-storage-blob
 pydub~=0.24.1
 pandas
 matplotlib~=3.3.3
-scipy~=1.5.4
-numpy~=1.17.3
-librosa
+scipy==1.6.0
+numpy==1.20.0
+librosa==0.8.0
 noisereduce
 soundfile
 click
