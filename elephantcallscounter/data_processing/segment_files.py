@@ -19,33 +19,14 @@ class FileSegmenter:
             )
 
     @staticmethod
-    def ready_file_segments(metadata_filepath='data/metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt'):
-        # read metadata
-        metadata = pd.read_csv(metadata_filepath, sep='\t', header=0)
-        print(f'Using metadata file {metadata_filepath}')
-
-        files = []
-        file_names = set()
-
-        file_min_start_times = metadata.groupby('filename')['File Offset (s)'].min()
-        file_min_end_times = metadata.groupby('filename')['File Offset (s)'].max()
-        for index, row in metadata.iterrows():
-            if row['filename'] not in file_names:
-                file_name = row['filename']
-                actual_file, extension = file_name.split(".")
-                cropped_file_name = actual_file + '_cropped.' + extension
-                start_time = file_min_start_times[file_name]
-                end_time = file_min_end_times[file_name]
-                files.append((start_time, end_time, file_name, cropped_file_name))
-                file_names.add(file_name)
-
-        print(files)
-
-    @staticmethod
     def segment_files():
         # read metadata
-        metadata_filepath = 'data/metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt'  # train
-        # metadata_filepath = 'data/metadata/nn_ele_00-24hr_GeneralTest_v4.txt'  # test
+        train_or_test = 'test'
+
+        if train_or_test == 'train':
+            metadata_filepath = 'data/metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt'  # train
+        else:
+            metadata_filepath = 'data/metadata/nn_ele_00-24hr_GeneralTest_v4.txt'  # test
         metadata = pd.read_csv(metadata_filepath, sep='\t', header=0)
         print(f'Using metadata file {metadata_filepath}')
 
@@ -74,7 +55,7 @@ class FileSegmenter:
                     segment = file[start:end]
 
                     marginal = str(metadata_segment['marginals']).strip()
-                    segment_path = f'data/segments/train/{filename}_segment_{selection}_{marginal}.wav'
+                    segment_path = f'data/segments/{train_or_test}/{filename}_segment_{selection}_{marginal}.wav'
                     segment.export(segment_path, format='wav')
                     print(f' Found segment of {segment.duration_seconds} seconds, exported to {segment_path}.')
                 except Exception as e:
