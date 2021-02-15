@@ -39,7 +39,7 @@ class Plots:
         if plot:
             plt.show()
 
-        plt.savefig(f'data/spectrograms/fft.png')
+        # plt.savefig(f'data/spectrograms/fft.png')
         print('Done!')
 
     def plot_amp_time(self, samples, sampling_rate, plot=False):
@@ -117,7 +117,7 @@ class Plots:
         plt.colorbar(format='%+2.0f dB')
         plt.ylim([0, 100])
 
-        plt.savefig('data/spectrograms/train/mel.png')
+        # plt.savefig('data/spectrograms/train/mel.png')
 
         if plot:
             plt.show()

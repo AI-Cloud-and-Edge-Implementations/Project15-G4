@@ -52,6 +52,6 @@ class AnalyseSoundData:
             file_location=os.path.join(self.save_image_location, f'spec_image_{filename}.png')
         )
         self.plot.plot_mel(highpass_signal, sr)
-        self.plot.fft_plot(highpass_signal, sr, plot=True)
+        self.plot.fft_plot(highpass_signal, sr, plot=False)
         reduction_1 = self.noise_reduce.noise_reduce_and_plot_spectral_grating(highpass_signal, sr, duration)
         reduction_2 = self.noise_reduce.noise_reduce_and_plot_spectral_grating(reduction_1, sr, duration)

@@ -34,10 +34,10 @@ def analyse_audio_data():
         print(f'Processing {filename}...')
         analyse_sound_data = AnalyseSoundData(
             file_read_location=os.path.join(
-                os.getcwd(), 'data/segments/train/' + filename   # 'data/segments/train/nn01a_20180126_000000.wav_segment_1_nan.wav'  # 'data/metadata/nn01a_20180126_000000_cropped.wav'
+                os.getcwd(), 'data/segments/train/' + filename
             ),
             save_image_location=os.path.join(
-                os.getcwd(), 'data/spectrograms/train/' + filename
+                os.getcwd(), 'data/spectrograms/train/'  # + filename
             ),
             sr=1000,
             hop_length=256
