@@ -11,13 +11,22 @@ class AmazonInterface:
         self.s3 = boto3.client('s3', config=Config(signature_version=UNSIGNED))
 
     def read_from_s3(self):
-        # download all files and store them in Azure file/blob storage
-        return self.s3.list_objects(Bucket=self.bucket)['Contents']
+        objects = []
+        paginator = self.s3.get_paginator('list_objects')
+        page_iterator = paginator.paginate(Bucket=self.bucket)
+        for page in page_iterator:
+            objects.extend(page['Contents'])
+        return objects
 
     def download_s3_file(self, path, filename):
-        print(f'Downloading {path}...')
-        self.s3.download_file(self.bucket, path, f'data/raw/{filename}')
-        print('Done!')
+        target_path = f'data/raw/{filename}'
+        print(f'Downloading {target_path}...')
+
+        if os.path.exists(target_path):
+            print(f'Path {target_path} already exists, skipping.')
+        else:
+            self.s3.download_file(self.bucket, path, target_path)
+            print('Done!')
 
     def download_all_files(self):
         files = self.read_from_s3()
