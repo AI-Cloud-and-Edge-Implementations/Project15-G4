@@ -1,7 +1,9 @@
 from collections import defaultdict
 import os
 import pandas as pd
+from azure.storage.blob import BlobServiceClient
 
+from elephantcallscounter.config import env
 from elephantcallscounter.data_processing.audio_processing import AudioProcessing
 from elephantcallscounter.utils.data_structures import RangeSet
 from elephantcallscounter.utils.path_utils import get_project_root
@@ -80,18 +82,14 @@ class SegmentFiles:
             cropped_file = os.path.join(
                 self.crop_set, file_data[3]
             )
+
             AudioProcessing.crop_file(
                 file_data[0],
                 file_data[1],
                 file_name = original_file,
                 destination_file = cropped_file
             )
-            print('Cropped: ', original_file)
-
-        # remove local file
-        for file_to_remove in os.listdir(files_to_delete):
-            os.remove(os.path.join(files_to_delete, file_to_remove))
-            print("File removed: ", file_to_remove)
+            print('Cropped File: ', cropped_file)
 
     def clear_segments(self):
         for folder in os.listdir(self.training_set):
@@ -119,7 +117,13 @@ class SegmentFiles:
                 source_path = source_folder,
                 destination_path = dest_folder
             )
+
             print(f'Processing {source_folder} finished!')
             os.makedirs(os.path.join(self.crop_set, folder_name), exist_ok = True)
             files_to_delete = os.path.join(self.training_set, folder_name)
             self.crop_files(folder_files, files_to_delete)
+
+            # remove local file
+            for file_to_remove in os.listdir(files_to_delete):
+                os.remove(os.path.join(files_to_delete, file_to_remove))
+                print("File removed: ", file_to_remove)
