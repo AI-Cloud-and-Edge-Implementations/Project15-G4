@@ -1,5 +1,5 @@
 import librosa
-from pydub import AudioSegment
+import pydub
 
 
 class AudioProcessing:
@@ -16,10 +16,16 @@ class AudioProcessing:
         :type file_name: string
         :param destination_file: 
         :type destination_file: string
+        :return int:
         """
-        song = AudioSegment.from_wav(file_name)
-        extract = song[start_sec:end_sec]
-        extract.export(destination_file)
+        try:
+            song = pydub.AudioSegment.from_wav(file_name)
+            extract = song[start_sec:end_sec]
+            extract.export(destination_file)
+            return 1
+        except pydub.exceptions.CouldntEncodeError as error:
+            print('Error cropping file: ', destination_file)
+            return -1
     
     @classmethod
     def load_data(cls, file_name, sr):
