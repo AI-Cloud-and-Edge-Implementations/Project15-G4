@@ -39,7 +39,7 @@ class AzureInterface:
                 print('Error while downloading ' + filename + ': ' + str(e))
 
     def download_from_azure(self, source_file, dest_file):
-        blob = BlobClient(account_url = "https://project15team4.blob.core.windows.net",
+        blob = BlobClient(account_url = env.AZURE_STORAGE_ACCOUNT,
                           container_name = self.container_name,
                           blob_name = source_file,
                           credential = env.STORAGE_SAS_KEY)
