@@ -1,26 +1,27 @@
-from elephantcallscounter.management.commands.command_groups import entry_point
+import click
+
 from elephantcallscounter.services.data_processing import create_file_segments
-from elephantcallscounter.services.data_processing import create_file_segments_az_data_importer
 
 
-@entry_point.command('create_segments')
-@entry_point.pass_context
-def create_segments(context):
-    create_file_segments()
+@click.group('data_processing')
+@click.pass_context
+def data_processing(context):
+    pass
 
 
-@entry_point.command('generate_file_segments')
-@entry_point.pass_context
-def generate_file_segments(context):
+@data_processing.command('generate_file_segments')
+@click.pass_context
+@click.argument('file_name')
+def generate_file_segments(context, file_name):
     """ Command to generate the file segments from the original video.
 
     :return void:
     """
-    create_file_segments_az_data_importer()
+    create_file_segments(file_name)
 
 
-@entry_point.command('full_cycle')
-@entry_point.pass_context
+@data_processing.command('full_cycle')
+@click.pass_context
 def full_cycle(context):
     """ Command to run the full cycle of the data processing.
 

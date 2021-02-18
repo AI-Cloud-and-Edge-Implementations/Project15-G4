@@ -75,6 +75,3 @@ class AnalyseSoundData:
         )
         self.plot.plot_mel(highpass_signal, sr)
         self.plot.fft_plot(highpass_signal, sr, plot=False)
-        reduction_1 = self.noise_reduce.noise_reduce_and_plot_spectral_grating(
-            highpass_signal, sr, duration
-        )
