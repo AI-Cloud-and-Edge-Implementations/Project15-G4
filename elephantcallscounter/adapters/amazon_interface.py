@@ -4,8 +4,6 @@ import pandas as pd
 from botocore import UNSIGNED
 from botocore.config import Config
 
-from elephantcallscounter.data_processing.segment_files import FileSegmenter
-
 
 class AmazonInterface:
     def __init__(self, bucket='congo8khz-pnnn'):
