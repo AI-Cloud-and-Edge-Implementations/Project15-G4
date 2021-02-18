@@ -16,3 +16,5 @@ click
 azureml-core
 azureml-dataprep
 environs
+tensorflow
+opencv-python
