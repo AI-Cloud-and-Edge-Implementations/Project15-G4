@@ -7,56 +7,54 @@ import math
 from tensorflow.keras import datasets, layers, models
 import matplotlib.pyplot as plt
 
-from elephantcallscounter.data_processing.metadata_processing import MetadataProcessing
 from elephantcallscounter.utils.path_utils import get_project_root
 
 
 def find_number_of_clusters(dir_name):
     for img_name in os.listdir(dir_name):
         img = cv2.imread(os.path.join(dir_name, img_name), 0)
-        # ret, threshold_img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU, img)
-        threshold_img = img
+        ret, threshold_img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY)
         threshold_img = threshold_img[60:410, 85:460]
-
-        contours, _ = cv2.findContours(threshold_img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        contours, _ = cv2.findContours(threshold_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         count = 0
         for c in contours:
             area = cv2.contourArea(c)
             if area > 500:
                 continue
             rect = cv2.boundingRect(c)
-            #if rect[2] < 7 or rect[3] < 7:
-            #    continue
             x, y, w, h = rect
             x, y = x + 60, y + 60
             bb_width, bb_height = w + 60, h + 60
-            cv2.rectangle()
+            left_x, left_y = x, int(y - bb_height / 2)
+            right_x, right_y = x + bb_width, int(y + bb_height / 2)
             cv2.rectangle(
                 img,
-                (x - bb_width/2, y - bb_height/2),
-                (x + bb_width/2, y + bb_height/2),
+                (left_x, left_y),
+                (right_x, right_y),
                 (0, 255, 0),
                 2
             )
-            cv2.putText(img, 'Elephant Detected', (x + w + 10, y + h), 0, 0.3, (0, 255, 0))
+            cv2.putText(
+                img, 'Elephant Detected', (x + w + 10, int(y - bb_height/2)), 0, 0.3, (0, 255, 0)
+            )
             count += 1
 
         cv2.imshow("Show", img)
-        cv2.waitKey(10000)
+        cv2.waitKey(1000)
         cv2.destroyAllWindows()
 
 
-def draw(img, rects,color):
+def draw(img, rects, color):
     for r in rects:
         p1 = (r[0], r[1])
-        p2 = (r[0]+r[2], r[1]+r[3])
-        cv2.rectangle(img, p1,p2, color,4)
+        p2 = (r[0] + r[2], r[1] + r[3])
+        cv2.rectangle(img, p1, p2, color, 4)
 
     return img
 
 
 def find_distance(pt1, pt2):
-    return math.sqrt((pt2[1]-pt1[1])**2 + (pt2[0]-pt1[0])**2)
+    return math.sqrt((pt2[1] - pt1[1]) ** 2 + (pt2[0] - pt1[0]) ** 2)
 
 
 def filter_rectangles(rects):
