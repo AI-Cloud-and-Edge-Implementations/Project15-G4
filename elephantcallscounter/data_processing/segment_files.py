@@ -2,6 +2,7 @@ from collections import defaultdict
 import os
 
 from elephantcallscounter.data_processing.audio_processing import AudioProcessing
+from elephantcallscounter.data_processing.metadata_processing import MetadataProcessing
 from elephantcallscounter.utils.data_structures import RangeSet
 from elephantcallscounter.utils.path_utils import get_project_root
 
@@ -23,13 +24,6 @@ class SegmentFiles:
     def generate_file_name(actual_file, start_time, end_time, extension):
         return actual_file + '_' + str(start_time) + "_" + str(end_time) + '_cropped.' + extension
 
-    @staticmethod
-    def split_metadata_into_groups(metadata):
-        file_groups = metadata.groupby('filename')
-        file_dfs = [file_groups.get_group(x) for x in file_groups.groups]
-
-        return file_dfs
-
     def ready_file_segments(
             self,
             metadata
@@ -40,12 +34,10 @@ class SegmentFiles:
         :return:
         """
         files_to_crop = []
-        # Removing outliers
-        metadata.drop(metadata[metadata.duration > 1000].index, inplace = True)
         metadata['file_start_times'] = metadata['File Offset (s)']*1000 - self.file_range*1000
         metadata['file_end_times'] = metadata['File Offset (s)']*1000 + self.file_range*1000
 
-        file_dfs = self.split_metadata_into_groups(metadata)
+        file_dfs = MetadataProcessing.split_metadata_into_groups(metadata)
         for file_metadata in file_dfs:
             start_end_times = RangeSet()
             for index, row in file_metadata.iterrows():
@@ -108,3 +100,9 @@ class SegmentFiles:
             for file_to_remove in os.listdir(files_to_delete):
                 os.remove(os.path.join(files_to_delete, file_to_remove))
                 print("File removed: ", file_to_remove)
+
+    def extract_positive_negative_labels(self):
+        """
+
+        :return:
+        """

@@ -74,4 +74,4 @@ class AnalyseSoundData:
             file_location=os.path.join(self.save_image_location, f'spec_image_{filename}.png')
         )
         self.plot.plot_mel(highpass_signal, sr)
-        self.plot.fft_plot(highpass_signal, sr, plot=False)
+        self.plot.fft_plot(highpass_signal, sr, plot=True)
