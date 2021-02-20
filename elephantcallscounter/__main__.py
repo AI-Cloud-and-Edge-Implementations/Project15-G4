@@ -3,6 +3,7 @@ import os
 
 import click
 
+from data_visualizations.monochrome import Monochrome
 from elephantcallscounter.data_analysis.analyse_sound_data import AnalyseSoundData
 from elephantcallscounter.data_processing.segment_files import FileSegmenter
 from elephantcallscounter.data_import.amazon_interface import AmazonInterface
@@ -48,12 +49,27 @@ def create_spectrograms():
                 os.getcwd(), 'data/segments/train/' + filename
             ),
             save_image_location=os.path.join(
-                os.getcwd(), 'data/spectrograms/train/'  # + filename
+                os.getcwd(), 'data/spectrograms/3000_100/'  # + filename
             ),
             sr=1000,
             hop_length=256
         )
         analyse_sound_data.analyse_audio()
+
+
+# 4. Monochrome spectrograms
+@entry_point.command('monochrome')
+def monochrome():
+    create_mono_spectrograms()
+
+
+def create_mono_spectrograms():
+    source_folder = 'data/spectrograms/train/'
+    target_folder = 'data/spectrograms/mono/'
+
+    m = Monochrome(source_folder, target_folder)
+    for filename in os.listdir(source_folder):
+        m.create_monochrome(filename)
 
 
 # x. Full cycle
@@ -66,5 +82,6 @@ if __name__ == "__main__":
     entry_point.add_command(import_data)
     entry_point.add_command(create_segments)
     entry_point.add_command(analyse_audio_data)
+    entry_point.add_command(monochrome)
     entry_point.add_command(full_cycle)
     entry_point()
