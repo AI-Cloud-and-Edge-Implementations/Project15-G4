@@ -37,14 +37,13 @@ def find_matches(img):
     threshold = 0.7
     loc = np.where(res > threshold)
     sorted_pts = sorted(zip(*loc), key = lambda t: res[t[0], t[1]], reverse = True)
-    rects = [[sorted_pts[0], sorted_pts[1], w, h]]
 
-    if not rects:
+    if not sorted_pts:
         print('no rects')
         return []
 
-    # rects = filter_rectangles(rects)
-
+    rects = [[sorted_pts[0][0], sorted_pts[0][1], w, h]]
+    
     return rects
 
 
