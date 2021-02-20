@@ -12,7 +12,7 @@ class Plots:
         self.n_fft = n_fft
         self.hop_length = hop_length
 
-    def fft_plot(self, audio, sampling_rate, plot=False):
+    def fft_plot(self, audio, sampling_rate, filename, plot=False):
         """ Fast fourier transform is for discrete signals while fourier transform is for continuous
         signals.
 
@@ -30,16 +30,16 @@ class Plots:
 
         fig, ax = plt.subplots()
 
-        ax.plot(xf[::1000], (2.0 / n * np.abs(yf[:n // 2]))[::1000])
+        ax.plot(xf[::100], (2.0 / n * np.abs(yf[:n // 2]))[::100])
         plt.grid()
         plt.xlabel('Frequency -->')
         plt.ylabel('Magnitude')
         plt.xlim([0, 100])
 
         if plot:
-            plt.show()
+            plt.savefig(f'data/spectrograms/fft_{filename}.png')
+            # plt.show()
 
-        # plt.savefig(f'data/spectrograms/fft.png')
         print('Done!')
 
     def plot_amp_time(self, samples, sampling_rate, plot=False):
@@ -83,10 +83,10 @@ class Plots:
             spectrogram, cmap='gray_r', ax=ax, sr=sr, hop_length=self.hop_length, x_axis='s', y_axis='linear'
         )
         plt.title('Spectrogram')
-        plt.ylim([0, 100])
+        plt.ylim([10, 50])
         plt.xlabel('time')
         plt.ylabel('frequency')
-        fig.colorbar(img, format='%+2.0f dB')
+        # fig.colorbar(img, format='%+2.0f dB')
         fig.savefig(file_location)
 
         if plot:

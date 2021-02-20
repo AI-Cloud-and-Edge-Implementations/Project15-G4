@@ -55,7 +55,7 @@ class AnalyseSoundData:
         # plots upto sampling rate/2(Nyquist theorem)
         # Filter requirements.
         fs = sr  # sample rate, Hz
-        cutoff = 100  # desired cutoff frequency of the filter, Hz
+        cutoff = 50  # desired cutoff frequency of the filter, Hz
         nyq = 0.5 * fs  # Nyquist Frequency
         order = 4  # sin wave can be approx represented as quadratic
         time = np.linspace(0, duration, len(input_signal), endpoint=False)
@@ -72,6 +72,6 @@ class AnalyseSoundData:
             file_location=os.path.join(self.save_image_location, f'spec_image_{filename}.png')
         )
         self.plot.plot_mel(highpass_signal, sr)
-        self.plot.fft_plot(highpass_signal, sr, plot=False)
-        reduction_1 = self.noise_reduce.noise_reduce_and_plot_spectral_grating(highpass_signal, sr, duration)
-        reduction_2 = self.noise_reduce.noise_reduce_and_plot_spectral_grating(reduction_1, sr, duration)
+        self.plot.fft_plot(highpass_signal, sr, filename, plot=False)
+        # reduction_1 = self.noise_reduce.noise_reduce_and_plot_spectral_grating(highpass_signal, sr, duration, filename, True)
+        # reduction_2 = self.noise_reduce.noise_reduce_and_plot_spectral_grating(reduction_1, sr, duration, filename, True)
