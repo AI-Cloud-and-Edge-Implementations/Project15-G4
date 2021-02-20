@@ -1,8 +1,5 @@
-import cv2
 import os
 import tensorflow as tf
-import numpy as np
-import math
 
 from tensorflow.keras import datasets, layers, models
 import matplotlib.pyplot as plt
@@ -10,100 +7,10 @@ import matplotlib.pyplot as plt
 from elephantcallscounter.utils.path_utils import get_project_root
 
 
-def find_number_of_clusters(dir_name):
-    for img_name in os.listdir(dir_name):
-        img = cv2.imread(os.path.join(dir_name, img_name), 0)
-        ret, threshold_img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY)
-        threshold_img = threshold_img[60:410, 85:460]
-        contours, _ = cv2.findContours(threshold_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        count = 0
-        for c in contours:
-            area = cv2.contourArea(c)
-            if area > 500:
-                continue
-            rect = cv2.boundingRect(c)
-            x, y, w, h = rect
-            x, y = x + 60, y + 60
-            bb_width, bb_height = w + 60, h + 60
-            left_x, left_y = x, int(y - bb_height / 2)
-            right_x, right_y = x + bb_width, int(y + bb_height / 2)
-            cv2.rectangle(
-                img,
-                (left_x, left_y),
-                (right_x, right_y),
-                (0, 255, 0),
-                2
-            )
-            cv2.putText(
-                img, 'Elephant Detected', (x + w + 10, int(y - bb_height/2)), 0, 0.3, (0, 255, 0)
-            )
-            count += 1
-
-        cv2.imshow("Show", img)
-        cv2.waitKey(1000)
-        cv2.destroyAllWindows()
-
-
-def draw(img, rects, color):
-    for r in rects:
-        p1 = (r[0], r[1])
-        p2 = (r[0] + r[2], r[1] + r[3])
-        cv2.rectangle(img, p1, p2, color, 4)
-
-    return img
-
-
-def find_distance(pt1, pt2):
-    return math.sqrt((pt2[1] - pt1[1]) ** 2 + (pt2[0] - pt1[0]) ** 2)
-
-
-def filter_rectangles(rects):
-    filtered_rects = [rects[0]]
-    for rect in rects:
-        for filtered_rect in filtered_rects:
-            if find_distance(rect, filtered_rect) > 10:
-                filtered_rects.append(rect)
-
-    return filtered_rects
-
-
-def find_matches(dir_name):
-    # load image into variable
-    template = cv2.imread(os.path.join(get_project_root(), 'data/elephant.png'), 0)
-
-    for img_name in os.listdir(dir_name):
-        # load template
-        img = cv2.imread(os.path.join(dir_name, img_name), 0)
-
-        # read height and width of template image
-        w, h = template.shape[0], template.shape[1]
-
-        res = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
-        threshold = 0.5
-        loc = np.where(res > threshold)
-        sorted_pts = sorted(zip(*loc), key = lambda t: res[t[0], t[1]], reverse = True)
-        rects = []
-        start_points_x = set()
-        start_points_y = set()
-        for pt in sorted_pts:
-            if pt[0] not in start_points_x and pt[1] not in start_points_y:
-                rects.append([pt[0], pt[1], w, h])
-                start_points_x.add(pt[0])
-                start_points_y.add(pt[1])
-
-        rects = filter_rectangles(rects)
-        img = draw(img, rects, (0, 0, 255))
-        # img_rgb = cv2.resize(img, (800, 600))
-        cv2.imshow("result", img)
-        cv2.waitKey(10000)
-
-
 def prepare_spectrograms():
-    # dir_name = os.path.join(get_project_root(), 'data/spectrogram_images/CroppedTrainingSet/nn03d')
     dest_directory = os.path.join(get_project_root(), 'data/spectrogram_images/training_data')
     os.mkdir(dest_directory)
     labels = []
-    # for file in os.listdir(dir_name):
 
 
 def get_train_test_set():
@@ -157,8 +64,3 @@ def build_model():
     test_loss, test_acc = model.evaluate(test_images, test_labels, verbose = 2)
 
     print(test_acc)
-
-
-# find_matches(os.path.join(get_project_root(), 'data/spectrogram_images/spectrograms'))
-find_number_of_clusters(os.path.join(get_project_root(), 'data/spectrogram_images/spectrograms'))
-build_model()

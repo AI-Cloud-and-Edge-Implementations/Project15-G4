@@ -2,7 +2,9 @@ import click
 import os
 
 from elephantcallscounter.services.data_analysis import analyse_sound_data
+from elephantcallscounter.services.data_analysis import find_elephants
 from elephantcallscounter.utils.path_utils import split_file_path
+from elephantcallscounter.utils.path_utils import get_project_root
 
 
 @click.group('data_analysis')
@@ -51,3 +53,21 @@ def analyse_multiple_audio_files(context, source_path, dest_path):
             source_path = os.path.join(source_path, file_path),
             dest_path = dest_path
         )
+
+
+@data_analysis.command('find_elephants')
+@click.argument('dir_name')
+@click.argument('dest_folder')
+@click.pass_context
+def find_elephants_command(context, dir_name, dest_folder):
+    """ Command to analyse spectrograms and generate bounding box images of possible elephants.
+
+    :param context:
+    :param dir_name:
+    :param dest_folder:
+    :return:
+    """
+    find_elephants(
+        os.path.join(get_project_root(), dir_name),
+        os.path.join(get_project_root(), dest_folder)
+    )
