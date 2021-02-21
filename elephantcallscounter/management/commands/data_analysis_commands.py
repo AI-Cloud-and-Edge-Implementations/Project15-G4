@@ -58,16 +58,19 @@ def analyse_multiple_audio_files(context, source_path, dest_path):
 @data_analysis.command('find_elephants')
 @click.argument('dir_name')
 @click.argument('dest_folder')
+@click.argument('csv_file_path', default='data/labels/spec_images_labels.csv')
 @click.pass_context
-def find_elephants_command(context, dir_name, dest_folder):
+def find_elephants_command(context, dir_name, dest_folder, csv_file_path):
     """ Command to analyse spectrograms and generate bounding box images of possible elephants.
 
     :param context:
     :param dir_name:
     :param dest_folder:
+    :param csv_file_path:
     :return:
     """
     find_elephants(
         os.path.join(get_project_root(), dir_name),
-        os.path.join(get_project_root(), dest_folder)
+        os.path.join(get_project_root(), dest_folder),
+        os.path.join(get_project_root(), csv_file_path)
     )
