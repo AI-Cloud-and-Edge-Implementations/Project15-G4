@@ -58,7 +58,7 @@ def display_image(img, name):
     cv2.destroyAllWindows()
 
 
-def find_number_of_clusters(dir_name, dest_folder, display_message = False):
+def find_number_of_clusters(dir_name, dest_folder, csv_file_path, display_message = False):
     count = 0
     file_elephants = {}
     threshold_y = 70
@@ -78,8 +78,8 @@ def find_number_of_clusters(dir_name, dest_folder, display_message = False):
                 continue
             rect = cv2.boundingRect(contour)
             filtered_rects.append(rect)
-        if dest_file == '/home/abhishekh/personalProjects/Microsoft-Project-15-Team-4/elephantcallscounter/data/spectrogram_bb/bb_mono_nn06a_20180912_000000.wav_segment_416_nan.wav.png':
-            print('Waiting here')
+
+       # Image to test: bb_mono_nn06a_20180912_000000.wav_segment_416_nan.wav.png'
 
         if len(filtered_rects) == 0:
             filtered_rects = find_matches(threshold_img)
@@ -110,8 +110,9 @@ def find_number_of_clusters(dir_name, dest_folder, display_message = False):
                 )
 
         count += 1
-        print('BB for image done: ', count)
+        print('BB for image done: ', img_name)
+        print('Count: ', count)
         cv2.imwrite(dest_file, img)
 
     df = pd.DataFrame(file_elephants.items(), columns = ['file_name', 'number_of_elephants'])
-    print(df)
+    df.to_csv(csv_file_path)

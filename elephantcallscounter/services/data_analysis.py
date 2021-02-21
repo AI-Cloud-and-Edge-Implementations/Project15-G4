@@ -25,11 +25,12 @@ def analyse_sound_data(file_path, dest_path):
     sound_data_analyser.analyse_audio()
 
 
-def find_elephants(dir_name, dest_folder):
+def find_elephants(dir_name, dest_folder, csv_file_path):
     """ Analyse the spectrograms and generate the bounding box images.
 
     :param str dir_name:
     :param str dest_folder:
+    :param str csv_file_path:
     :return:
     """
-    find_number_of_clusters(dir_name, dest_folder)
+    find_number_of_clusters(dir_name, dest_folder, csv_file_path)
