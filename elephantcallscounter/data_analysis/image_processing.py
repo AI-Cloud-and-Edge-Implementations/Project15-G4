@@ -43,7 +43,7 @@ def find_matches(img):
         return []
 
     rects = [[sorted_pts[0][0], sorted_pts[0][1], w, h]]
-    
+
     return rects
 
 
@@ -88,6 +88,8 @@ def find_number_of_clusters(dir_name, dest_folder, display_message = False):
                 continue
 
         file_elephants[img_name] = len(filtered_rects)
+
+        img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
 
         for rect in filtered_rects:
             x, y, w, h = rect
