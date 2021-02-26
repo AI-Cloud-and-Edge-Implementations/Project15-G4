@@ -32,6 +32,7 @@ class FileSegmenter:
         print(f'Processing {filename}...')
         file = AudioSegment.from_wav('data/raw/' + filename)
         print(f'Processing file data/raw/{filename}...')
+
         # get the relevant segments from the metadata
         metadata_segments = metadata[metadata['filename'] == filename]
         for index, metadata_segment in metadata_segments.iterrows():
@@ -52,7 +53,7 @@ class FileSegmenter:
                     segment.export(segment_path, format='wav')
                     print(f' Found segment of {segment.duration_seconds} seconds, exported to {segment_path}.')
 
-                # spectrograms
+                # spectrogram
                 if create_spectrograms:
                     analyse_sound_data = AnalyseSoundData(
                         file_read_location=os.path.join(

@@ -19,8 +19,3 @@ class Monochrome:
         mono_path = self.target_folder + image_filename.replace('spec_image_', 'mono_')
         cv2.imwrite(mono_path, blackAndWhiteImage)
         print(f'Monochrome image stored as {mono_path}')
-
-#
-# monochrome('../data/spectrograms/train/',
-#            'spec_image_nn01a_20180126_000000.wav_segment_6_nan.wav.png',
-#            '../data/spectrograms/mono/')
