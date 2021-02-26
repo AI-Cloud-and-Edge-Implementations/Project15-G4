@@ -12,7 +12,7 @@ class AnalyseSoundData:
     def __init__(self, file_read_location, save_image_location, sr, hop_length=512):
         self.file_read_location = file_read_location
         self.save_image_location = save_image_location
-        self.noise_reduce = NoiseReduction(hop_length, save_image_location)
+        self.noise_reduce = NoiseReduction(save_image_location)
         self.plot = Plots()
         self.hop_length = hop_length
         self.sr = sr
