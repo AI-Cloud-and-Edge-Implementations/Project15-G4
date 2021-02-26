@@ -14,7 +14,7 @@ class NoiseReduction:
         self.save_image_location = save_image_location
         self.plot = Plots()
 
-    def noise_reduce_and_plot_spectral_grating(self, signal, sr, duration, plot=False):
+    def noise_reduce_and_plot_spectral_grating(self, signal, sr, duration, filename, plot=False):
         """ Reduce the noisy file and plot the spectrogram.
 
         :param signal: 
@@ -39,8 +39,7 @@ class NoiseReduction:
                 reduced_noise, sr,
                 file_location = os.path.join(self.save_image_location, 'noise_reduced_spec.png')
             )
-            self.plot.plot_mel(reduced_noise, sr)
-            self.plot.fft_plot(reduced_noise, sr)
+            self.plot.fft_plot(reduced_noise, sr, filename, plot)
 
         print('Done!')
         return reduced_noise

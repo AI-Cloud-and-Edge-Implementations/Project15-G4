@@ -40,8 +40,7 @@ class AmazonInterface:
         metadata_test = pd.read_csv(metadata_test_filepath, sep='\t', header=0)
         test_filenames = metadata_test['filename']
 
-        fs = FileSegmenter()
-        slack_time = 5000  # the amount of milliseconds before and after each interesting segment
+        slack_time = 3000  # the amount of milliseconds before and after each interesting segment
         train_or_test = ''
         metadata = None
 
@@ -63,7 +62,7 @@ class AmazonInterface:
                                 metadata = metadata_test
 
                             fs.segment_file(
-                                filename, metadata, slack_time, train_or_test, delete_data, True
+                                filename, metadata, slack_time, train_or_test, False, True
                             )
 
                         if delete_data:
