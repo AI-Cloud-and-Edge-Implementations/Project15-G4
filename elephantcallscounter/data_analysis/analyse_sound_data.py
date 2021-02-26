@@ -12,7 +12,7 @@ class AnalyseSoundData:
     def __init__(self, file_read_location, save_image_location, sr, hop_length=512):
         self.file_read_location = file_read_location
         self.save_image_location = save_image_location
-        self.noise_reduce = NoiseReduction(hop_length, save_image_location)
+        self.noise_reduce = NoiseReduction(save_image_location)
         self.plot = Plots()
         self.hop_length = hop_length
         self.sr = sr
@@ -73,5 +73,3 @@ class AnalyseSoundData:
         )
         self.plot.plot_mel(highpass_signal, sr)
         self.plot.fft_plot(highpass_signal, sr, filename, plot=False)
-        # reduction_1 = self.noise_reduce.noise_reduce_and_plot_spectral_grating(highpass_signal, sr, duration, filename, True)
-        # reduction_2 = self.noise_reduce.noise_reduce_and_plot_spectral_grating(reduction_1, sr, duration, filename, True)
