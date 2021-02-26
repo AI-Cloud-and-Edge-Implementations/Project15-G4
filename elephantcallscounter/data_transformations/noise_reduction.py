@@ -17,7 +17,8 @@ class NoiseReduction:
     def noise_reduce_and_plot_spectral_grating(self, signal, sr, duration, filename, plot=False):
         """ Reduce the noisy file and plot the spectrogram.
 
-        :param signal: 
+        :param filename:
+        :param signal:
         :type signal: librosa.Audio
         :param sr: 
         :type sr: int

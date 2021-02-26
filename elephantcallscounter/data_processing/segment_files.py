@@ -100,9 +100,3 @@ class SegmentFiles:
             for file_to_remove in os.listdir(files_to_delete):
                 os.remove(os.path.join(files_to_delete, file_to_remove))
                 print("File removed: ", file_to_remove)
-
-    def extract_positive_negative_labels(self):
-        """
-
-        :return:
-        """

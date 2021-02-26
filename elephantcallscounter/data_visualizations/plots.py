@@ -85,7 +85,9 @@ class Plots:
         plt.ylim([10, 50])
         plt.xlabel('time')
         plt.ylabel('frequency')
-        # fig.colorbar(img, format='%+2.0f dB')
+
+        # To add a legend: fig.colorbar(img, format='%+2.0f dB')
+
         fig.savefig(file_location)
 
         if plot:
@@ -115,8 +117,6 @@ class Plots:
         plt.title('Mel Spectrogram')
         plt.colorbar(format='%+2.0f dB')
         plt.ylim([0, 100])
-
-        # plt.savefig('data/spectrograms/train/mel.png')
 
         if plot:
             plt.show()
