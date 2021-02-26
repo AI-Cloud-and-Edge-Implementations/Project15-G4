@@ -3,6 +3,7 @@ import os
 
 import click
 
+from data_visualizations.boxing import Boxing
 from data_visualizations.monochrome import Monochrome
 from elephantcallscounter.data_analysis.analyse_sound_data import AnalyseSoundData
 from elephantcallscounter.data_processing.segment_files import FileSegmenter
@@ -72,10 +73,29 @@ def create_mono_spectrograms():
         m.create_monochrome(filename)
 
 
+# 5. boxing and counting
+@entry_point.command('boxing')
+def boxing():
+    create_boxes()
+
+
+def create_boxes():
+    source_folder = 'data/spectrograms/mono/'
+    target_folder = 'data/spectrograms/boxed/'
+
+    os.mkdir(target_folder)
+
+    b = Boxing(source_folder, target_folder)
+    for filename in os.listdir(source_folder):
+        b.create_boxes(filename)
+
+
 # x. Full cycle
 @entry_point.command('full_cycle')
 def full_cycle():
     import_data_from_s3(True, True)
+    monochrome()
+    boxing()
 
 
 if __name__ == "__main__":
@@ -84,4 +104,5 @@ if __name__ == "__main__":
     entry_point.add_command(analyse_audio_data)
     entry_point.add_command(monochrome)
     entry_point.add_command(full_cycle)
+    entry_point.add_command(boxing)
     entry_point()
