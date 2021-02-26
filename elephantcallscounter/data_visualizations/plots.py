@@ -76,7 +76,6 @@ class Plots:
 
         stft_value = librosa.core.stft(input_data, n_fft=self.n_fft, hop_length=self.hop_length)
         spectrogram = np.abs(stft_value)
-        # log_spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
 
         fig, ax = plt.subplots()
         img = librosa.display.specshow(
@@ -86,7 +85,9 @@ class Plots:
         plt.ylim([10, 50])
         plt.xlabel('time')
         plt.ylabel('frequency')
-        # fig.colorbar(img, format='%+2.0f dB')
+
+        # To add a legend: fig.colorbar(img, format='%+2.0f dB')
+
         fig.savefig(file_location)
 
         if plot:
@@ -116,8 +117,6 @@ class Plots:
         plt.title('Mel Spectrogram')
         plt.colorbar(format='%+2.0f dB')
         plt.ylim([0, 100])
-
-        # plt.savefig('data/spectrograms/train/mel.png')
 
         if plot:
             plt.show()
