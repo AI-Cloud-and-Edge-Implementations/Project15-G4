@@ -1,85 +1,91 @@
-import cv2
 import os
-import numpy as np
+
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.applications.vgg16 import VGG16
+from tensorflow.keras.models import Model
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D
+from tensorflow.keras.layers import MaxPooling2D
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Flatten
+from tensorflow import keras
+
 import tensorflow as tf
 
-
-from tensorflow.keras import datasets, layers, models
-from tensorflow.keras.preprocessing import image
 import matplotlib.pyplot as plt
 
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
-from sklearn.model_selection import train_test_split
-
-
-def prepare_spectrograms():
-    dest_directory = os.path.join(get_project_root(), 'data/spectrogram_images/training_data')
-    os.mkdir(dest_directory)
-    labels = []
-
-
-def get_labels(dir_name):
-    labels = []
-    for file_name in os.listdir(dir_name):
-        labels.append(int(file_name.split('_')[0]))
-
-    return labels
 
 
 def get_train_test_set(dir_path):
-    labels = get_labels(dir_path)
+    # create generator
+    datagen = ImageDataGenerator()
+    # prepare an iterators for each dataset
+    train_it = datagen.flow_from_directory(join_paths([dir_path, 'train']), target_size = (224, 224), class_mode = 'categorical')
+    val_it = datagen.flow_from_directory(join_paths([dir_path, 'valid']), target_size = (224, 224), class_mode = 'categorical')
+    test_it = datagen.flow_from_directory(join_paths([dir_path, 'test']), target_size = (224, 224), class_mode = 'categorical')
+    return train_it, val_it, test_it
 
-    data = tf.keras.preprocessing.image_dataset_from_directory(
-        dir_path,
-        labels='inferred',
-        label_mode = "int",
-        class_names = None,
-        color_mode = "rgb",
-        batch_size = 32,
-        shuffle = True,
-        seed = None,
-        image_size = (640, 480),
-        interpolation = "bilinear",
-        follow_links = False,
-    )
-    train_x, test_x, train_y, test_y = train_test_split(
-        data, labels, test_size = 0.2
-    )
 
-    return train_x, test_x, train_y, test_y
+def model_layers():
+    model = Sequential()
+
+    model.add(Conv2D(16, kernel_size = (3, 3), activation = 'relu',
+                     input_shape = (150, 150, 3)))
+    model.add(MaxPooling2D(pool_size = (2, 2)))
+
+    model.add(Conv2D(64, kernel_size = (3, 3), activation = 'relu'))
+    model.add(MaxPooling2D(pool_size = (2, 2)))
+
+    model.add(Conv2D(128, kernel_size = (3, 3), activation = 'relu'))
+    model.add(MaxPooling2D(pool_size = (2, 2)))
+
+    model.add(Flatten())
+    model.add(Dense(512, activation = 'relu'))
+    model.add(Dense(3, activation = 'sigmoid'))
 
 
 def build_model():
-    train_images, test_images, train_labels, test_labels = get_train_test_set(
+    train_it, val_it, test_it = get_train_test_set(
         os.path.join(get_project_root(), 'data/spectrogram_bb/')
     )
 
-    train_data = tf.data.Dataset.from_tensor_slices((train_images, train_labels))
-    valid_data = tf.data.Dataset.from_tensor_slices((test_images, test_labels))
+    batch_size = 32
 
-    model = models.Sequential()
-    model.add(layers.Conv2D(32, (3, 3), activation = 'relu', input_shape = (480, 640, 3)))
-    model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3), activation = 'relu'))
-    model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3), activation = 'relu'))
-    model.summary()
+    input_t = keras.Input(shape=(224, 224, 3))
+    res_model = keras.applications.ResNet50(include_top=False,weights="imagenet",input_tensor=input_t)
 
-    model.add(layers.Flatten())
-    model.add(layers.Dense(64, activation = 'relu'))
-    model.add(layers.Dense(10))
+    for layer in res_model.layers[:143]:
+        layer.trainable = False
+    # Check the freezed was done ok
+    for i, layer in enumerate(res_model.layers):
+        print(i, layer.name, "-", layer.trainable)
 
-    train_data = tf.expand_dims(train_data, axis = -1)
+    to_res = (224, 224)
 
-    model.compile(optimizer = 'adam',
-                  loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits = True),
-                  metrics = ['accuracy'])
+    model = keras.models.Sequential()
+    to_res = (224, 224)
+    model.add(keras.layers.Lambda(lambda image: tf.image.resize(image, to_res)))
+    model.add(res_model)
+    model.add(keras.layers.Flatten())
+    model.add(keras.layers.BatchNormalization())
+    model.add(keras.layers.Dense(256, activation='relu'))
+    model.add(keras.layers.Dropout(0.5))
+    model.add(keras.layers.BatchNormalization())
+    model.add(keras.layers.Dense(128, activation='relu'))
+    model.add(keras.layers.Dropout(0.5))
+    model.add(keras.layers.BatchNormalization())
+    model.add(keras.layers.Dense(64, activation='relu'))
+    model.add(keras.layers.Dropout(0.5))
+    model.add(keras.layers.BatchNormalization())
+    model.add(keras.layers.Dense(3, activation='softmax'))
 
-    history = model.fit(
-        train_data, epochs = 10,
-        validation_data = valid_data
-    )
+    model.compile(loss='categorical_crossentropy',
+                  optimizer=keras.optimizers.RMSprop(lr=2e-5),
+                  metrics=['accuracy'])
+
+    history = model.fit(train_it, epochs=20, validation_data=val_it, batch_size=batch_size)
 
     plt.plot(history.history['accuracy'], label = 'accuracy')
     plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
@@ -88,6 +94,6 @@ def build_model():
     plt.ylim([0.5, 1])
     plt.legend(loc = 'lower right')
 
-    test_loss, test_acc = model.evaluate(test_images, test_labels, verbose = 2)
+    test_loss, test_acc = model.evaluate(test_it, verbose = 2)
 
     print(test_acc)
