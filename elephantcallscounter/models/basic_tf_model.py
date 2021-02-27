@@ -83,7 +83,7 @@ def build_model():
                   optimizer=keras.optimizers.RMSprop(lr=2e-5),
                   metrics=['accuracy'])
 
-    history = model.fit(train_it, epochs=20, validation_data=val_it, batch_size=batch_size)
+    history = model.fit(train_it, epochs=20, validation_data=val_it)
 
     plt.plot(history.history['accuracy'], label = 'accuracy')
     plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
