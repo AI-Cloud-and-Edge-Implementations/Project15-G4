@@ -1,8 +1,12 @@
 import os
 
-from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.data_analysis.analyse_sound_data import AnalyseSoundData
+from elephantcallscounter.data_analysis.boxing import Boxing
+from elephantcallscounter.data_analysis.monochrome import Monochrome
 from elephantcallscounter.data_analysis.image_processing import find_number_of_clusters
+from elephantcallscounter.utils.file_utils import get_files_in_dir
+from elephantcallscounter.utils.file_utils import join_paths
+from elephantcallscounter.utils.path_utils import get_project_root
 
 
 def analyse_sound_data(file_path, dest_path):
@@ -33,4 +37,20 @@ def find_elephants(dir_name, dest_folder, csv_file_path):
     :param str csv_file_path:
     :return:
     """
-    find_number_of_clusters(dir_name, dest_folder, csv_file_path)
+    monochrome = Monochrome(dest_folder)
+    boxing = Boxing(dir_name, dest_folder, csv_file_path, monochrome, True)
+    count = 0
+    for file in get_files_in_dir(dir_name):
+        boxing.create_boxes(join_paths([dir_name, file]), count)
+        count += 1
+        # find_number_of_clusters(dir_name, dest_folder, csv_file_path)
+
+
+def create_mono_spectrograms(image_folder, target_folder):
+    """ Create the mono spectrograms.
+
+    :return void:
+    """
+    monochrome = Monochrome(target_folder)
+    for file in image_folder:
+        monochrome.create_monochrome(file)

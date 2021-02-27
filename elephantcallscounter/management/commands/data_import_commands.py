@@ -1,8 +1,8 @@
 import click
 
-from elephantcallscounter.services.data_import import import_data_from_s3_using_boto
-from elephantcallscounter.services.data_import import copy_data_to_azure_fast
-from elephantcallscounter.services.data_import import download_data_from_azure_fast
+from elephantcallscounter.services.data_import_service import import_data_from_s3_using_boto
+from elephantcallscounter.services.data_import_service import copy_data_to_azure_fast
+from elephantcallscounter.services.data_import_service import download_data_from_azure_fast
 
 
 @click.group('data_import')

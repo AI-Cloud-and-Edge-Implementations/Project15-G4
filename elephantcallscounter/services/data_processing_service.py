@@ -1,5 +1,3 @@
-import os
-
 from elephantcallscounter.data_processing.segment_files import SegmentFiles
 from elephantcallscounter.data_processing.metadata_processing import MetadataProcessing
 

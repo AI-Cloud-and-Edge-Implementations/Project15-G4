@@ -1,16 +1,25 @@
 import cv2
 import math
+import os
+
+from elephantcallscounter.utils.path_utils import get_project_root
+from elephantcallscounter.utils.path_utils import join_paths
 
 
 class Boxing:
-    def __init__(self, image_folder, target_folder):
+    def __init__(self, image_folder, target_folder, csv_file_path, monochrome, write_file = False):
         self.image_folder = image_folder
         self.target_folder = target_folder
+        self.csv_file_path = csv_file_path
+        self.monochrome = monochrome
+        self.write_file = write_file
 
-    def create_boxes(self, image_filename):
+    def create_boxes(self, image_filename, count):
         print(f'Creating boxes for {self.image_folder + image_filename}...')
 
-        image = cv2.imread(self.image_folder + image_filename)
+        image = self.monochrome.create_monochrome(
+            os.path.join(get_project_root(), self.image_folder, image_filename)
+        )
 
         # cut off the axes
         # source images are 640 x 480 pixels
@@ -20,8 +29,7 @@ class Boxing:
         x_right = 570
         ROI = image[y_top:y_bottom, x_left:x_right]
 
-        gray = cv2.cvtColor(ROI, cv2.COLOR_BGR2GRAY)
-        thresh_inverse = cv2.bitwise_not(gray)
+        thresh_inverse = cv2.bitwise_not(ROI)
 
         # create contours
         contours, hierarchy = cv2.findContours(
@@ -74,6 +82,9 @@ class Boxing:
         h, w = ROI.shape[0], ROI.shape[1]
         image[y_top:y_top+h, x_left:x_left+w] = ROI
 
-        boxed_path = self.target_folder + str(len(elephants)) + '_' + image_filename.replace('mono_', 'boxed_')
-        cv2.imwrite(boxed_path, image)
-        print(f'Boxed image stored as {boxed_path}')
+        if self.write_file:
+            os.makedirs(join_paths([self.target_folder, str(len(elephants))]), exist_ok=True)
+            boxed_path = join_paths([self.target_folder, str(len(elephants)), str(count) + '.png'])
+                         # image_filename.replace('mono_', 'boxed_')
+            cv2.imwrite(boxed_path, image)
+            print(f'Boxed image stored as {boxed_path}')
