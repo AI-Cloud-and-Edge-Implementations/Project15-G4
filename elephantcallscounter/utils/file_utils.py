@@ -1,4 +1,8 @@
 import csv
+import os
+
+
+from elephantcallscounter.utils.path_utils import get_project_root, join_paths
 
 
 def write_to_csv(data, file_name):
@@ -11,3 +15,7 @@ def write_to_csv(data, file_name):
         writer = csv.writer(csv_file, delimiter = ',')
         for line in data:
             writer.writerow(line)
+
+
+def get_files_in_dir(path):
+    return os.listdir(join_paths([get_project_root(), path]))

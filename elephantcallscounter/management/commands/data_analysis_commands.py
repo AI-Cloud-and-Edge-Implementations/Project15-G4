@@ -1,9 +1,11 @@
 import click
 import os
 
-from elephantcallscounter.services.data_analysis import monochrome
-from elephantcallscounter.services.data_analysis import analyse_sound_data
-from elephantcallscounter.services.data_analysis import find_elephants
+from elephantcallscounter.services.data_analysis_service import analyse_sound_data
+from elephantcallscounter.services.data_analysis_service import create_mono_spectrograms
+from elephantcallscounter.models.basic_tf_model import build_model
+from elephantcallscounter.models.fastapi_model import fastapi_run
+from elephantcallscounter.services.data_analysis_service import find_elephants
 from elephantcallscounter.utils.path_utils import split_file_path
 from elephantcallscounter.utils.path_utils import get_project_root
 
@@ -59,8 +61,8 @@ def analyse_multiple_audio_files(context, source_path, dest_path):
 @data_analysis.command('monochrome')
 @click.argument('source_folder')
 @click.argument('target_folder')
-def monochrome():
-    create_mono_spectrograms()
+def monochrome(source_folder, target_folder):
+    create_mono_spectrograms(source_folder, target_folder)
 
 
 @data_analysis.command('find_elephants')
@@ -82,3 +84,10 @@ def find_elephants_command(context, dir_name, dest_folder, csv_file_path):
         os.path.join(get_project_root(), dest_folder),
         os.path.join(get_project_root(), csv_file_path)
     )
+
+
+@data_analysis.command('train_cnn')
+def train_cnn():
+    build_model()
+    # fastapi_run()
+

@@ -1,6 +1,6 @@
 import click
 
-from elephantcallscounter.services.data_processing import create_file_segments
+from elephantcallscounter.services.data_processing_service import create_file_segments
 
 
 @click.group('data_processing')

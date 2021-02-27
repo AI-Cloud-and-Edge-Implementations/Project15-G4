@@ -16,3 +16,4 @@ azureml-core
 azureml-dataprep
 environs
 tensorflow
+fastbook

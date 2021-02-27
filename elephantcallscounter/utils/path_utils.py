@@ -1,4 +1,6 @@
 from pathlib import Path
+import functools
+import os
 
 
 def get_project_root():
@@ -19,3 +21,6 @@ def split_file_path(strng, sep, pos):
     strng = strng.split(sep)
     return sep.join(strng[:pos]), sep.join(strng[pos:])
 
+
+def join_paths(paths):
+    return functools.reduce(os.path.join, paths)
