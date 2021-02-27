@@ -1,8 +1,6 @@
 import os
 
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.applications.vgg16 import VGG16
-from tensorflow.keras.models import Model
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D
 from tensorflow.keras.layers import MaxPooling2D

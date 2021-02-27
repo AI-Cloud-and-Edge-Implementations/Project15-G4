@@ -80,12 +80,3 @@ async def main():
     tasks.add_done_callback(lambda r: r.exception())
     tasks.cancel()
     await device_client.disconnect()
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
-
-    # If using Python 3.6 or below, use the following code instead of asyncio.run(main()):
-    # loop = asyncio.get_event_loop()
-    # loop.run_until_complete(main())
-    # loop.close()
