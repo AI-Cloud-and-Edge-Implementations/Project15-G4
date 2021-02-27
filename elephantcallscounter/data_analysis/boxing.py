@@ -58,7 +58,8 @@ class Boxing:
                 middle_y = math.floor(rect[1] + (height / 2))
 
                 cv2.rectangle(ROI, (int(boxes[i][0]), int(boxes[i][1])),
-                              (int(boxes[i][0]+boxes[i][2]), int(boxes[i][1]+boxes[i][3])), cv2.COLOR_BGR2HSV, 2)
+                              (int(boxes[i][0] + boxes[i][2]), int(boxes[i][1] + boxes[i][3])),
+                              cv2.COLOR_BGR2HSV, 2)
 
                 elephant_rumbles.append((middle_x, middle_y))
 
@@ -69,22 +70,30 @@ class Boxing:
             # if the rumble has a similar mean time as others, don't count it
             similar_rumbles = list(
                 filter(
-                    lambda elephant: ((abs(elephant[0] - rumble[0]) < 20) or (abs(elephant[1] - rumble[1]) < 200)), elephants))
+                    lambda elephant: ((abs(elephant[0] - rumble[0]) < 20) or (
+                                abs(elephant[1] - rumble[1]) < 200)), elephants))
 
             if len(similar_rumbles) < 1:
                 print(f'Unique elephant at {rumble}')
                 elephants.append(rumble)
-                cv2.drawMarker(ROI, rumble, cv2.COLOR_LAB2LBGR, markerType=cv2.MARKER_STAR)
+                cv2.drawMarker(ROI, rumble, cv2.COLOR_LAB2LBGR, markerType = cv2.MARKER_STAR)
 
         print(f'Found {len(elephants)} elephant(s) in image!')
 
         # put the ROI on top of the original image
         h, w = ROI.shape[0], ROI.shape[1]
-        image[y_top:y_top+h, x_left:x_left+w] = ROI
+        image[y_top:y_top + h, x_left:x_left + w] = ROI
 
         if self.write_file:
-            os.makedirs(join_paths([self.target_folder, str(len(elephants))]), exist_ok=True)
-            boxed_path = join_paths([self.target_folder, str(len(elephants)), str(count) + '.png'])
-                         # image_filename.replace('mono_', 'boxed_')
+            data_type = 'train'
+            if count % 8 == 0:
+                data_type = 'test'
+            if count % 7 == 0:
+                data_type = 'valid'
+            os.makedirs(join_paths([self.target_folder, data_type, str(len(elephants))]),
+                        exist_ok = True)
+            boxed_path = join_paths(
+                [self.target_folder, data_type, str(len(elephants)), str(count) + '.png'])
+            # image_filename.replace('mono_', 'boxed_')
             cv2.imwrite(boxed_path, image)
             print(f'Boxed image stored as {boxed_path}')
