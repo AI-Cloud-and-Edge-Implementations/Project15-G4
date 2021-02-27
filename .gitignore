@@ -5,4 +5,3 @@ rootkey.xlsx
 *.env
 *__pycache__/
 .env
-*.png
