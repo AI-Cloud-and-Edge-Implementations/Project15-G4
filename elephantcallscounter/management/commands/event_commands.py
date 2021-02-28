@@ -15,3 +15,9 @@ def events(context):
 @click.pass_context
 def send_data_to_device(context):
     run_in_parallel(send_to_iot, receive_from_iot)
+
+
+@events.command('full_cycle')
+@click.pass_context
+def full_cycle(context):
+    full_cycle()
