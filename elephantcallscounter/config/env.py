@@ -16,3 +16,4 @@ TEST_FILE_PATH = environment_loader(
     "TEST_FILE_PATH",
     default=constants.TEST_PATH_DEFAULT
 )
+IOT_HUB_CONN_STRING = environment_loader("IOT_HUB_CONN_STRING")
