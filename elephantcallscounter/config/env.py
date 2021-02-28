@@ -17,3 +17,4 @@ TEST_FILE_PATH = environment_loader(
     default=constants.TEST_PATH_DEFAULT
 )
 IOT_HUB_CONN_STRING = environment_loader("IOT_HUB_CONN_STRING")
+EVENTHUB_CONN_STRING = environment_loader("EVENTHUB_CONN_STRING")
