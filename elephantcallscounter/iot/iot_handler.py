@@ -18,31 +18,33 @@ async def write_to_hub():
     # Connect the client.
     await device_client.connect()
 
-    # Get the list of all files in the spectrograms_boxed directory
-    # read the content and send it to IoTHub as a message
+
+    #Get the list of all files in the spectrograms_boxed directory
+    #read the content and send it to IoTHub as a message
+
 
     async def send_spectrogram():
-        sleepInterval = 5
+        sleepInterval=5
         path = "./spectrograms_boxed"
         spectrogram_list = os.listdir(path)
         while True:
             for f in spectrogram_list:
-                # open file
-                file = open(path + '/' + f, "rb")
+                #open file
+                file = open(path+'/'+f,"rb")
                 file_content = file.read()
                 file.close()
                 payload = json.dumps({
                     'capturedate': time.time(),
                     'filename': f,
-                    'spectrogram': str(file_content)
+                    'spectrogram' :  str(file_content)             
                 })
-                msg = Message(payload)
+                msg = Message(payload)                
                 msg.message_id = uuid.uuid4()
                 msg.content_encoding = "utf-8"
                 msg.content_type = "application/json"
                 await device_client.send_message(msg)
-                print("done sending file " + str(f))
-                print(payload)
+                print("done sending file " + str(f) )
+                print(payload )
                 await asyncio.sleep(sleepInterval)
 
     # Define behavior for halting the application
