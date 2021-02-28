@@ -15,14 +15,18 @@ class Boxing:
         We compare the distances in square roots; more distance is more likely to be a different elephant.
         :return: True if the rumbles belong the same elephant, False if not
         """
+        print(f'comparing rumbles {rumble1} and {rumble2}...')
         # compare the time
         if ((rumble1[0] - rumble2[0]) ** 2) < 20000:
+            # print('time overlaps')
             return True
 
         # compare the frequency
-        if ((rumble1[1] - rumble2[1]) ** 2) < 7000:
+        if ((rumble1[1] - rumble2[1]) ** 2) < 3000:
+            # print('frequency overlaps')
             return True
 
+        # print('different')
         return False
 
     def create_contours_and_boxes(self, image_filename):
@@ -99,3 +103,5 @@ class Boxing:
 
 # b = Boxing('../data/spectrograms/mono/', '../data/spectrograms/boxed2/')
 # b.create_contours_and_boxes('mono_nn01d_20180730_000000.wav_segment_366_nan.wav.png')
+
+# b.create_contours_and_boxes('mono_nn10a_20180702_000000.wav_segment_3057_nan.wav.png')
