@@ -1,6 +1,6 @@
 import asyncio
 
-from elephantcallscounter.iot.iot_handler import write_to_hub
+from elephantcallscounter.iot.send_data_to_cloud import write_to_hub
 from elephantcallscounter.iot.read_device_to_cloud_messages_sync import consume_events
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths

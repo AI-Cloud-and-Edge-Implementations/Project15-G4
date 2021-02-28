@@ -23,7 +23,6 @@ async def write_to_hub(source_path, list_of_files):
         sleepInterval = 5
         while True:
             for f in list_of_files:
-                # open file
                 file = open(join_paths([source_path, f]), "rb")
                 file_content = file.read()
                 file.close()
@@ -44,10 +43,13 @@ async def write_to_hub(source_path, list_of_files):
     # Define behavior for halting the application
     def stdin_listener():
         while True:
-            selection = input('Press Q to quit\n')
-            if selection == 'Q' or selection == 'q':
-                print('Quitting...')
-                break
+            try:
+                selection = input('Press Q to quit\n')
+                if selection == 'Q' or selection == 'q':
+                    print('Quitting...')
+                    break
+            except EOFError as e:
+                print(e)
 
     tasks = asyncio.gather(
         send_spectrogram()
