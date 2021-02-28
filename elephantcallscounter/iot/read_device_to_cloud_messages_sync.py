@@ -1,22 +1,4 @@
-from azure.eventhub import TransportType
 from azure.eventhub import EventHubConsumerClient
-
-
-# Event Hub-compatible endpoint
-# az iot hub show --query properties.eventHubEndpoints.events.endpoint --name {your IoT Hub name}
-EVENTHUB_COMPATIBLE_ENDPOINT = "{your Event Hubs compatible endpoint}"
-
-# Event Hub-compatible name
-# az iot hub show --query properties.eventHubEndpoints.events.path --name {your IoT Hub name}
-EVENTHUB_COMPATIBLE_PATH = "{your Event Hubs compatible name}"
-
-# Primary key for the "service" policy to read messages
-# az iot hub policy show --name service --query primaryKey --hub-name {your IoT Hub name}
-IOTHUB_SAS_KEY = "{your service primary key}"
-
-# If you have access to the Event Hub-compatible connection string from the Azure portal, then
-# you can skip the Azure CLI commands above, and assign the connection string directly here.
-CONNECTION_STR = f'Endpoint={EVENTHUB_COMPATIBLE_ENDPOINT}/;SharedAccessKeyName=service;SharedAccessKey={IOTHUB_SAS_KEY};EntityPath={EVENTHUB_COMPATIBLE_PATH}'
 
 
 # Define callbacks to process events

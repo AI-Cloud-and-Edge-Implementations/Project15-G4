@@ -52,7 +52,9 @@ def build_model():
     batch_size = 32
 
     input_t = keras.Input(shape=(224, 224, 3))
-    res_model = keras.applications.ResNet50(include_top=False,weights="imagenet",input_tensor=input_t)
+    res_model = keras.applications.ResNet50(
+        include_top=False, weights="imagenet", input_tensor=input_t
+    )
 
     for layer in res_model.layers[:143]:
         layer.trainable = False
