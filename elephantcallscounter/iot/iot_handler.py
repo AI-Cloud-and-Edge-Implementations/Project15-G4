@@ -7,9 +7,10 @@ from azure.iot.device.aio import IoTHubDeviceClient
 from azure.iot.device import Message
 
 from elephantcallscounter.config import env
+from elephantcallscounter.utils.path_utils import join_paths
 
 
-async def write_to_hub():
+async def write_to_hub(source_path, list_of_files):
     conn_str = env.IOT_HUB_CONN_STRING
 
     # The client object is used to interact with your Azure IoT hub.
@@ -18,17 +19,12 @@ async def write_to_hub():
     # Connect the client.
     await device_client.connect()
 
-    # Get the list of all files in the spectrograms_boxed directory
-    # read the content and send it to IoTHub as a message
-
     async def send_spectrogram():
         sleepInterval = 5
-        path = "./spectrograms_boxed"
-        spectrogram_list = os.listdir(path)
         while True:
-            for f in spectrogram_list:
+            for f in list_of_files:
                 # open file
-                file = open(path + '/' + f, "rb")
+                file = open(join_paths([source_path, f]), "rb")
                 file_content = file.read()
                 file.close()
                 payload = json.dumps({
