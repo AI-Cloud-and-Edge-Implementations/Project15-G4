@@ -7,7 +7,34 @@ class Boxing:
         self.image_folder = image_folder
         self.target_folder = target_folder
 
-    def create_boxes(self, image_filename):
+    @staticmethod
+    def same_elephant(rumble1, rumble2):
+        """
+        Compare two rumbles and determine whether they belong to the same elephant.
+        Each rumble is in the (x,y) format where x is the middle time of the box, y is the middle frequency.
+        We compare the distances in square roots; more distance is more likely to be a different elephant.
+        :return: True if the rumbles belong the same elephant, False if not
+        """
+        print(f'comparing rumbles {rumble1} and {rumble2}...')
+        # compare the time
+        if ((rumble1[0] - rumble2[0]) ** 2) < 20000:
+            # print('time overlaps')
+            return True
+
+        # compare the frequency
+        if ((rumble1[1] - rumble2[1]) ** 2) < 3000:
+            # print('frequency overlaps')
+            return True
+
+        # print('different')
+        return False
+
+    def create_contours_and_boxes(self, image_filename):
+        """
+        Create rectangles for elephant rumbles
+        :param image_filename:
+        :return:
+        """
         print(f'Creating boxes for {self.image_folder + image_filename}...')
 
         image = cv2.imread(self.image_folder + image_filename)
@@ -42,7 +69,7 @@ class Boxing:
             height = rect[3]
 
             # check if this can be an elephant
-            if height > 5 and width > 50:
+            if height > 5 and width > 70:
                 middle_x = math.floor(rect[0] + (width / 2))
                 middle_y = math.floor(rect[1] + (height / 2))
 
@@ -56,7 +83,7 @@ class Boxing:
         for rumble in elephant_rumbles:
             # if the rumble has a similar frequency as others, don't count it
             # if the rumble has a similar mean time as others, don't count it
-            similar_rumbles = list(filter(lambda elephant: ((abs(elephant[0] - rumble[0]) < 20) or (abs(elephant[1] - rumble[1]) < 200)), elephants))
+            similar_rumbles = list(filter(lambda elephant: (self.same_elephant(rumble, elephant)), elephants))
 
             if len(similar_rumbles) < 1:
                 print(f'Unique elephant at {rumble}')
@@ -72,3 +99,9 @@ class Boxing:
         boxed_path = self.target_folder + str(len(elephants)) + '_' + image_filename.replace('mono_', 'boxed_')
         cv2.imwrite(boxed_path, image)
         print(f'Boxed image stored as {boxed_path}')
+
+
+# b = Boxing('../data/spectrograms/mono/', '../data/spectrograms/boxed2/')
+# b.create_contours_and_boxes('mono_nn01d_20180730_000000.wav_segment_366_nan.wav.png')
+
+# b.create_contours_and_boxes('mono_nn10a_20180702_000000.wav_segment_3057_nan.wav.png')

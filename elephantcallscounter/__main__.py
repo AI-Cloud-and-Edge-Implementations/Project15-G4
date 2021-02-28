@@ -81,13 +81,14 @@ def boxing():
 
 def create_boxes():
     source_folder = 'data/spectrograms/mono/'
-    target_folder = 'data/spectrograms/boxed/'
+    target_folder = 'data/spectrograms/boxed3/'
 
-    os.mkdir(target_folder)
+    if not os.path.exists(target_folder):
+        os.mkdir(target_folder)
 
     b = Boxing(source_folder, target_folder)
     for filename in os.listdir(source_folder):
-        b.create_boxes(filename)
+        b.create_contours_and_boxes(filename)
 
 
 # x. Full cycle

@@ -8,6 +8,5 @@ numpy==1.20.0
 librosa==0.8.0
 noisereduce
 soundfile==0.10.3.post1
-click==7.1.2
 opencv-python==4.5.1.48
 tensorflow
