@@ -81,7 +81,7 @@ def boxing():
 
 def create_boxes():
     source_folder = 'data/spectrograms/mono/'
-    target_folder = 'data/spectrograms/boxed2/'
+    target_folder = 'data/spectrograms/boxed3/'
 
     if not os.path.exists(target_folder):
         os.mkdir(target_folder)
