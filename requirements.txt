@@ -16,5 +16,4 @@ azureml-core
 azureml-dataprep
 environs
 fastbook
-tensorflow==2.1.0
-tensorflow-gpu==2.1.0
+tensorflow==2.2.0
