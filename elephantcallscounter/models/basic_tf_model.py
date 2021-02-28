@@ -1,5 +1,6 @@
 import os
 
+from sklearn import metrics
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D
@@ -49,49 +50,55 @@ def build_model():
         os.path.join(get_project_root(), 'data/spectrogram_bb/')
     )
 
-    batch_size = 32
+    epochs = 5
+    model_save_loc = 'binaries/resnet_' + str(epochs) + '_epoch'
+    try:
+        model = keras.models.load_model(join_paths([get_project_root(), model_save_loc]))
+    except OSError:
+        input_t = keras.Input(shape=(224, 224, 3))
+        res_model = keras.applications.ResNet50(include_top=False,weights="imagenet",input_tensor=input_t)
 
-    input_t = keras.Input(shape=(224, 224, 3))
-    res_model = keras.applications.ResNet50(include_top=False,weights="imagenet",input_tensor=input_t)
+        for layer in res_model.layers[:143]:
+            layer.trainable = False
+        # Check the freezed was done ok
+        for i, layer in enumerate(res_model.layers):
+            print(i, layer.name, "-", layer.trainable)
 
-    for layer in res_model.layers[:143]:
-        layer.trainable = False
-    # Check the freezed was done ok
-    for i, layer in enumerate(res_model.layers):
-        print(i, layer.name, "-", layer.trainable)
+        to_res = (224, 224)
+        
+        model = keras.models.Sequential()
+        model.add(keras.layers.Lambda(lambda image: tf.image.resize(image, to_res)))
+        model.add(res_model)
+        model.add(keras.layers.Flatten())
+        model.add(keras.layers.BatchNormalization())
+        model.add(keras.layers.Dense(256, activation='relu'))
+        model.add(keras.layers.Dropout(0.5))
+        model.add(keras.layers.BatchNormalization())
+        model.add(keras.layers.Dense(128, activation='relu'))
+        model.add(keras.layers.Dropout(0.5))
+        model.add(keras.layers.BatchNormalization())
+        model.add(keras.layers.Dense(64, activation='relu'))
+        model.add(keras.layers.Dropout(0.5))
+        model.add(keras.layers.BatchNormalization())
+        model.add(keras.layers.Dense(3, activation='softmax'))
 
-    to_res = (224, 224)
+        model.compile(loss='categorical_crossentropy',
+                    optimizer=keras.optimizers.RMSprop(lr=2e-5),
+                    metrics=['accuracy'])
 
-    model = keras.models.Sequential()
-    to_res = (224, 224)
-    model.add(keras.layers.Lambda(lambda image: tf.image.resize(image, to_res)))
-    model.add(res_model)
-    model.add(keras.layers.Flatten())
-    model.add(keras.layers.BatchNormalization())
-    model.add(keras.layers.Dense(256, activation='relu'))
-    model.add(keras.layers.Dropout(0.5))
-    model.add(keras.layers.BatchNormalization())
-    model.add(keras.layers.Dense(128, activation='relu'))
-    model.add(keras.layers.Dropout(0.5))
-    model.add(keras.layers.BatchNormalization())
-    model.add(keras.layers.Dense(64, activation='relu'))
-    model.add(keras.layers.Dropout(0.5))
-    model.add(keras.layers.BatchNormalization())
-    model.add(keras.layers.Dense(3, activation='softmax'))
+        history = model.fit(train_it, epochs=1, validation_data=val_it)
+        model.save(join_paths([get_project_root(), model_save_loc]))
 
-    model.compile(loss='categorical_crossentropy',
-                  optimizer=keras.optimizers.RMSprop(lr=2e-5),
-                  metrics=['accuracy'])
+        plt.plot(history.history['accuracy'], label = 'accuracy')
+        plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
+        plt.xlabel('Epoch')
+        plt.ylabel('Accuracy')
+        plt.ylim([0.5, 1])
+        plt.legend(loc = 'lower right')
+        plt.savefig(join_paths([get_project_root(), 'graph.png']))
 
-    history = model.fit(train_it, epochs=20, validation_data=val_it)
-
-    plt.plot(history.history['accuracy'], label = 'accuracy')
-    plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.ylim([0.5, 1])
-    plt.legend(loc = 'lower right')
-
+    pred = model.predict_classes(test_it)
+    print(metrics.confusion_matrix(test_it.labels, pred))
     test_loss, test_acc = model.evaluate(test_it, verbose = 2)
 
     print(test_acc)
