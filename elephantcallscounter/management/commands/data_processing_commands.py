@@ -18,13 +18,3 @@ def generate_file_segments(context, file_name):
     :return void:
     """
     create_file_segments(file_name)
-
-
-@data_processing.command('full_cycle')
-@click.pass_context
-def full_cycle(context):
-    """ Command to run the full cycle of the data processing.
-
-    :return:
-    """
-    pass
