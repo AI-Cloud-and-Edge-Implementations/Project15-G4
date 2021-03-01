@@ -20,7 +20,7 @@ async def write_to_hub(source_path, list_of_files):
     await device_client.connect()
 
     async def send_spectrogram():
-        sleepInterval = 5
+        sleep_interval = 5
         while True:
             for f in list_of_files:
                 file = open(join_paths([source_path, f]), "rb")
@@ -38,18 +38,18 @@ async def write_to_hub(source_path, list_of_files):
                 await device_client.send_message(msg)
                 print("done sending file " + str(f))
                 print(payload)
-                await asyncio.sleep(sleepInterval)
+                await asyncio.sleep(sleep_interval)
 
     # Define behavior for halting the application
     def stdin_listener():
         while True:
             try:
-                selection = input('Press Q to quit\n')
+                selection = input()
                 if selection == 'Q' or selection == 'q':
                     print('Quitting...')
                     break
             except EOFError as e:
-                print(e)
+                time.sleep(10000)
 
     tasks = asyncio.gather(
         send_spectrogram()
