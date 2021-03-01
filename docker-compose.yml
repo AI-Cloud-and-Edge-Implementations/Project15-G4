@@ -6,8 +6,8 @@ x-environment-variables: &environment-variables
   - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
 
 services:
-  elephantcallscounter:
-    container_name: elephantcallscounter
+  ecc:
+    container_name: ecc
     build:
       context: .
       dockerfile: docker/Dockerfile
