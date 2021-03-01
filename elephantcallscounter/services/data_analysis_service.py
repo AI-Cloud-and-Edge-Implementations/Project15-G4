@@ -43,7 +43,6 @@ def find_elephants(dir_name, dest_folder, csv_file_path):
     for file in get_files_in_dir(dir_name):
         boxing.create_boxes(join_paths([dir_name, file]), count)
         count += 1
-        # find_number_of_clusters(dir_name, dest_folder, csv_file_path)
 
 
 def create_mono_spectrograms(image_folder, target_folder):

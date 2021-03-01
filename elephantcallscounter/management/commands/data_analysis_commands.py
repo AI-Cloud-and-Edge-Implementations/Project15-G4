@@ -3,11 +3,11 @@ import os
 
 from elephantcallscounter.services.data_analysis_service import analyse_sound_data
 from elephantcallscounter.services.data_analysis_service import create_mono_spectrograms
-from elephantcallscounter.models.basic_tf_model import build_model
-from elephantcallscounter.models.fastapi_model import fastapi_run
+from elephantcallscounter.models.resnet_model import ElephantCounterResnet
 from elephantcallscounter.services.data_analysis_service import find_elephants
-from elephantcallscounter.utils.path_utils import split_file_path
+from elephantcallscounter.utils.path_utils import join_paths
 from elephantcallscounter.utils.path_utils import get_project_root
+from elephantcallscounter.utils.path_utils import split_file_path
 
 
 @click.group('data_analysis')
@@ -87,7 +87,16 @@ def find_elephants_command(context, dir_name, dest_folder, csv_file_path):
 
 
 @data_analysis.command('train_cnn')
-def train_cnn():
-    build_model()
-    # fastapi_run()
+@click.argument('training_loc')
+def train_cnn(training_loc):
+    elephant_counter_resnet = ElephantCounterResnet(
+        training_loc = join_paths([get_project_root(), training_loc])
+    )
+    elephant_counter_resnet.build_model()
 
+
+@data_analysis.command('run_cnn')
+@click.argument('dir_path')
+def run_cnn(dir_path):
+    elephant_counter_resnet = ElephantCounterResnet()
+    elephant_counter_resnet.run_model(dir_path)

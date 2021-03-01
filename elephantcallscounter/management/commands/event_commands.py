@@ -11,13 +11,7 @@ def events(context):
     pass
 
 
-@events.command('send_data_to_device')
+@events.command('device_simulator')
 @click.pass_context
-def send_data_to_device(context):
+def device_simulator(context):
     run_in_parallel(send_to_iot, receive_from_iot)
-
-
-@events.command('full_cycle')
-@click.pass_context
-def full_cycle(context):
-    full_cycle()
