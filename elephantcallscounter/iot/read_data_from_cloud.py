@@ -2,6 +2,9 @@ import asyncio
 from azure.eventhub.aio import EventHubConsumerClient
 
 from elephantcallscounter.config import env
+from elephantcallscounter.utils.file_utils import write_to_bin_file
+from elephantcallscounter.utils.path_utils import get_project_root
+from elephantcallscounter.utils.path_utils import join_paths
 
 
 async def on_event_batch(partition_context, events):
@@ -10,7 +13,11 @@ async def on_event_batch(partition_context, events):
         print("Telemetry received: ", event.body_as_str())
         print("Properties (set by device): ", event.properties)
         print("System properties (set by IoT Hub): ", event.system_properties)
-        print()
+        write_to_bin_file(
+            event,
+            join_paths([get_project_root(), 'data/imported_data/' + event.message['file_name']])
+        )
+
     await partition_context.update_checkpoint()
 
 
