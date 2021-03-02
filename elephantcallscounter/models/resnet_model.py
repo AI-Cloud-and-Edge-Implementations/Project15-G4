@@ -9,10 +9,10 @@ from elephantcallscounter.utils.path_utils import join_paths
 
 
 class ElephantCounterResnet:
-    def __init__(self, training_loc = '', epochs = 5):
+    def __init__(self, model_name, training_loc = '', epochs = 5, ):
         self.res_model = self._generate_res_model()
         self.epochs = epochs
-        self.model_save_loc = 'binaries/resnet_' + str(epochs) + '_epoch'
+        self.model_save_loc = 'binaries/resnet_' + model_name
         self.training_loc = training_loc
         self.datagen = ImageDataGenerator()
 
