@@ -12,6 +12,12 @@ def events(context):
 
 
 @events.command('device_simulator')
+@click.argument('container_name')
+@click.argument('queue_name')
+@click.argument('dest_folder')
 @click.pass_context
-def device_simulator(context):
-    run_in_parallel(send_to_iot, receive_from_iot)
+def device_simulator(context, container_name, queue_name, dest_folder):
+    run_in_parallel(
+        lambda: send_to_iot(),
+        lambda: receive_from_iot(container_name, queue_name, dest_folder)
+    )
