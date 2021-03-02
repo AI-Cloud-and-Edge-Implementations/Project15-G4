@@ -1,6 +1,13 @@
 # Microsoft-Project-15-Team-4
 Microsoft project 15 - Team 4 solution
 
+# Run the code:
+- To run the code outside docker just skip the 'docker exec -it ecc' part.
+- Run:
+```bash
+foo@bar:~ python3 -m elephantcallscounter
+```
+
 # Build the docker container:
 ```bash
 foo@bar:~ docker-compose up --build
@@ -19,7 +26,7 @@ foo@bar:~ docker exec -it ecc python3 -m elephantcallscounter data_import copy_d
 ## Data Analysis Commands:
 - To run the model:
 ```bash
-foo@bar:~ docker exec -it ecc python3 -m elephantcallscounter data_analysis train_cnn data/spectrogram_bb
+foo@bar:~ docker exec -it ecc python3 -m elephantcallscounter data_analysis train_cnn data/spectrogram_bb {model_name}
 ```
 
 ## Event Commands:
