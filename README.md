@@ -18,7 +18,12 @@ foo@bar:~ docker-compose up --build
 - Run these commands from another terminal.
   
 ## Data Import Commands:
+- The following commands copy using azcopy.
 - To copy data from azure. 
+```bash
+foo@bar:~ docker exec -it ecc python3 -m elephantcallscounter data_import copy_data_from_azure {source_file} {target_loc}
+```
+- To copy data to azure.
 ```bash
 foo@bar:~ docker exec -it ecc python3 -m elephantcallscounter data_import copy_data_to_azure {source_file} {target_loc}
 ```
@@ -32,11 +37,15 @@ foo@bar:~ docker exec -it ecc python3 -m elephantcallscounter data_analysis trai
 ## Event Commands:
 - To run the device simulator:
 ```bash
-foo@bar:~ docker exec -it ecc python3 -m elephantcallscounter events device_simulator
+foo@bar:~ docker exec -it ecc python3 -m elephantcallscounter events device_simulator elephant-sound-data realtimequeue realtimeblobs
 ```
 
 ## Data Processing Commands:
 - To create file segments based of the filename of the metadata csv file:
 ```bash
-foo@bar:~ docker exec -it ecc python3 -m elephantcallscounter generate_file_segments data/metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt
+foo@bar:~ docker exec -it ecc python3 -m elephantcallscounter data_processing generate_file_segments data/metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt
+```
+- To generate the training/valid/test data based on preprocessed images:
+```bash
+foo@bar:~ docker exec -it ecc python3 -m elephantcallscounter data_processing generate_training_data data/spectrogram_bb
 ```
