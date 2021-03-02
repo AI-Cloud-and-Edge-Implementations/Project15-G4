@@ -35,6 +35,7 @@ def copy_file_to_azure_fast(
         blob_string = env.AZURE_STORAGE_ACCOUNT,
         container_name = container_name
     )
+    print('Sending file: ', source_file_name, dest_folder)
     p1 = az_data_importer.az_upload_data_to_blob(
         source_path = source_file_name,
         destination_path = dest_folder
