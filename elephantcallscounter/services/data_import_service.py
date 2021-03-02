@@ -6,8 +6,8 @@ from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.adapters.amazon_interface import AmazonInterface
 
 
-def copy_data_to_azure_fast():
-    """ This is a multithreaded copy of data to azure.
+def copy_data_from_s3_to_azure_fast():
+    """ This is a multithreaded copy of data to azure from s3.
 
     :return void:
     """
@@ -17,6 +17,30 @@ def copy_data_to_azure_fast():
         container_name = "elephant-sound-data"
     )
     az_data_importer.send_to_copy_handler()
+
+
+def copy_file_to_azure_fast(
+        container_name, source_file_name, dest_folder
+):
+    """ This copies data to azure blob using azcopy.
+
+    :param string container_name:
+    :param string source_file_name:
+    :param string dest_folder:
+    :return:
+    """
+    print(f'Processing {source_file_name}...')
+    az_data_importer = AzureDataImporter(
+        source_directory=os.path.join(get_project_root(), 'data', 'rumble_landscape_general'),
+        blob_string = env.AZURE_STORAGE_ACCOUNT,
+        container_name = container_name
+    )
+    p1 = az_data_importer.az_upload_data_to_blob(
+        source_path = source_file_name,
+        destination_path = dest_folder
+    )
+    print(f'Processing {source_file_name} finished!')
+    print(f'Sent file to {dest_folder}')
 
 
 def download_data_from_azure_fast(

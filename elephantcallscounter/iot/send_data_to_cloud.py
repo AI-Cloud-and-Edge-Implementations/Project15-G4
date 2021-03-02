@@ -29,7 +29,7 @@ async def write_to_hub(source_path, list_of_files):
                 payload = json.dumps({
                     'capturedate': time.time(),
                     'filename': f,
-                    'spectrogram': str(file_content)
+                    'filecontent': str(file_content)
                 })
                 msg = Message(payload)
                 msg.message_id = uuid.uuid4()
