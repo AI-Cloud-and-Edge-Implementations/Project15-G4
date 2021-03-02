@@ -11,7 +11,8 @@ from elephantcallscounter.utils.file_utils import get_files_in_dir
 def send_to_iot(source_dir = "data/spectrogram_bb/test/1/"):
     path = join_paths([get_project_root(), source_dir])
     spectrogram_list = get_files_in_dir(path)
-    asyncio.run(write_to_hub(path, spectrogram_list))
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(write_to_hub(path, spectrogram_list))
 
 
 def receive_from_iot(container_name, queue_name, dest_folder):
