@@ -15,6 +15,7 @@ numpy~=1.19.2
 librosa==0.8.0
 noisereduce
 soundfile==0.10.3.post1
+split-folders==0.4.3
 opencv-python==4.5.1.48
 fastbook
 tensorflow==2.2.0

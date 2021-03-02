@@ -1,6 +1,8 @@
 import cv2
 import math
 import os
+import pandas as pd
+
 
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
@@ -14,11 +16,23 @@ class Boxing:
         self.monochrome = monochrome
         self.write_file = write_file
 
-    def create_boxes(self, image_filename, count):
+    def write_box_to_file(self, image, elephants, image_filename):
+        image_filename = image_filename.replace('mono_', 'boxed_')
+        os.makedirs(
+            join_paths([self.target_folder, str(len(elephants))]),
+            exist_ok = True
+        )
+        boxed_path = join_paths(
+            [self.target_folder, str(len(elephants)), image_filename]
+        )
+        cv2.imwrite(boxed_path, image)
+        print(f'Boxed image stored as {boxed_path}')
+
+    def create_boxes(self, image_filename):
         print(f'Creating boxes for {self.image_folder + image_filename}...')
 
         image = self.monochrome.create_monochrome(
-            os.path.join(get_project_root(), self.image_folder, image_filename)
+            join_paths([get_project_root(), self.image_folder, image_filename])
         )
 
         # cut off the axes
@@ -85,15 +99,10 @@ class Boxing:
         image[y_top:y_top + h, x_left:x_left + w] = ROI
 
         if self.write_file:
-            data_type = 'train'
-            if count % 8 == 0:
-                data_type = 'test'
-            if count % 7 == 0:
-                data_type = 'valid'
-            os.makedirs(join_paths([self.target_folder, data_type, str(len(elephants))]),
-                        exist_ok = True)
-            boxed_path = join_paths(
-                [self.target_folder, data_type, str(len(elephants)), str(count) + '.png'])
-            # image_filename.replace('mono_', 'boxed_')
-            cv2.imwrite(boxed_path, image)
-            print(f'Boxed image stored as {boxed_path}')
+            self.write_box_to_file(image, elephants, image_filename)
+
+        return len(elephants)
+
+    def write_labels_to_csv_file(self, dataset):
+        df = pd.DataFrame(dataset.items(), columns = ['file_name', 'number_of_elephants'])
+        df.to_csv(self.csv_file_path)

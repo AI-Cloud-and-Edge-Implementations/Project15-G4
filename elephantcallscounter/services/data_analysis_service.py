@@ -1,9 +1,9 @@
 import os
+import pandas as pd
 
 from elephantcallscounter.data_analysis.analyse_sound_data import AnalyseSoundData
 from elephantcallscounter.data_analysis.boxing import Boxing
 from elephantcallscounter.data_analysis.monochrome import Monochrome
-from elephantcallscounter.data_analysis.image_processing import find_number_of_clusters
 from elephantcallscounter.utils.file_utils import get_files_in_dir
 from elephantcallscounter.utils.file_utils import join_paths
 from elephantcallscounter.utils.path_utils import get_project_root
@@ -29,7 +29,7 @@ def analyse_sound_data(file_path, dest_path):
     sound_data_analyser.analyse_audio()
 
 
-def find_elephants(dir_name, dest_folder, csv_file_path):
+def find_elephants_in_images(dir_name, dest_folder, csv_file_path):
     """ Analyse the spectrograms and generate the bounding box images.
 
     :param str dir_name:
@@ -39,10 +39,13 @@ def find_elephants(dir_name, dest_folder, csv_file_path):
     """
     monochrome = Monochrome(dest_folder)
     boxing = Boxing(dir_name, dest_folder, csv_file_path, monochrome, True)
-    count = 0
+    boxed_metadata = []
     for file in get_files_in_dir(dir_name):
-        boxing.create_boxes(join_paths([dir_name, file]), count)
-        count += 1
+        elephants = boxing.create_boxes(file)
+        boxed_metadata.append((file, elephants))
+
+    dataset = pd.DataFrame(boxed_metadata)
+    boxing.write_labels_to_csv_file(dataset)
 
 
 def create_mono_spectrograms(image_folder, target_folder):
