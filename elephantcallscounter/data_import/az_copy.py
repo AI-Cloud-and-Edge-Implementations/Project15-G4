@@ -41,7 +41,7 @@ class AzureDataImporter:
         :return None:
         """
         azure_path = self.azure_path(destination_path)
-        return source_path, azure_path
+        return source_path, azure_path, self._logger
 
     @handle_copy
     def az_download_data_from_blob(self, source_path, destination_path):
@@ -52,7 +52,7 @@ class AzureDataImporter:
         :return None:
         """
         azure_path = self.azure_path(source_path)
-        return azure_path, destination_path
+        return azure_path, destination_path, self._logger
 
     def az_copy_data_from_s3(self, source_file_path, destination_file_path):
         """ This method handles the copying of data between two urls paths.

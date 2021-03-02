@@ -2,13 +2,13 @@ import subprocess
 
 
 def handle_copy(function):
-    def wrapper(source_path, destination_path, logger):
+    def wrapper(*args, **kwargs):
+        source_path, destination_path, logger = function(*args, **kwargs)
         logger.info(
             "Sending file from {} to {}".format(
                 source_path, destination_path
             )
         )
-        source_path, destination_path = function(source_path, destination_path)
         command_to_run = [
             'azcopy', '--source', source_path, '--destination', destination_path, '--recursive'
         ]
