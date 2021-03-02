@@ -4,7 +4,7 @@ import os
 from elephantcallscounter.services.data_analysis_service import analyse_sound_data
 from elephantcallscounter.services.data_analysis_service import create_mono_spectrograms
 from elephantcallscounter.models.resnet_model import ElephantCounterResnet
-from elephantcallscounter.services.data_analysis_service import find_elephants
+from elephantcallscounter.services.data_analysis_service import find_elephants_in_images
 from elephantcallscounter.utils.path_utils import join_paths
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import split_file_path
@@ -79,7 +79,7 @@ def find_elephants_command(context, dir_name, dest_folder, csv_file_path):
     :param csv_file_path:
     :return:
     """
-    find_elephants(
+    find_elephants_in_images(
         os.path.join(get_project_root(), dir_name),
         os.path.join(get_project_root(), dest_folder),
         os.path.join(get_project_root(), csv_file_path)
@@ -98,7 +98,7 @@ def train_cnn(training_loc, model_name):
 
 
 @data_analysis.command('run_cnn')
-@data_analysis.command('model_name')
+@click.argument('model_name')
 @click.argument('dir_path')
 def run_cnn(dir_path, model_name):
     elephant_counter_resnet = ElephantCounterResnet(model_name)
