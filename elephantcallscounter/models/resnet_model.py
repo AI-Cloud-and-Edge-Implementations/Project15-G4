@@ -3,7 +3,6 @@ from sklearn import metrics
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow import keras
 import tensorflow as tf
-from keras.layers import LeakyReLU
 
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
