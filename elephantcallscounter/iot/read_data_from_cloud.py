@@ -2,6 +2,7 @@ import asyncio
 import ast
 from azure.eventhub.aio import EventHubConsumerClient
 
+from elephantcallscounter.adapters.azure_interface import AzureInterface
 from elephantcallscounter.config import env
 from elephantcallscounter.services.data_import_service import copy_file_to_azure_fast
 from elephantcallscounter.utils.file_utils import write_to_bin_file
@@ -42,7 +43,10 @@ class ReadDataFromCloud:
             self.audio_events_queue.insert_message_queue(
                 join_paths([self.dest_folder, event_data['filename']])
             )
-            copy_file_to_azure_fast(self.container_name, file_path, self.dest_folder)
+            azure_interface = AzureInterface(self.container_name)
+            azure_interface.send_to_azure(
+                file_path, self.dest_folder, event_data['filename']
+            )
 
         await partition_context.update_checkpoint()
 
