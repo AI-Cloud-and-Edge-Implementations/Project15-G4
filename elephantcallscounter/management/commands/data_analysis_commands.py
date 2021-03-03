@@ -74,10 +74,10 @@ def find_elephants_command(context, dir_name, dest_folder, csv_file_path):
     """ Command to analyse spectrograms and generate bounding box images of possible elephants.
 
     :param context:
-    :param dir_name:
-    :param dest_folder:
-    :param csv_file_path:
-    :return:
+    :param string dir_name:
+    :param string dest_folder:
+    :param string csv_file_path:
+    :return void:
     """
     find_elephants_in_images(
         os.path.join(get_project_root(), dir_name),

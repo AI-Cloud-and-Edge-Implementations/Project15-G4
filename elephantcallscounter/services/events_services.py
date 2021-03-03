@@ -8,7 +8,7 @@ from elephantcallscounter.utils.path_utils import join_paths
 from elephantcallscounter.utils.file_utils import get_files_in_dir
 
 
-def send_to_iot(source_dir = "data/spectrogram_bb/test/1/"):
+def send_to_iot(source_dir = "data/spectrogram_bb/1/"):
     path = join_paths([get_project_root(), source_dir])
     spectrogram_list = get_files_in_dir(path)
     loop = asyncio.get_event_loop()
