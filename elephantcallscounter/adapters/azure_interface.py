@@ -32,7 +32,7 @@ class AzureInterface:
             os.remove(original_file)
             print('Done uploading file!', dir_path + filename)
         except Exception as e:
-            print('Error while downloading ' + filename + ': ' + str(e))
+            print('Error while uploading ' + filename + ': ' + str(e))
 
     def download_from_azure(self, source_file, dest_file):
         blob = BlobClient(
