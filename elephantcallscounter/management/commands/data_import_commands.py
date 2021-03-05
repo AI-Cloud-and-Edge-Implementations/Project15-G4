@@ -1,17 +1,14 @@
 import click
+from flask import Blueprint
 
 from elephantcallscounter.services.data_import_service import import_data_from_s3_using_boto
 from elephantcallscounter.services.data_import_service import copy_file_to_azure_fast
 from elephantcallscounter.services.data_import_service import download_data_from_azure_fast
 
-
-@click.group('data_import')
-@click.pass_context
-def data_import(context):
-    pass
+data_import = Blueprint('data_import', __name__)
 
 
-@data_import.command('import_data_from_s3')
+@data_import.cli.command('import_data_from_s3')
 @click.pass_context
 def import_data_from_s3(context):
     """ Command to read data from s3.
@@ -22,7 +19,7 @@ def import_data_from_s3(context):
     import_data_from_s3_using_boto()
 
 
-@data_import.command('copy_data_to_azure')
+@data_import.cli.command('copy_data_to_azure')
 @click.argument('container_name')
 @click.argument('source_file')
 @click.argument('destination_folder')
@@ -39,7 +36,7 @@ def copy_data_to_azure_fast(context, container_name, source_file, destination_fo
     copy_file_to_azure_fast(container_name, source_file, destination_folder)
 
 
-@data_import.command('copy_data_from_azure')
+@data_import.cli.command('copy_data_from_azure')
 @click.argument('container_name')
 @click.argument('source_file')
 @click.argument('destination_file')

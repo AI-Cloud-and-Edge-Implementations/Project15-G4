@@ -1,4 +1,5 @@
 import click
+from flask import Blueprint
 
 
 from elephantcallscounter.management.commands.data_analysis_commands import \
@@ -7,8 +8,10 @@ from elephantcallscounter.management.commands.data_analysis_commands import find
 from elephantcallscounter.management.commands.data_analysis_commands import run_cnn
 from elephantcallscounter.management.commands.event_commands import device_simulator
 
+demo = Blueprint('demo', __name__)
 
-@click.command('run_demo')
+
+@demo.cli.command('run_demo')
 @click.pass_context
 def run_demo(context):
     context.invoke(device_simulator)
