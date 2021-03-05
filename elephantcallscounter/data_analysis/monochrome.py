@@ -2,7 +2,7 @@ import cv2
 
 
 class Monochrome:
-    def __init__(self, target_folder):
+    def __init__(self, target_folder=''):
         self.target_folder = target_folder
 
     def create_monochrome(self, image_filename, write_file=False):

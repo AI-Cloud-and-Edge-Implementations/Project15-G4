@@ -4,8 +4,8 @@ import pandas as pd
 from elephantcallscounter.data_analysis.analyse_sound_data import AnalyseSoundData
 from elephantcallscounter.data_analysis.boxing import Boxing
 from elephantcallscounter.data_analysis.monochrome import Monochrome
+from elephantcallscounter.models.resnet_model import ElephantCounterResnet
 from elephantcallscounter.utils.file_utils import get_files_in_dir
-from elephantcallscounter.utils.file_utils import join_paths
 from elephantcallscounter.utils.path_utils import get_project_root
 
 
@@ -51,8 +51,15 @@ def find_elephants_in_images(dir_name, dest_folder, csv_file_path):
 def create_mono_spectrograms(image_folder, target_folder):
     """ Create the mono spectrograms.
 
+    :param string image_folder:
+    :param string target_folder:
     :return void:
     """
     monochrome = Monochrome(target_folder)
     for file in image_folder:
         monochrome.create_monochrome(file)
+
+
+def run_cnn(model_name, dir_path):
+    elephant_counter_resnet = ElephantCounterResnet(model_name)
+    elephant_counter_resnet.run_model(dir_path)
