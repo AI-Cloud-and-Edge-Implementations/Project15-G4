@@ -11,7 +11,6 @@ class SegmentFiles:
     def __init__(self, start_fresh, file_range=30):
         """ This class handles the segmentation of files after reading from azure.
 
-        :param elephantcallscounter.data_import.az_copy.AzureDataImporter az_importer:
         :param bool start_fresh:
         :param int file_range:
         """

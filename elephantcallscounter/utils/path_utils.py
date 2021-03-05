@@ -24,3 +24,23 @@ def split_file_path(strng, sep, pos):
 
 def join_paths(paths):
     return functools.reduce(os.path.join, paths)
+
+
+def create_necessary_directories(save_loc):
+    """ This method creates the necessary directory structure.
+
+    :return void:
+    """
+    Path(save_loc).mkdir(parents=True, exist_ok=True)
+
+
+class FilePaths:
+    def __init__(self, folder_path, file_name):
+        self.folder_path = folder_path
+        self.file_name = file_name
+
+    def path(self):
+        return self.folder_path + "/" + self.file_name
+
+    def __hash__(self):
+        return hash(self.path())
