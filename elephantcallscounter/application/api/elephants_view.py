@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Blueprint
 from flask import render_template
 from flask import request
@@ -20,6 +22,7 @@ elephant_blueprint = Blueprint(
 @elephant_blueprint.route('/elephants_count/<string:start_time>/<string:end_time>/')
 def elephant_counter(start_time, end_time):
     if request.method == 'GET':
+        start_time = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
         elephants = db.session.query(Elephants).filter(
             start_time >= Elephants.start_time
         ).filter(

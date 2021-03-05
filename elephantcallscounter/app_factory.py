@@ -9,7 +9,7 @@ from elephantcallscounter.application.api.blob_events import blob_blueprint
 from elephantcallscounter.management.commands.data_import_commands import data_import
 from elephantcallscounter.management.commands.data_analysis_commands import data_analysis
 from elephantcallscounter.management.commands.data_processing_commands import data_processing
-from elephantcallscounter.management.commands.demo_commands import demo
+from elephantcallscounter.management.commands.pipeline_commands import demo
 from elephantcallscounter.management.commands.event_commands import events
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths

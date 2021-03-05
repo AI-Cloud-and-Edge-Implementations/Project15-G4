@@ -4,8 +4,8 @@ import os
 
 from elephantcallscounter.services.data_analysis_service import analyse_sound_data
 from elephantcallscounter.services.data_analysis_service import create_mono_spectrograms
-from elephantcallscounter.models.resnet_model import ElephantCounterResnet
 from elephantcallscounter.services.data_analysis_service import find_elephants_in_images
+from elephantcallscounter.services.data_analysis_service import run_cnn
 from elephantcallscounter.utils.path_utils import join_paths
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import split_file_path
@@ -97,6 +97,5 @@ def train_cnn(training_loc, model_name):
 @data_analysis.cli.command('run_cnn')
 @click.argument('model_name')
 @click.argument('dir_path')
-def run_cnn(dir_path, model_name):
-    elephant_counter_resnet = ElephantCounterResnet(model_name)
-    elephant_counter_resnet.run_model(dir_path)
+def run_cnn_command(dir_path, model_name):
+    run_cnn(dir_path, model_name)

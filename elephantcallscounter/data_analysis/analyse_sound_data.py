@@ -75,3 +75,5 @@ class AnalyseSoundData:
         )
         self.plot.plot_mel(highpass_signal, sr)
         self.plot.fft_plot(highpass_signal, sr, filename, plot=False)
+
+        return
