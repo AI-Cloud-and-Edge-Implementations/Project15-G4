@@ -1,11 +1,11 @@
 import numpy as np
 import os
-from pathlib import Path
 import librosa
 
 from elephantcallscounter.data_transformations.filters import Filters
 from elephantcallscounter.data_visualizations.plots import Plots
 from elephantcallscounter.data_transformations.noise_reduction import NoiseReduction
+from elephantcallscounter.utils.path_utils import create_necessary_directories
 
 
 class AnalyseSoundData:
@@ -16,13 +16,6 @@ class AnalyseSoundData:
         self.plot = Plots()
         self.hop_length = hop_length
         self.sr = sr
-
-    def create_necessary_directories(self):
-        """ This method creates the necessary directory structure.
-
-        :return void:
-        """
-        Path(self.save_image_location).mkdir(parents=True, exist_ok=True)
 
     @classmethod
     def load_data(cls, file_name, sr):
@@ -43,7 +36,7 @@ class AnalyseSoundData:
 
     def analyse_audio(self):
         # .wav is lossless
-        self.create_necessary_directories()
+        create_necessary_directories(self.save_image_location)
 
         input_signal, sr = self.load_data(self.file_read_location, self.sr)
         if input_signal is None:
