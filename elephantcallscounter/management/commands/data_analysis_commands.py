@@ -5,14 +5,10 @@ import os
 
 from elephantcallscounter.services.data_analysis_service import analyse_sound_data
 from elephantcallscounter.services.data_analysis_service import create_mono_spectrograms
-<<<<<<< HEAD
 from elephantcallscounter.models.resnet_model import ElephantCounterResnet
 from elephantcallscounter.models.vgg_model import ElephantCounterVGG
-from elephantcallscounter.services.data_analysis_service import find_elephants
-=======
 from elephantcallscounter.services.data_analysis_service import find_elephants_in_images
 from elephantcallscounter.services.data_analysis_service import run_cnn
->>>>>>> feature/azure-data-analysis
 from elephantcallscounter.utils.path_utils import join_paths
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import split_file_path
@@ -100,6 +96,7 @@ def train_cnn(training_loc, model_name):
     )
     elephant_counter_resnet.build_model()
 
+
 @data_analysis.cli.command('train_vgg_cnn')
 @click.argument('training_loc')
 def train_vgg_cnn(training_loc):
@@ -107,6 +104,7 @@ def train_vgg_cnn(training_loc):
         training_loc = join_paths([get_project_root(), training_loc])
     )
     elephant_counter_vgg.build_model()
+
 
 @data_analysis.cli.command('run_cnn')
 @click.argument('model_name')
