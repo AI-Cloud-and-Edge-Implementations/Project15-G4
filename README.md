@@ -13,6 +13,10 @@ foo@bar:~ python3 -m elephantcallscounter
 ```bash
 foo@bar:~ export FLASK_APP=elephantcallscounter.app_factory
 ```
+- To run the migrations:
+```bash
+foo@bar:~ flask db upgrade --directory elephantcallscounter/application/persistence/migrations
+```
 
 # Build the docker container:
 ```bash
