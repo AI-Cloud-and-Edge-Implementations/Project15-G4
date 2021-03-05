@@ -8,6 +8,12 @@ Microsoft project 15 - Team 4 solution
 foo@bar:~ python3 -m elephantcallscounter
 ```
 
+# Flask APP:
+- Ensure you first export the neccesary environment variables.
+```bash
+foo@bar:~ export FLASK_APP=elephantcallscounter.app_factory
+```
+
 # Build the docker container:
 ```bash
 foo@bar:~ docker-compose up --build
