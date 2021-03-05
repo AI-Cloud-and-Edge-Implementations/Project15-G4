@@ -5,24 +5,14 @@ import subprocess
 import os
 
 from elephantcallscounter.config import env
-
-
-class FilePaths:
-    def __init__(self, folder_path, file_name):
-        self.folder_path = folder_path
-        self.file_name = file_name
-
-    def path(self):
-        return self.folder_path + "/" + self.file_name
-
-    def __hash__(self):
-        return hash(self.path())
+from elephantcallscounter.utils.decorators import handle_copy
+from elephantcallscounter.utils.path_utils import FilePaths
 
 
 class AzureDataImporter:
     def __init__(self, source_directory, blob_string, container_name):
         self._logger = logging.getLogger('az-copy-data-from-s3')
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(level = logging.INFO)
         self._sas_key = env.STORAGE_SAS_KEY
         self._source_directory = source_directory
         self.blob_string = blob_string
@@ -42,6 +32,18 @@ class AzureDataImporter:
         )
         return azure_path
 
+    @handle_copy
+    def az_upload_data_to_blob(self, source_path, destination_path):
+        """ This method handles the copying of data from local to azure.
+
+        :param str source_path:
+        :param str destination_path:
+        :return None:
+        """
+        azure_path = self.azure_path(destination_path)
+        return source_path, azure_path, self._logger
+
+    @handle_copy
     def az_download_data_from_blob(self, source_path, destination_path):
         """ This method handles the copying of data from azure to local.
 
@@ -49,19 +51,8 @@ class AzureDataImporter:
         :param str destination_path:
         :return None:
         """
-        self._logger.info(
-            "Sending file from {} to {}".format(
-                source_path, destination_path
-            )
-        )
         azure_path = self.azure_path(source_path)
-        command_to_run = [
-            'azcopy', '--source', azure_path, '--destination', destination_path, '--recursive'
-        ]
-        self._logger.info('We ran this command: {0}'.format(' '.join(command_to_run)))
-        p1 = subprocess.run(command_to_run)
-        self._logger.info("Completed Copying File: {}".format(source_path))
-        return p1
+        return azure_path, destination_path, self._logger
 
     def az_copy_data_from_s3(self, source_file_path, destination_file_path):
         """ This method handles the copying of data between two urls paths.
@@ -121,7 +112,7 @@ class AzureDataImporter:
         :param string file_name:
         :return pandas.dataframe:
         """
-        file_data = pd.read_csv(file_name, delimiter="\t")
+        file_data = pd.read_csv(file_name, delimiter = "\t")
         return file_data
 
     @staticmethod
@@ -149,6 +140,7 @@ class AzureDataImporter:
     def send_to_copy_handler(self):
         processed_file_map = self.process_files()
         for dest_path, source_paths in processed_file_map.items():
-            self._logger.info("Total Number of files for {} {}".format(dest_path.folder_path, len(source_paths)))
+            self._logger.info(
+                "Total Number of files for {} {}".format(dest_path.folder_path, len(source_paths)))
             for source_path in source_paths:
                 self.az_copy_data_from_s3(source_path.path(), dest_path.path())
