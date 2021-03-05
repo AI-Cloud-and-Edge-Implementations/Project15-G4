@@ -48,16 +48,17 @@ def find_elephants_in_images(dir_name, dest_folder, csv_file_path):
     boxing.write_labels_to_csv_file(dataset)
 
 
-def create_mono_spectrograms(image_folder, target_folder):
+def create_mono_spectrograms(image_folder, target_folder, write_file=False):
     """ Create the mono spectrograms.
 
-    :param string image_folder:
+    :param list image_folder:
     :param string target_folder:
+    :param bool write_file:
     :return void:
     """
     monochrome = Monochrome(target_folder)
     for file in image_folder:
-        monochrome.create_monochrome(file)
+        monochrome.create_monochrome(file, write_file)
 
 
 def run_cnn(model_name, dir_path):
