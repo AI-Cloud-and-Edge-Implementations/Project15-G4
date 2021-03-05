@@ -9,10 +9,10 @@ from elephantcallscounter.utils.path_utils import join_paths
 
 
 class ElephantCounterResnet:
-    def __init__(self, model_name, training_loc = '', epochs = 5, ):
+    def __init__(self, training_loc = '', epochs = 25):
         self.res_model = self._generate_res_model()
         self.epochs = epochs
-        self.model_save_loc = 'binaries/resnet_' + model_name
+        self.model_save_loc = 'binaries/resnet_' + str(epochs) + '_epoch'
         self.training_loc = training_loc
         self.datagen = ImageDataGenerator()
 
@@ -45,7 +45,7 @@ class ElephantCounterResnet:
             print(i, layer.name, "-", layer.trainable)
 
         to_res = (224, 224)
-
+        
         model = keras.models.Sequential()
         model.add(keras.layers.Lambda(lambda image: tf.image.resize(image, to_res)))
         model.add(self.res_model)
@@ -79,11 +79,12 @@ class ElephantCounterResnet:
 
             model.compile(
                 loss = 'categorical_crossentropy',
-                optimizer = keras.optimizers.RMSprop(lr = 2e-5),
+                #optimizer = keras.optimizers.RMSprop(lr = 2e-5),
+                optimizer = keras.optimizers.Adam(learning_rate=0.001),
                 metrics = ['accuracy']
             )
 
-            history = model.fit(train_it, epochs = self.epochs, validation_data = val_it)
+            history = model.fit(train_it, epochs = self.epochs, validation_data = val_it, batch_size=100)
             model.save(join_paths([get_project_root(), self.model_save_loc]))
 
             plt.plot(history.history['accuracy'], label = 'accuracy')
@@ -92,7 +93,8 @@ class ElephantCounterResnet:
             plt.ylabel('Accuracy')
             plt.ylim([0.5, 1])
             plt.legend(loc = 'lower right')
-            plt.savefig(join_paths([get_project_root(), 'graph.png']))
+            #plt.savefig(join_paths([get_project_root(), 'graph.png']))
+            plt.savefig(join_paths([get_project_root(), self.model_save_loc, 'graph.png']))
 
         pred = model.predict_classes(test_it)
         print(metrics.confusion_matrix(test_it.labels, pred))
