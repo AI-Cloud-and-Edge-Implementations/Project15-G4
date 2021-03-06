@@ -5,6 +5,8 @@ from elephantcallscounter.services.data_processing_service import create_file_se
 from elephantcallscounter.data_processing.model_preprocessing import ModelPreprocessing
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
+from elephantcallscounter.application.persistence.models.elephants import delete_all_elephants
+
 
 data_processing = Blueprint('data_processing', __name__)
 
@@ -34,3 +36,12 @@ def generate_training_data(context, input_folder, output_folder):
     """
     model_preprocessing = ModelPreprocessing(input_folder, output_folder)
     model_preprocessing.split_images_into_right_format()
+
+
+@data_processing.cli.command('cleanup_data')
+def cleanup_data():
+    """ Command to clean up all the data in the models.
+
+    :return void:
+    """
+    delete_all_elephants()
