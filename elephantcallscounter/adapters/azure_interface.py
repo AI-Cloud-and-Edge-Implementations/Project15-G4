@@ -5,6 +5,7 @@ from azure.storage.blob import BlobClient
 from elephantcallscounter.config import env
 from elephantcallscounter.utils.path_utils import join_paths
 
+
 class AzureInterface:
     def __init__(self, container_name):
         self.container_name = container_name
