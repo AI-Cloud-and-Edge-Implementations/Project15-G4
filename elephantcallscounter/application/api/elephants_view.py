@@ -1,4 +1,5 @@
 from datetime import datetime
+import logging
 
 from flask import Blueprint
 from flask import render_template
@@ -10,6 +11,7 @@ from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
 from elephantcallscounter.common.constants import LOCATION
 
+logger = logging.getLogger(__name__)
 
 template_folder_loc = join_paths([get_project_root(), 'app/templates'])
 
@@ -34,8 +36,8 @@ def elephant_counter():
         end_time <= Elephants.end_time
     """
     elephants = db.session.query(Elephants).all()
-    print(start_time)
-    print(end_time)
+    logger.info(start_time)
+    logger.info(end_time)
     elephant_output = [
         {elephant.device_id: elephant.number_of_elephants}
         for elephant in elephants

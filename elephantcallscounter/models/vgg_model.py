@@ -1,3 +1,4 @@
+import logging
 import matplotlib.pyplot as plt
 from sklearn import metrics
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -7,6 +8,8 @@ import tensorflow as tf
 
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
+
+logger = logging.getLogger(__name__)
 
 
 class ElephantCounterVGG:
@@ -45,7 +48,7 @@ class ElephantCounterVGG:
 
         # Check the trainable status of the individual layers
         for layer in self.vgg_model.layers:
-            print(layer, layer.trainable)
+            logger.info('%s %s', layer, layer.trainable)
 
         to_vgg = (224, 224)
 
@@ -92,16 +95,16 @@ class ElephantCounterVGG:
             plt.savefig(join_paths([get_project_root(), 'graph.png']))
 
         pred = model.predict_classes(test_it)
-        print(metrics.confusion_matrix(test_it.labels, pred))
+        logger.info(metrics.confusion_matrix(test_it.labels, pred))
         test_loss, test_acc = model.evaluate(test_it, verbose = 2)
 
-        print(test_acc)
+        logger.info(test_acc)
 
     def run_model(self, dir_path):
         data_it = self.get_dataset_it(join_paths(dir_path))
         try:
             model = self.load_model(self.model_save_loc)
         except OSError:
-            print('model {} not loaded'.format(self.model_save_loc))
+            logger.info('model {} not loaded'.format(self.model_save_loc))
         else:
             return model.predict_classes(data_it)

@@ -1,3 +1,5 @@
+import logging
+
 from flask import Blueprint
 from flask import request
 from elephantcallscounter.adapters.shared.audio_events_queue import AudioEventsQueue
@@ -9,6 +11,8 @@ blob_blueprint = Blueprint(
     __name__,
     url_prefix = '/blob_events'
 )
+
+logger = logging.getLogger(__name__)
 
 
 @blob_blueprint.route('/run_pipeline/', methods = ['GET'])
@@ -25,7 +29,7 @@ def run_processing():
             message['content'],
             dest_file = file_path
         )
-        print('about to run pipeline on {}!'.format(file_path))
+        logger.info('about to run pipeline on {}!'.format(file_path))
         pipeline_run(file_path, 'data/labels/spec_images_labels.csv')
 
     return {}

@@ -1,4 +1,5 @@
 import os
+import logging
 import azure.core.exceptions
 from azure.storage.blob import BlobServiceClient
 from azure.storage.blob import BlobClient
@@ -6,6 +7,8 @@ from azure.storage.blob import BlobClient
 from elephantcallscounter.config import env
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
+
+logger = logging.getLogger(__name__)
 
 
 class AzureInterface:
@@ -24,7 +27,7 @@ class AzureInterface:
         return blob_container_client
 
     def send_to_azure(self, original_file, dir_path, filename):
-        print('Storing ' + filename + ' in Azure Blob...' + dir_path)
+        logger.info('Storing ' + filename + ' in Azure Blob...' + dir_path)
         try:
             blob_client = self.blob_service_client.get_blob_client(
                 container=self.container_name, blob=join_paths([dir_path, filename])
@@ -33,9 +36,9 @@ class AzureInterface:
                 blob_client.upload_blob(data)
             # delete local file
             os.remove(original_file)
-            print('Done uploading file!', dir_path + filename)
+            logger.info('Done uploading file!', dir_path + filename)
         except Exception as e:
-            print('Error while uploading ' + filename + ': ' + str(e))
+            logger.info('Error while uploading ' + filename + ': ' + str(e))
 
     def download_from_azure(self, source_file, dest_file):
         try:
@@ -49,5 +52,5 @@ class AzureInterface:
                 data = blob.download_blob()
                 data.readinto(f)
         except azure.core.exceptions.ResourceNotFoundError:
-            print('Blob not found', source_file)
+            logger.info('Blob not found %s', source_file)
 

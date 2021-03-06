@@ -18,12 +18,19 @@ from elephantcallscounter.utils.path_utils import join_paths
 
 
 def setup_logging():
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
 
     # create console handler and set level to debug
     ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
+    ch.setLevel(logging.INFO)
+
+    # Set the logging level for all azure-* libraries
+    # Disable Logger for Azure Event Hubs
+    logging.getLogger("uamqp").setLevel(
+        logging.CRITICAL)  # Low level uAMQP are logged only for critical
+    logging.getLogger("azure").setLevel(
+        logging.CRITICAL)  # All azure clients are logged only for critical
 
     # create formatter
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -36,6 +43,7 @@ def setup_logging():
 
 
 def create_app():
+    setup_logging()
     app = Flask(__name__, template_folder = 'application/templates/')
     app.config.update({
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///elephantscounter.sqlite3',

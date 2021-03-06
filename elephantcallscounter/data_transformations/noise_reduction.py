@@ -1,6 +1,9 @@
 import os
+import logging
 import noisereduce as nr
 from elephantcallscounter.data_visualizations.plots import Plots
+
+logger = logging.getLogger(__name__)
 
 
 class NoiseReduction:
@@ -29,7 +32,7 @@ class NoiseReduction:
         :return: 
         :rtype: librosa.Audio
         """
-        print('Reducing noise...')
+        logger.info('Reducing noise...')
 
         noise_clip = signal[0:duration * 1000]
         reduced_noise = nr.reduce_noise(
@@ -42,5 +45,5 @@ class NoiseReduction:
             )
             self.plot.fft_plot(reduced_noise, sr, filename, plot)
 
-        print('Done!')
+        logger.info('Done!')
         return reduced_noise

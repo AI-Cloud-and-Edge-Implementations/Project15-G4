@@ -1,6 +1,7 @@
 import asyncio
 import ast
 from azure.eventhub.aio import EventHubConsumerClient
+import logging
 import requests
 
 from elephantcallscounter.adapters.azure_interface import AzureInterface
@@ -8,6 +9,8 @@ from elephantcallscounter.config import env
 from elephantcallscounter.utils.file_utils import write_to_bin_file
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
+
+logger = logging.getLogger(__name__)
 
 
 class ReadDataFromCloud:
@@ -26,7 +29,7 @@ class ReadDataFromCloud:
     async def on_event_batch(self, partition_context, events):
         for event in events:
             event_data = ast.literal_eval(event.body_as_str())
-            print("Received file name in queue: ", event_data['filename'])
+            logger.info("Received file name in queue: %s", event_data['filename'])
             file_path = join_paths(
                 [
                     get_project_root(),
@@ -50,21 +53,21 @@ class ReadDataFromCloud:
                         'queue_name': self.audio_events_queue.queue_name,
                         'container_name': self.container_name
                     })
-                print('Running inference')
+                logger.info('Running inference')
             except requests.exceptions.ConnectionError:
-                print('Error in connecting to blob events endpoint.')
+                logger.info('Error in connecting to blob events endpoint.')
 
         await partition_context.update_checkpoint()
 
     async def on_error(self, partition_context, error):
         # Put your code here. partition_context can be None in the on_error callback.
         if partition_context:
-            print("An exception: {} occurred during receiving from Partition: {}.".format(
+            logger.info("An exception: {} occurred during receiving from Partition: {}.".format(
                 partition_context.partition_id,
                 error
             ))
         else:
-            print("An exception: {} occurred during the load balance process.".format(error))
+            logger.info("An exception: {} occurred during the load balance process.".format(error))
 
     def consume_events(self):
         loop = asyncio.get_event_loop()
@@ -77,7 +80,7 @@ class ReadDataFromCloud:
                 client.receive_batch(on_event_batch = self.on_event_batch, on_error = self.on_error)
             )
         except KeyboardInterrupt:
-            print("Receiving has stopped.")
+            logger.info("Receiving has stopped.")
         finally:
             loop.run_until_complete(client.close())
             loop.stop()
