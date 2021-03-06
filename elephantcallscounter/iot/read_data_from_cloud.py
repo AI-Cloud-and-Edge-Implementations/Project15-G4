@@ -1,10 +1,10 @@
 import asyncio
 import ast
 from azure.eventhub.aio import EventHubConsumerClient
+import requests
 
 from elephantcallscounter.adapters.azure_interface import AzureInterface
 from elephantcallscounter.config import env
-from elephantcallscounter.services.data_import_service import copy_file_to_azure_fast
 from elephantcallscounter.utils.file_utils import write_to_bin_file
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
@@ -47,6 +47,9 @@ class ReadDataFromCloud:
             azure_interface.send_to_azure(
                 file_path, self.dest_folder, event_data['filename']
             )
+            URL = 'http://0.0.0.0:5000/elephants/elephants_count/9/10'
+            r = requests.get(url = URL)
+            print('sent request')
 
         await partition_context.update_checkpoint()
 

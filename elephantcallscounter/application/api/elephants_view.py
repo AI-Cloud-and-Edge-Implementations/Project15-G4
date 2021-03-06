@@ -28,6 +28,6 @@ def elephant_counter(start_time, end_time):
         ).filter(
             end_time <= Elephants.end_time
         ).all()
-        print(elephants)
+        print('Number of elephants', elephants)
 
     return render_template(join_paths([template_folder_loc, 'index.html']))

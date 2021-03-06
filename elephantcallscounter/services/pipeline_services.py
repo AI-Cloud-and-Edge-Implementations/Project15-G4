@@ -7,7 +7,7 @@ from elephantcallscounter.utils.path_utils import join_paths
 from elephantcallscounter.utils.file_utils import get_files_in_dir
 
 
-def pipeline_run(file_path):
+def pipeline_run(file_path, csv_file_path):
     analyse_sound_data(
         file_path = file_path,
         dest_path = join_paths([get_project_root(), 'data/demo/spectrogram'])
@@ -24,7 +24,7 @@ def pipeline_run(file_path):
     find_elephants_in_images(
         join_paths([get_project_root(), 'data/demo/spectrogram_mono']),
         join_paths([get_project_root(), 'data/demo/spectrogram_bb']),
-        join_paths([get_project_root(), 'data/demo/test_spec_image_labels.csv'])
+        join_paths([get_project_root(), csv_file_path])
     )
     value = run_cnn('binaries/resnet', 'data/demo/spectrogram_bb')
     return value
