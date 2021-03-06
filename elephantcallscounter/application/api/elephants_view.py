@@ -10,6 +10,7 @@ from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
 from elephantcallscounter.common.constants import LOCATION
 
+
 template_folder_loc = join_paths([get_project_root(), 'app/templates'])
 
 elephant_blueprint = Blueprint(
@@ -31,7 +32,6 @@ def elephant_counter():
             start_time >= Elephants.start_time
     ).filter(
         end_time <= Elephants.end_time
-
     """
     elephants = db.session.query(Elephants).all()
     print(start_time)
