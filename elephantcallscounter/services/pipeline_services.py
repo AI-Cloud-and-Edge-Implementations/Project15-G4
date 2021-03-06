@@ -26,4 +26,5 @@ def pipeline_run(file_path):
         join_paths([get_project_root(), 'data/demo/spectrogram_bb']),
         join_paths([get_project_root(), 'data/demo/test_spec_image_labels.csv'])
     )
-    run_cnn('data/spectrogram_demo_bb', )
+    value = run_cnn('binaries/resnet', 'data/demo/spectrogram_bb')
+    return value

@@ -103,9 +103,9 @@ class ElephantCounterResnet:
         print(test_acc)
 
     def run_model(self, dir_path):
-        data_it = self.get_dataset_it(join_paths(dir_path))
+        data_it = self.get_dataset_it(join_paths([get_project_root(), dir_path]))
         try:
-            model = self.load_model(self.model_save_loc)
+            model = self.load_model(join_paths([get_project_root(), self.model_save_loc]))
         except OSError:
             print('model {} not loaded'.format(self.model_save_loc))
         else:
