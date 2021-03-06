@@ -30,12 +30,15 @@ def pipeline_run(file_path, csv_file_path):
         join_paths([get_project_root(), csv_file_path])
     )
     value = run_cnn('binaries/resnet', 'data/demo/spectrogram_bb')
-    url = 'http://0.0.0.0:5000/elephants/elephants_count/'
-    r = requests.get(url = url, params = {
+    device_id = file_path.split('_')[0]
+    URL = 'http://0.0.0.0:5000/elephants/add_elephant_count/'
+    r = requests.get(url = URL, params = {
+        'latitude': '20',
+        'longitude': '30',
         'start_time': '2020-01-10 06:30:23',
-        'end_time': '2021-01-11 06:30:23'
+        'end_time': '2021-01-11 06:30:23',
+        'device_id': device_id,
+        'number_of_elephants': value
     })
-    elephant_count = ast.literal_eval(r.text)['Number of elephants']
-    print('Number of elephants found', elephant_count)
-
+    print('Number of elephants found after running pipeline', value)
     return value

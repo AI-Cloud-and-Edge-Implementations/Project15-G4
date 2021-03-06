@@ -10,7 +10,7 @@ TEST_PATH_DEFAULT = os.path.join(
 RUN_FRESH = True
 
 LOCATION = {
-    'nn01a': (2.54, 16.55),
-    'nn01b': (2.9, 17.05),
-    'nn02a': (3.0, 18.0)
+    'nn01a': {'lat': 2.5, 'lng': 16.4},
+    'nn01b': {'lat': 2.9, 'lng': 16.3},
+    'nn02a': {'lat': 2.2, 'lng': 16.7}
 }

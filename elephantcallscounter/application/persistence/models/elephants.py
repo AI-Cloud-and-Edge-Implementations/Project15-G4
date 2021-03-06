@@ -1,6 +1,6 @@
 from elephantcallscounter.app_factory import db
 
-from sqlalchemy import Column, DateTime, Integer, Float
+from sqlalchemy import Column, DateTime, Integer, Float, Text
 
 
 class Elephants(db.Model):
@@ -11,7 +11,7 @@ class Elephants(db.Model):
     longitude = Column(Float, default=0.0)
     start_time = Column(DateTime)
     end_time = Column(DateTime, default=0)
-    device_id = Column(Integer, nullable = False)
+    device_id = Column(Text, nullable = False)
     number_of_elephants = Column(Integer, default=0)
 
 
