@@ -40,14 +40,14 @@ def elephant_counter():
     ).all()
     print(start_time)
     print(end_time)
+    elephant_output = [
+        {elephant.device_id: elephant.number_of_elephants}
+        for elephant in elephants
+    ]
 
     return render_template(
         'index.html',
-        number_of_elephants = [{
-            'nn01': 0,
-            'nn02': 1,
-            'nn03': 2
-        }],
+        number_of_elephants = elephant_output,
         locations_data=[
             {'lat': 0.0236, 'lng': 37.9062},
             {'lat': 0.08, 'lng': 38.9062},
