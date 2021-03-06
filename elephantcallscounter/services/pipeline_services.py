@@ -1,4 +1,3 @@
-import ast
 import requests
 
 from elephantcallscounter.services.data_analysis_service import analyse_sound_data
