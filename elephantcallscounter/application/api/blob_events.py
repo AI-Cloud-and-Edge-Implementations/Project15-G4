@@ -3,8 +3,6 @@ from flask import request
 from elephantcallscounter.adapters.shared.audio_events_queue import AudioEventsQueue
 from elephantcallscounter.adapters.azure_interface import AzureInterface
 from elephantcallscounter.services.pipeline_services import pipeline_run
-from elephantcallscounter.utils.path_utils import join_paths
-from elephantcallscounter.utils.path_utils import get_project_root
 
 blob_blueprint = Blueprint(
     'blob_events',

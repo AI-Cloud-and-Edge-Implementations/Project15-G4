@@ -55,7 +55,8 @@ foo@bar:~ docker exec -it ecc flask data_processing generate_training_data data/
 ```
 
 ## Demo Run:
-- Run the flask app
+- Run the db migration as specified above ^.
+- Run the flask app ^.
 - Run this command to start the device simulator:
 ```bash
 foo@bar:~ flask events device_simulator tests/test_fixtures/ elephant-sound-data realtimequeue realtimeblobs 
