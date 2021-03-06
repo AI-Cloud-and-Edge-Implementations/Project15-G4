@@ -88,7 +88,7 @@ def find_elephants_command(context, dir_name, dest_folder, csv_file_path):
 
 @data_analysis.cli.command('train_cnn')
 @click.argument('training_loc')
-@click.argument('model_name')
+@click.argument('model_name', default='binaries/resnet_')
 def train_cnn(training_loc, model_name):
     elephant_counter_resnet = ElephantCounterResnet(
         training_loc = join_paths([get_project_root(), training_loc]),

@@ -33,7 +33,7 @@ class ElephantCounterResnet:
         # create generator
         # prepare an iterators for each dataset
         train_it = self.get_dataset_it(join_paths([dir_path, 'train']))
-        val_it = self.get_dataset_it(join_paths([dir_path, 'valid']))
+        val_it = self.get_dataset_it(join_paths([dir_path, 'val']))
         test_it = self.get_dataset_it(join_paths([dir_path, 'test']))
         return train_it, val_it, test_it
 
