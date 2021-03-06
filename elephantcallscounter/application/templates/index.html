@@ -6,7 +6,7 @@
     <style type="text/css">
       /* Set the size of the div element that contains the map */
       #map {
-        height: 800px;
+        height: 400px;
         /* The height is 400 pixels */
         width: 100%;
         /* The width is the width of the web page */
@@ -25,8 +25,9 @@
         var marker, i;
         for (i = 0; i < locations.length; i++) {
           marker = new google.maps.Marker({
-            position: new google.maps.LatLng(locations[i]['lat'], locations[i]['long']),
-            map: map
+            position: new google.maps.LatLng(locations[i]['lat'], locations[i]['lng']),
+            map: map,
+            label: labels[i],
           });
         }
       }
@@ -40,5 +41,21 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdxfwE2tv-niMqm8mVgo0JUoTQnbkze4c&callback=initMap&libraries=&v=weekly"
       async
     ></script>
+    <span style="font-size: xxx-large; font-family: Courier New,serif; ">
+    <table border="1">
+    {% for dict_item in number_of_elephants %}
+          <tr>
+            <th>Location</th>
+            <th>Number Of Elephants</th>
+          </tr>
+        {% for key, value in dict_item.items() %}
+           <tr>
+                <th> {{ key }} </th>
+                <td> {{ value }} </td>
+           </tr>
+        {% endfor %}
+    {% endfor %}
+     </table>
+
   </body>
 </html>
