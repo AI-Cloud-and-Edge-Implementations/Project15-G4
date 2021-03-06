@@ -10,4 +10,4 @@ demo = Blueprint('demo', __name__)
 @click.argument('file_path')
 @click.pass_context
 def run_demo(context, file_path):
-    pipeline_run(file_path = file_path)
+    pipeline_run(file_path = file_path, csv_file_path = 'data/labels/spec_images_labels.csv')
