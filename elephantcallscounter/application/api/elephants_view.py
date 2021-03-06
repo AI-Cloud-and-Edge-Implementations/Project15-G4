@@ -44,6 +44,9 @@ def elephant_counter():
         {elephant.device_id: elephant.number_of_elephants}
         for elephant in elephants
     ]
+    location_data = [
+        
+    ]
 
     return render_template(
         'index.html',
