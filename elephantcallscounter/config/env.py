@@ -18,3 +18,4 @@ TEST_FILE_PATH = environment_loader(
 )
 IOT_HUB_CONN_STRING = environment_loader("IOT_HUB_CONN_STRING")
 EVENTHUB_CONN_STRING = environment_loader("EVENTHUB_CONN_STRING")
+GOOGLE_API_KEY = environment_loader("GOOGLE_API_KEY")

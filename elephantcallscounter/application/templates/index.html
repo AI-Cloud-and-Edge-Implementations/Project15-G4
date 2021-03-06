@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Elephant Map</title>
+    <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
+    <style type="text/css">
+      /* Set the size of the div element that contains the map */
+      #map {
+        height: 800px;
+        /* The height is 400 pixels */
+        width: 100%;
+        /* The width is the width of the web page */
+      }
+    </style>
+    <script>
+      // Initialize and add the map
+      function initMap() {
+        let locations = JSON.parse('{{locations_data | tojson}}')
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 3,
+          center: { lat:  0.0236, lng: 37.906 },
+        });
+        // Create an array of alphabetical characters used to label the markers.
+        const labels = JSON.parse('{{labels | tojson}}');
+        const markers = locations.map((location, i) => {
+          return new google.maps.Marker({
+            position: location,
+            label: labels[i % labels.length],
+          });
+        });
+        // Add a marker clusterer to manage the markers.
+        new MarkerClusterer(map, markers, {
+          imagePath:
+            "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <h3>Elephant Location Counter</h3>
+    <!--The div element for the map -->
+    <div id="map"></div>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdxfwE2tv-niMqm8mVgo0JUoTQnbkze4c&callback=initMap&libraries=&v=weekly"
+      async
+    ></script>
+  </body>
+</html>

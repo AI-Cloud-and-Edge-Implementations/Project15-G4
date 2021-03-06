@@ -7,3 +7,4 @@ TRAINING_FILE_PATH_DEFAULT = os.path.join(
 TEST_PATH_DEFAULT = os.path.join(
                 get_project_root(), 'data/metadata/nn_ele_00-24hr_GeneralTest_v4.txt'
             )
+RUN_FRESH = True

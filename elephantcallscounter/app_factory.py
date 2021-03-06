@@ -16,7 +16,7 @@ from elephantcallscounter.utils.path_utils import join_paths
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder = 'application/templates/')
     app.config.update({
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///elephantscounter.sqlite3',
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,

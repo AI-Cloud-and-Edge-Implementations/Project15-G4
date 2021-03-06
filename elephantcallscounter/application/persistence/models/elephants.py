@@ -13,3 +13,9 @@ class Elephants(db.Model):
     end_time = Column(DateTime, default=0)
     device_id = Column(Integer, nullable = False)
     number_of_elephants = Column(Integer, default=0)
+
+
+def delete_all_elephants():
+    print('Deleting all elephant data')
+    db.session.query(Elephants).delete()
+    db.session.commit()
