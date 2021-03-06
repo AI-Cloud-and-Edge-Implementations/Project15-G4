@@ -22,17 +22,13 @@
         });
         // Create an array of alphabetical characters used to label the markers.
         const labels = JSON.parse('{{labels | tojson}}');
-        const markers = locations.map((location, i) => {
-          return new google.maps.Marker({
-            position: location,
-            label: labels[i % labels.length],
+        var marker, i;
+        for (i = 0; i < locations.length; i++) {
+          marker = new google.maps.Marker({
+            position: new google.maps.LatLng(locations[i]['lat'], locations[i]['long']),
+            map: map
           });
-        });
-        // Add a marker clusterer to manage the markers.
-        new MarkerClusterer(map, markers, {
-          imagePath:
-            "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
-        });
+        }
       }
     </script>
   </head>
