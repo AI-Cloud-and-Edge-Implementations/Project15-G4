@@ -63,4 +63,4 @@ def create_mono_spectrograms(image_folder, target_folder, write_file=False):
 
 def run_cnn(model_name, dir_path):
     elephant_counter_resnet = ElephantCounterResnet(model_name)
-    elephant_counter_resnet.run_model(dir_path)
+    return elephant_counter_resnet.run_model(dir_path)
