@@ -3,3 +3,4 @@ venv/
 rootkey.xlsx
 *.wav
 *__pycache__/
+!elephantcallscounter/tests/test_fixtures/*.wav
