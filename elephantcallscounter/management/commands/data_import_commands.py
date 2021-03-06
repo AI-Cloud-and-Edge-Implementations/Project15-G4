@@ -1,6 +1,7 @@
 import click
 from flask import Blueprint
 
+from elephantcallscounter.adapters.azure_interface import AzureInterface
 from elephantcallscounter.services.data_import_service import import_data_from_s3_using_boto
 from elephantcallscounter.services.data_import_service import copy_file_to_azure_fast
 from elephantcallscounter.services.data_import_service import download_data_from_azure_fast
@@ -17,6 +18,24 @@ def import_data_from_s3(context):
     :return void:
     """
     import_data_from_s3_using_boto()
+
+
+@data_import.cli.command('copy_blob_from_azure')
+@click.argument('container_name')
+@click.argument('source_folder')
+@click.argument('destination_folder')
+@click.pass_context
+def download_from_azure(context, container_name, source_folder, destination_folder):
+    """ Command to copy data from from azure using blob storage.
+
+    :param context:
+    :param string container_name:
+    :param string source_folder:
+    :param string destination_folder:
+    :return void:
+    """
+    azure_interface = AzureInterface(container_name = container_name)
+    azure_interface.download_from_azure(source_folder, destination_folder)
 
 
 @data_import.cli.command('copy_data_to_azure')

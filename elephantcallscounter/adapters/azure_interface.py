@@ -4,6 +4,7 @@ from azure.storage.blob import BlobServiceClient
 from azure.storage.blob import BlobClient
 
 from elephantcallscounter.config import env
+from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
 
 
@@ -44,7 +45,7 @@ class AzureInterface:
                 blob_name = source_file,
                 credential = env.STORAGE_SAS_KEY
             )
-            with open(os.path.join(dest_file), "wb") as f:
+            with open(join_paths([get_project_root(), dest_file]), "wb+") as f:
                 data = blob.download_blob()
                 data.readinto(f)
         except azure.core.exceptions.ResourceNotFoundError:
