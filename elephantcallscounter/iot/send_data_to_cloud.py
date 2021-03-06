@@ -1,5 +1,6 @@
-import json
 import asyncio
+import json
+import logging
 import uuid
 import time
 from azure.iot.device.aio import IoTHubDeviceClient
@@ -7,6 +8,8 @@ from azure.iot.device import Message
 
 from elephantcallscounter.config import env
 from elephantcallscounter.utils.path_utils import join_paths
+
+logger = logging.getLogger(__name__)
 
 
 async def write_to_hub(source_path, list_of_files, counter, limit):
@@ -35,8 +38,9 @@ async def write_to_hub(source_path, list_of_files, counter, limit):
                 msg.content_encoding = "utf-8"
                 msg.content_type = "application/json"
                 await device_client.send_message(msg)
-                print("done sending file " + str(f))
+                logger.info("done sending file " + str(f))
                 counter['count'] += 1
+                logger.info(counter['count'])
                 await asyncio.sleep(sleep_interval)
 
     # Define behavior for halting the application
@@ -44,9 +48,8 @@ async def write_to_hub(source_path, list_of_files, counter, limit):
         while True:
             try:
                 if counter['count'] == limit:
-                    print('Quitting...')
+                    logger.info('Quitting...')
                     break
-                time.sleep(10000)
             except EOFError as e:
                 time.sleep(10000)
 

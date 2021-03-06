@@ -1,3 +1,5 @@
+import logging
+
 from flask import Flask
 from flask_script import Manager
 from flask_migrate import MigrateCommand
@@ -13,6 +15,24 @@ from elephantcallscounter.management.commands.pipeline_commands import demo
 from elephantcallscounter.management.commands.event_commands import events
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
+
+
+def setup_logging():
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+
+    # create console handler and set level to debug
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+
+    # create formatter
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    # add formatter to ch
+    ch.setFormatter(formatter)
+
+    # add ch to logger
+    logger.addHandler(ch)
 
 
 def create_app():
