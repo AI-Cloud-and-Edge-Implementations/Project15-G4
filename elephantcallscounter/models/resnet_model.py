@@ -79,7 +79,6 @@ class ElephantCounterResnet:
 
             model.compile(
                 loss = 'categorical_crossentropy',
-                #optimizer = keras.optimizers.RMSprop(lr = 2e-5),
                 optimizer = keras.optimizers.Adam(learning_rate=0.001),
                 metrics = ['accuracy']
             )
@@ -93,7 +92,6 @@ class ElephantCounterResnet:
             plt.ylabel('Accuracy')
             plt.ylim([0.5, 1])
             plt.legend(loc = 'lower right')
-            #plt.savefig(join_paths([get_project_root(), 'graph.png']))
             plt.savefig(join_paths([get_project_root(), self.model_save_loc, 'graph.png']))
 
         pred = model.predict_classes(test_it)
