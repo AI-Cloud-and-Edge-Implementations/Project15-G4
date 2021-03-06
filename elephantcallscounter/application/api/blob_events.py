@@ -25,7 +25,7 @@ def run_processing():
         file_path = message['content'].split('/')[-1]
         azure_interface.download_from_azure(
             message['content'],
-            dest_file = join_paths([get_project_root(), file_path])
+            dest_file = file_path
         )
         print('about to run pipeline on {}!'.format(file_path))
         pipeline_run(file_path, 'data/labels/spec_images_labels.csv')
