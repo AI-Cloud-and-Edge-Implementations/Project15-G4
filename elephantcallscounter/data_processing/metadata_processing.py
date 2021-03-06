@@ -1,4 +1,8 @@
 import pandas as pd
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class MetadataProcessing:
@@ -14,7 +18,7 @@ class MetadataProcessing:
         metadata = pd.read_csv(self.metadata_filepath, sep='\t', header=0)
         # Removing outliers
         metadata.drop(metadata[metadata.duration > 1000].index, inplace = True)
-        print(f'Using metadata file {self.metadata_filepath}')
+        logger.info(f'Using metadata file {self.metadata_filepath}')
         return metadata
 
     @classmethod

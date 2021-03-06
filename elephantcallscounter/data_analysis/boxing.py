@@ -2,10 +2,13 @@ import cv2
 import math
 import os
 import pandas as pd
+import logging
 
 
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
+
+logger = logging.getLogger(__name__)
 
 
 class Boxing:
@@ -26,10 +29,10 @@ class Boxing:
             [self.target_folder, str(len(elephants)), image_filename]
         )
         cv2.imwrite(boxed_path, image)
-        print(f'Boxed image stored as {boxed_path}')
+        logger.info(f'Boxed image stored as {boxed_path}')
 
     def create_boxes(self, image_filename):
-        print(f'Creating boxes for {self.image_folder + image_filename}...')
+        logger.info(f'Creating boxes for {self.image_folder + image_filename}...')
 
         image = self.monochrome.create_monochrome(
             join_paths([get_project_root(), self.image_folder, image_filename])
@@ -88,11 +91,11 @@ class Boxing:
                                 abs(elephant[1] - rumble[1]) < 200)), elephants))
 
             if len(similar_rumbles) < 1:
-                print(f'Unique elephant at {rumble}')
+                logger.info(f'Unique elephant at {rumble}')
                 elephants.append(rumble)
                 cv2.drawMarker(ROI, rumble, cv2.COLOR_LAB2LBGR, markerType = cv2.MARKER_STAR)
 
-        print(f'Found {len(elephants)} elephant(s) in image!')
+        logger.info(f'Found {len(elephants)} elephant(s) in image!')
 
         # put the ROI on top of the original image
         h, w = ROI.shape[0], ROI.shape[1]

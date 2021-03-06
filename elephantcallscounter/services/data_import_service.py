@@ -1,9 +1,12 @@
+import logging
 import os
 
 from elephantcallscounter.config import env
 from elephantcallscounter.data_import.az_copy import AzureDataImporter
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.adapters.amazon_interface import AmazonInterface
+
+logger = logging.getLogger(__name__)
 
 
 def copy_data_from_s3_to_azure_fast():
@@ -29,19 +32,19 @@ def copy_file_to_azure_fast(
     :param string dest_folder:
     :return:
     """
-    print(f'Processing {source_file_name}...')
+    logger.info(f'Processing {source_file_name}...')
     az_data_importer = AzureDataImporter(
         source_directory=os.path.join(get_project_root(), 'data', 'rumble_landscape_general'),
         blob_string = env.AZURE_STORAGE_ACCOUNT,
         container_name = container_name
     )
-    print('Sending file: ', source_file_name, dest_folder)
+    logger.info('Sending file: %s to %s', source_file_name, dest_folder)
     p1 = az_data_importer.az_upload_data_to_blob(
         source_path = source_file_name,
         destination_path = dest_folder
     )
-    print(f'Processing {source_file_name} finished!')
-    print(f'Sent file to {dest_folder}')
+    logger.info(f'Processing {source_file_name} finished!')
+    logger.info(f'Sent file to {dest_folder}')
 
 
 def download_data_from_azure_fast(
@@ -55,7 +58,7 @@ def download_data_from_azure_fast(
     :return:
     """
     os.makedirs(dest_folder, exist_ok = True)
-    print(f'Processing {source_folder}...')
+    logger.info(f'Processing {source_folder}...')
     az_data_importer = AzureDataImporter(
         source_directory=os.path.join(get_project_root(), 'data', 'rumble_landscape_general'),
         blob_string = env.AZURE_STORAGE_ACCOUNT,
@@ -65,8 +68,8 @@ def download_data_from_azure_fast(
         source_path = source_folder,
         destination_path = dest_folder
     )
-    print(f'Processing {source_folder} finished!')
-    print(f'Sent file to {dest_folder}')
+    logger.info(f'Processing {source_folder} finished!')
+    logger.info(f'Sent file to {dest_folder}')
 
 
 def import_data_from_s3_using_boto():

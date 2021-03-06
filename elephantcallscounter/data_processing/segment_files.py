@@ -1,10 +1,13 @@
 from collections import defaultdict
+import logging
 import os
 
 from elephantcallscounter.data_processing.audio_processing import AudioProcessing
 from elephantcallscounter.data_processing.metadata_processing import MetadataProcessing
 from elephantcallscounter.utils.data_structures import RangeSet
 from elephantcallscounter.utils.path_utils import get_project_root
+
+logger = logging.getLogger(__name__)
 
 
 class SegmentFiles:
@@ -71,7 +74,7 @@ class SegmentFiles:
                 destination_file = cropped_file
             )
             if is_cropped:
-                print('Cropped File: ', cropped_file)
+                logger.info('Cropped File: %s', cropped_file)
 
     def clear_segments(self):
         for folder in os.listdir(self.training_set):
@@ -98,4 +101,4 @@ class SegmentFiles:
             # remove local file
             for file_to_remove in os.listdir(files_to_delete):
                 os.remove(os.path.join(files_to_delete, file_to_remove))
-                print("File removed: ", file_to_remove)
+                logger.info("File removed: ", file_to_remove)

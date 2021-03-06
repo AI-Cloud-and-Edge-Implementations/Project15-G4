@@ -1,3 +1,4 @@
+import logging
 import requests
 
 from elephantcallscounter.services.data_analysis_service import analyse_sound_data
@@ -7,6 +8,8 @@ from elephantcallscounter.management.commands.data_analysis_commands import run_
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
 from elephantcallscounter.utils.file_utils import get_files_in_dir
+
+logger = logging.getLogger(__name__)
 
 
 def pipeline_run(file_path, csv_file_path):
@@ -39,5 +42,5 @@ def pipeline_run(file_path, csv_file_path):
         'device_id': device_id,
         'number_of_elephants': value
     })
-    print('Number of elephants found after running pipeline', value)
+    logger.info('Number of elephants found after running pipeline %s', str(value))
     return value

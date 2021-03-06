@@ -1,7 +1,10 @@
 import cv2
+import logging
 
 from elephantcallscounter.utils.path_utils import create_necessary_directories
 from elephantcallscounter.utils.path_utils import join_paths
+
+logger = logging.getLogger(__name__)
 
 
 class Monochrome:
@@ -9,7 +12,7 @@ class Monochrome:
         self.target_folder = target_folder
 
     def create_monochrome(self, image_filename, write_file=False):
-        print(f'Making monochrome image of file {image_filename}...')
+        logger.info(f'Making monochrome image of file {image_filename}...')
         original_image = cv2.imread(image_filename)
 
         # grayscale
@@ -25,6 +28,6 @@ class Monochrome:
                 self.target_folder, image_filename.replace('spec_image_', 'mono_')
             ])
             cv2.imwrite(mono_path, blackAndWhiteImage)
-            print(f'Monochrome image stored as {mono_path}')
+            logger.info(f'Monochrome image stored as {mono_path}')
 
         return blackAndWhiteImage

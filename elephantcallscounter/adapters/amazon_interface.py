@@ -1,8 +1,11 @@
 import os
 import boto3
+import logging
 import pandas as pd
 from botocore import UNSIGNED
 from botocore.config import Config
+
+logger = logging.getLogger(__name__)
 
 
 class AmazonInterface:
@@ -20,13 +23,13 @@ class AmazonInterface:
 
     def download_s3_file(self, path, filename):
         target_path = f'data/raw/{filename}'
-        print(f'Downloading {target_path}...')
+        logger.info(f'Downloading {target_path}...')
 
         if os.path.exists(target_path):
-            print(f'Path {target_path} already exists, skipping.')
+            logger.info(f'Path {target_path} already exists, skipping.')
         else:
             self.s3.download_file(self.bucket, path, target_path)
-            print('Done!')
+            logger.info('Done!')
 
     def download_all_files(self, delete_data: bool = False, segment_files: bool = False):
         files = self.read_from_s3()
@@ -67,9 +70,9 @@ class AmazonInterface:
 
                         if delete_data:
                             target_path = f'data/raw/{filename}'
-                            print(f'Deleting raw file {target_path}...')
+                            logger.info(f'Deleting raw file {target_path}...')
                             os.remove(target_path)
                     else:
-                        print(f'Filename {filename} not in train or test set, ignoring.')
+                        logger.info(f'Filename {filename} not in train or test set, ignoring.')
             except Exception as e:
-                print('Error while downloading ' + filename + ': ' + str(e))
+                logger.info('Error while downloading ' + filename + ': ' + str(e))

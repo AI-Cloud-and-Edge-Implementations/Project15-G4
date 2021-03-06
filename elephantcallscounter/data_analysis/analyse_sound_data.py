@@ -1,11 +1,14 @@
 import numpy as np
 import os
 import librosa
+import logging
 
 from elephantcallscounter.data_transformations.filters import Filters
 from elephantcallscounter.data_visualizations.plots import Plots
 from elephantcallscounter.data_transformations.noise_reduction import NoiseReduction
 from elephantcallscounter.utils.path_utils import create_necessary_directories
+
+logger = logging.getLogger(__name__)
 
 
 class AnalyseSoundData:
@@ -28,10 +31,10 @@ class AnalyseSoundData:
         # Keeping audio at original sample rate
         try:
             signal, sr = librosa.load(file_name, sr=sr)
-            print('Duration of sample: {} ms'.format(len(signal)/sr))
+            logger.info('Duration of sample: {} ms'.format(len(signal)/sr))
             return signal, sr
         except Exception as ex:
-            print('Failed to load data: ' + repr(ex))
+            logger.info('Failed to load data: ' + repr(ex))
             return None, None
 
     def analyse_audio(self):

@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 from elephantcallscounter.adapters.shared.audio_events_queue import AudioEventsQueue
 from elephantcallscounter.iot.send_data_to_cloud import write_to_hub
@@ -8,13 +9,15 @@ from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
 from elephantcallscounter.utils.file_utils import get_files_in_dir
 
+logger = logging.getLogger(__name__)
+
 
 def send_to_iot(source_dir):
     path = join_paths([get_project_root(), source_dir])
     spectrogram_list = get_files_in_dir(path)
     counter = {'count': 0}
     asyncio.run(write_to_hub(path, spectrogram_list, counter, limit=len(spectrogram_list)))
-    print('finished sending data!!!')
+    logger.info('finished sending data!!!')
 
 
 def receive_from_iot(container_name, queue_name, dest_folder):
