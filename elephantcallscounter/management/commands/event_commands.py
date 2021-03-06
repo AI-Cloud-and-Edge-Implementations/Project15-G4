@@ -7,6 +7,7 @@ events = Blueprint('events', __name__)
 
 
 @events.cli.command('device_simulator')
+@click.argument('source_dir')
 @click.argument('container_name')
 @click.argument('queue_name')
 @click.argument('dest_folder')

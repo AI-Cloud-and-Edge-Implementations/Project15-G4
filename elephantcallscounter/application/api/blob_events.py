@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask import request
 from elephantcallscounter.adapters.shared.audio_events_queue import AudioEventsQueue
 from elephantcallscounter.adapters.azure_interface import AzureInterface
-from elephantcallscounter.management.commands.pipeline_commands import run_demo
+from elephantcallscounter.services.pipeline_services import pipeline_run
 from elephantcallscounter.utils.path_utils import join_paths
 from elephantcallscounter.utils.path_utils import get_project_root
 
@@ -20,12 +20,12 @@ def run_processing():
     audio_events_queue = AudioEventsQueue(queue_name)
     messages = audio_events_queue.dequeue_message_queue()
     azure_interface = AzureInterface(container_name = container_name)
+    messages = [message for message in messages]
     for message in messages:
-        file_path = message['Message Text']
+        file_path = message['content'].split('/')[-1]
         azure_interface.download_from_azure(
-            file_path,
-            dest_file = join_paths([get_project_root(), file_path.split('/')[-1]])
+            message['content'],
+            dest_file = join_paths([get_project_root(), file_path])
         )
-        run_demo(file_path)
-
-    return
+        print('about to run pipeline on {}!'.format(file_path))
+        pipeline_run(file_path, 'data/labels/spec_images_labels')

@@ -9,7 +9,7 @@ from elephantcallscounter.config import env
 from elephantcallscounter.utils.path_utils import join_paths
 
 
-async def write_to_hub(source_path, list_of_files):
+async def write_to_hub(source_path, list_of_files, counter, limit):
     conn_str = env.IOT_HUB_CONN_STRING
 
     # The client object is used to interact with your Azure IoT hub.
@@ -18,7 +18,7 @@ async def write_to_hub(source_path, list_of_files):
     # Connect the client.
     await device_client.connect()
 
-    async def send_spectrogram():
+    async def send_spectrogram(counter):
         sleep_interval = 5
         while True:
             for f in list_of_files:
@@ -36,27 +36,27 @@ async def write_to_hub(source_path, list_of_files):
                 msg.content_type = "application/json"
                 await device_client.send_message(msg)
                 print("done sending file " + str(f))
-                print(payload)
+                counter['count'] += 1
                 await asyncio.sleep(sleep_interval)
 
     # Define behavior for halting the application
-    def stdin_listener():
+    def stdin_listener(counter, limit):
         while True:
             try:
-                selection = input()
-                if selection == 'Q' or selection == 'q':
+                if counter['count'] == limit:
                     print('Quitting...')
                     break
+                time.sleep(10000)
             except EOFError as e:
                 time.sleep(10000)
 
     tasks = asyncio.gather(
-        send_spectrogram()
+        send_spectrogram(counter)
     )
 
     # Run the stdin listener in the event loop
     loop = asyncio.get_running_loop()
-    user_finished = loop.run_in_executor(None, stdin_listener)
+    user_finished = loop.run_in_executor(None, stdin_listener, counter, limit)
 
     # Wait for user to indicate they are done listening for method calls
     await user_finished

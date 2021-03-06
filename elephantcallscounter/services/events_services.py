@@ -12,8 +12,9 @@ from elephantcallscounter.utils.file_utils import get_files_in_dir
 def send_to_iot(source_dir):
     path = join_paths([get_project_root(), source_dir])
     spectrogram_list = get_files_in_dir(path)
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(write_to_hub(path, spectrogram_list))
+    counter = {'count': 0}
+    asyncio.run(write_to_hub(path, spectrogram_list, counter, limit=len(spectrogram_list)))
+    print('finished sending data!!!')
 
 
 def receive_from_iot(container_name, queue_name, dest_folder):
@@ -26,7 +27,9 @@ def receive_from_iot(container_name, queue_name, dest_folder):
     read_data_from_cloud.consume_events()
 
 
-def device_simulator(source_dir, container_name, queue_name, dest_folder):
+def device_simulator(
+        source_dir, container_name, queue_name, dest_folder
+):
     run_in_parallel(
         lambda: send_to_iot(source_dir),
         lambda: receive_from_iot(container_name, queue_name, dest_folder)

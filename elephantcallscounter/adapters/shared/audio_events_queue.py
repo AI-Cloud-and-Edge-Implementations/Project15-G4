@@ -30,12 +30,12 @@ class AudioEventsQueue:
 
     def dequeue_message_queue(self):
         messages = self.queue_client.receive_messages()
+        return messages
 
+    def delete_processed_messages(self, messages):
         for message in messages:
             print("Deleting message: " + message.content)
             self.queue_client.delete_message(message.id, message.pop_receipt)
-
-        return messages
 
     def delete_queue(self):
         print("Deleting queue: " + self.queue_client.queue_name)
