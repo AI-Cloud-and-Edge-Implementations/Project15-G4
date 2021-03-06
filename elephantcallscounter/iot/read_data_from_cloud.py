@@ -21,6 +21,7 @@ class ReadDataFromCloud:
         self.audio_events_queue = audio_events_queue
         self.container_name = container_name
         self.dest_folder = dest_folder
+        self.url_location = 'http://0.0.0.0:5000/elephants/elephants_count/'
 
     async def on_event_batch(self, partition_context, events):
         for event in events:
@@ -47,9 +48,12 @@ class ReadDataFromCloud:
             azure_interface.send_to_azure(
                 file_path, self.dest_folder, event_data['filename']
             )
-            URL = 'http://0.0.0.0:5000/elephants/elephants_count/9/10'
-            r = requests.get(url = URL)
-            print('sent request')
+            r = requests.get(url = self.url_location, params = {
+                'start_time': '2020-01-10 06:30:23',
+                'end_time': '2021-01-11 06:30:23'
+            })
+            elephant_count = ast.literal_eval(r.text)['Number of elephants']
+            print('Number of elephants found', elephant_count)
 
         await partition_context.update_checkpoint()
 
