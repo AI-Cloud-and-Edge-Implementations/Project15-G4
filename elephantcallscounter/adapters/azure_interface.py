@@ -1,4 +1,5 @@
 import os
+import azure.core.exceptions
 from azure.storage.blob import BlobServiceClient
 from azure.storage.blob import BlobClient
 
@@ -36,14 +37,16 @@ class AzureInterface:
             print('Error while uploading ' + filename + ': ' + str(e))
 
     def download_from_azure(self, source_file, dest_file):
-        blob = BlobClient(
-            account_url = env.AZURE_STORAGE_ACCOUNT,
-            container_name = self.container_name,
-            blob_name = source_file,
-            credential = env.STORAGE_SAS_KEY
-        )
-
-        with open(os.path.join(dest_file), "wb") as f:
-            data = blob.download_blob()
-            data.readinto(f)
+        try:
+            blob = BlobClient(
+                account_url = env.AZURE_STORAGE_ACCOUNT,
+                container_name = self.container_name,
+                blob_name = source_file,
+                credential = env.STORAGE_SAS_KEY
+            )
+            with open(os.path.join(dest_file), "wb") as f:
+                data = blob.download_blob()
+                data.readinto(f)
+        except azure.core.exceptions.ResourceNotFoundError:
+            print('Blob not found', source_file)
 

@@ -9,9 +9,9 @@ foo@bar:~ python3 -m elephantcallscounter
 ```
 
 # Flask APP:
-- Ensure you first export the neccesary environment variables.
+- To run the app.
 ```bash
-foo@bar:~ export FLASK_APP=elephantcallscounter.app_factory
+foo@bar:~ flask run
 ```
 - To run the migrations:
 ```bash

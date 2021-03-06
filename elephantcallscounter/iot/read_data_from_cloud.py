@@ -26,11 +26,7 @@ class ReadDataFromCloud:
     async def on_event_batch(self, partition_context, events):
         for event in events:
             event_data = ast.literal_eval(event.body_as_str())
-            print("Received event from partition: {}.".format(partition_context.partition_id))
-            print("Telemetry received: ", event.body_as_str())
-            print("Properties (set by device): ", event.properties)
-            print("System properties (set by IoT Hub): ", event.system_properties)
-            print("File name in queue: ", event_data['filename'])
+            print("Received file name in queue: ", event_data['filename'])
             file_path = join_paths(
                 [
                     get_project_root(),
@@ -48,12 +44,15 @@ class ReadDataFromCloud:
             azure_interface.send_to_azure(
                 file_path, self.dest_folder, event_data['filename']
             )
-            r = requests.get(
-                self.url_location, params = {
-                    'queue_name': self.audio_events_queue.queue_name,
-                    'container_name': self.container_name
-                })
-            print('Running inference')
+            try:
+                r = requests.get(
+                    self.url_location, params = {
+                        'queue_name': self.audio_events_queue.queue_name,
+                        'container_name': self.container_name
+                    })
+                print('Running inference')
+            except requests.exceptions.ConnectionError:
+                print('Error in connecting to blob events endpoint.')
 
         await partition_context.update_checkpoint()
 
