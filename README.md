@@ -53,3 +53,12 @@ foo@bar:~ docker exec -it ecc flask data_processing generate_file_segments data/
 ```bash
 foo@bar:~ docker exec -it ecc flask data_processing generate_training_data data/spectrogram_bb
 ```
+
+## Demo Run:
+- Run the flask app
+- Run this command to start the device simulator:
+```bash
+foo@bar:~ flask events device_simulator tests/test_fixtures/ elephant-sound-data realtimequeue realtimeblobs 
+```
+- Open the browser and browse to this location: 
+http://0.0.0.0:5000/elephants/elephants_count/?start_time=2020-01-10%2006:30:23&end_time=2021-01-11%2006:30:23
