@@ -27,3 +27,5 @@ def run_processing():
         )
         print('about to run pipeline on {}!'.format(file_path))
         pipeline_run(file_path, 'data/labels/spec_images_labels.csv')
+
+    return {}
