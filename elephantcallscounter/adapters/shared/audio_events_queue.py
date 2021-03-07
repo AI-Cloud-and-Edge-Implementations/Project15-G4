@@ -32,9 +32,8 @@ class AudioEventsQueue:
         logger.info("Adding message: " + message)
         self.queue_client.send_message(message)
 
-    def dequeue_message_queue(self):
-        messages = self.queue_client.receive_messages()
-        return messages
+    def dequeue_message_queue(self, messages_per_page=1):
+        return next(self.queue_client.receive_messages(messages_per_page=messages_per_page))
 
     def delete_processed_messages(self, messages):
         for message in messages:

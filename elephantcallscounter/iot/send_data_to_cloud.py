@@ -12,6 +12,15 @@ from elephantcallscounter.utils.path_utils import join_paths
 logger = logging.getLogger(__name__)
 
 
+def build_message(payload):
+    msg = Message(payload)
+    msg.message_id = uuid.uuid4()
+    msg.content_encoding = "utf-8"
+    msg.content_type = "application/json"
+
+    return msg
+
+
 async def write_to_hub(source_path, list_of_files, counter, limit):
     conn_str = env.IOT_HUB_CONN_STRING
 
@@ -31,12 +40,10 @@ async def write_to_hub(source_path, list_of_files, counter, limit):
                 payload = json.dumps({
                     'capturedate': time.time(),
                     'filename': f,
-                    'filecontent': str(file_content)
+                    'filecontent': str(file_content),
+                    'finished': 'False'
                 })
-                msg = Message(payload)
-                msg.message_id = uuid.uuid4()
-                msg.content_encoding = "utf-8"
-                msg.content_type = "application/json"
+                msg = build_message(payload)
                 await device_client.send_message(msg)
                 logger.info("done sending file " + str(f))
                 counter['count'] += 1

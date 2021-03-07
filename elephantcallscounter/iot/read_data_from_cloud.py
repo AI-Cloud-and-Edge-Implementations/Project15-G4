@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class ReadDataFromCloud:
-    def __init__(self, container_name, audio_events_queue, dest_folder):
+    def __init__(self, container_name, audio_events_queue, dest_folder, flag):
         """ Read data from iot hub and send to queue.
 
         :param string container_name:
@@ -25,9 +25,11 @@ class ReadDataFromCloud:
         self.container_name = container_name
         self.dest_folder = dest_folder
         self.url_location = 'http://0.0.0.0:5000/blob_events/run_pipeline/'
+        self.flag = flag
 
     async def on_event_batch(self, partition_context, events):
         for event in events:
+            logger.info("Got new event to process!")
             event_data = ast.literal_eval(event.body_as_str())
             logger.info("Received file name in queue: %s", event_data['filename'])
             file_path = join_paths(
@@ -47,6 +49,9 @@ class ReadDataFromCloud:
             azure_interface.send_to_azure(
                 file_path, self.dest_folder, event_data['filename']
             )
+
+        if self.flag['finished']:
+            logger.info('Finished receiving about to run inference')
             try:
                 r = requests.get(
                     self.url_location, params = {
@@ -81,5 +86,6 @@ class ReadDataFromCloud:
         except KeyboardInterrupt:
             logger.info("Receiving has stopped.")
         finally:
+            logger.info('Receiving has finished.')
             loop.run_until_complete(client.close())
             loop.stop()
