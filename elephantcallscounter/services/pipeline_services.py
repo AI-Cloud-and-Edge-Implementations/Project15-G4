@@ -12,11 +12,12 @@ from elephantcallscounter.utils.file_utils import get_files_in_dir
 logger = logging.getLogger(__name__)
 
 
-def pipeline_run(file_path, csv_file_path):
-    analyse_sound_data(
-        file_path = file_path,
-        dest_path = join_paths([get_project_root(), 'data/demo/spectrogram'])
-    )
+def pipeline_run(folder_path, csv_file_path):
+    for file in get_files_in_dir(folder_path):
+        analyse_sound_data(
+            file_path = join_paths([folder_path, file]),
+            dest_path = join_paths([get_project_root(), 'data/demo/spectrogram'])
+        )
     spectrogram_files_full = [
         join_paths([get_project_root(), 'data/demo/spectrogram', file])
         for file in get_files_in_dir('data/demo/spectrogram')
@@ -32,16 +33,17 @@ def pipeline_run(file_path, csv_file_path):
         join_paths([get_project_root(), csv_file_path])
     )
     value = run_cnn('binaries/resnet', 'data/demo/spectrogram_bb')
-    file_name = file_path.split("/")[-1]
-    device_id = file_name.split('_')[0]
-    URL = 'http://0.0.0.0:5000/elephants/add_elephant_count/'
-    r = requests.get(url = URL, params = {
-        'latitude': '20',
-        'longitude': '30',
-        'start_time': '2020-01-10 06:30:23',
-        'end_time': '2021-01-11 06:30:23',
-        'device_id': device_id,
-        'number_of_elephants': value
-    })
-    logger.info('Number of elephants found after running pipeline %s', str(value))
-    return value
+    for index, file_path in enumerate(get_files_in_dir(folder_path)):
+        file_name = file_path.split("/")[-1]
+        device_id = file_name.split('_')[0]
+        URL = 'http://0.0.0.0:5000/elephants/add_elephant_count/'
+        r = requests.get(url = URL, params = {
+            'latitude': '20',
+            'longitude': '30',
+            'start_time': '2020-01-10 06:30:23',
+            'end_time': '2021-01-11 06:30:23',
+            'device_id': device_id,
+            'number_of_elephants': value[index]
+        })
+        logger.info('Number of elephants found after running pipeline %s', str(value))
+        return value

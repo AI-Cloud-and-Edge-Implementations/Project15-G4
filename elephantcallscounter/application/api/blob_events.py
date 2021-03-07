@@ -33,8 +33,8 @@ def run_processing():
             message['content'],
             dest_file = file_path
         )
-        logger.info('about to run pipeline on {}!'.format(file_path))
-        pipeline_run(file_path, 'data/labels/spec_images_labels.csv')
+    logger.info('about to run pipeline on {}!'.format('data/imported_data'))
+    pipeline_run('data/imported_data', 'data/labels/spec_images_labels.csv')
     audio_events_queue.delete_processed_messages(messages)
     logger.info('Deleted processed messages')
     return {}
