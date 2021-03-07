@@ -12,5 +12,6 @@ RUN_FRESH = True
 LOCATION = {
     'nn01a': {'lat': 2.5, 'lng': 16.4},
     'nn01b': {'lat': 2.9, 'lng': 16.3},
-    'nn02a': {'lat': 2.2, 'lng': 16.7}
+    'nn02a': {'lat': 2.2, 'lng': 16.7},
+    'nn01d': {'lat': 2.2, 'lng': 17.8}
 }
