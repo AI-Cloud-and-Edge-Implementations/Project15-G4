@@ -29,7 +29,7 @@ class TestFileSegments:
                 [get_project_root(), 'data/segments/TrainingSet/nn01b/nn01b_20180220_000000.wav']
             )
         )
-        assert create_file_segments(
+        create_file_segments(
             file_path
         )
         assert len(os.listdir(
