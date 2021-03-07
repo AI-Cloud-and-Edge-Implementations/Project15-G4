@@ -14,18 +14,17 @@ logger = logging.getLogger(__name__)
 
 
 class ReadDataFromCloud:
-    def __init__(self, container_name, audio_events_queue, dest_folder, flag):
+    def __init__(self, audio_events_queue, flag, dest_folder):
         """ Read data from iot hub and send to queue.
 
-        :param string container_name:
         :param elephantcallscounter.adapters.shared.AudioEventsQueue:
-        :param string  dest_folder:
+        :param dict flag:
+        :param string dest_folder:
         """
         self.audio_events_queue = audio_events_queue
-        self.container_name = container_name
-        self.dest_folder = dest_folder
         self.url_location = 'http://0.0.0.0:5000/blob_events/run_pipeline/'
         self.flag = flag
+        self.dest_folder = dest_folder
 
     async def on_event_batch(self, partition_context, events):
         for event in events:
@@ -38,16 +37,8 @@ class ReadDataFromCloud:
                     'data/imported_data/' + event_data['filename']
                 ]
             )
-            write_to_bin_file(
-                bytes(event_data['filecontent'], 'utf-8'),
-                file_path
-            )
             self.audio_events_queue.insert_message_queue(
                 join_paths([self.dest_folder, event_data['filename']])
-            )
-            azure_interface = AzureInterface(self.container_name)
-            azure_interface.send_to_azure(
-                file_path, self.dest_folder, event_data['filename']
             )
 
         if self.flag['finished']:

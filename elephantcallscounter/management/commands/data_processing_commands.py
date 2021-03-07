@@ -1,6 +1,8 @@
 import click
 from flask import Blueprint
 
+from elephantcallscounter.adapters.shared.audio_events_queue import AudioEventsQueue
+from elephantcallscounter.adapters.azure_interface import AzureInterface
 from elephantcallscounter.services.data_processing_service import create_file_segments
 from elephantcallscounter.data_processing.model_preprocessing import ModelPreprocessing
 from elephantcallscounter.utils.path_utils import get_project_root
@@ -45,3 +47,28 @@ def cleanup_data():
     :return void:
     """
     delete_all_elephants()
+
+
+@data_processing.cli.command('delete_queue')
+@click.argument('queue_name')
+def delete_queue(queue_name):
+    """ Command to clean up all data in queue.
+
+    :return void:
+    """
+    azure_events_queue = AudioEventsQueue(queue_name)
+    azure_events_queue.delete_queue()
+
+
+@data_processing.cli.command('delete_blob')
+@click.argument('container_name')
+@click.argument('blob_name')
+def delete_blob(container_name, blob_name):
+    """ Command to delete the data in a blob.
+
+    :param string container_name:
+    :param string blob_name:
+    :return:
+    """
+    azure_interface = AzureInterface(container_name)
+    azure_interface.delete_blob(blob_name)
