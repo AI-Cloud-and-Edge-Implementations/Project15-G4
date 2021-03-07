@@ -51,16 +51,8 @@ class ReadDataFromCloud:
             )
 
         if self.flag['finished']:
-            logger.info('Finished receiving about to run inference')
-            try:
-                r = requests.get(
-                    self.url_location, params = {
-                        'queue_name': self.audio_events_queue.queue_name,
-                        'container_name': self.container_name
-                    })
-                logger.info('Running inference')
-            except requests.exceptions.ConnectionError:
-                logger.info('Error in connecting to blob events endpoint.')
+            import sys
+            sys.exit(0)
 
         await partition_context.update_checkpoint()
 

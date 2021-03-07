@@ -30,3 +30,8 @@ def write_to_bin_file(data, file_name):
 
 def get_files_in_dir(path):
     return os.listdir(join_paths([get_project_root(), path]))
+
+
+def delete_images(directories, file_name):
+    for directory in directories:
+        os.remove(join_paths([get_project_root(), directory, file_name]))

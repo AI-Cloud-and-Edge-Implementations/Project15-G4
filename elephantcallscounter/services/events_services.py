@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import multiprocessing
+import requests
 import time
 
 from elephantcallscounter.adapters.shared.audio_events_queue import AudioEventsQueue
@@ -45,3 +46,14 @@ def device_simulator(
         lambda: send_to_iot(source_dir, flag),
         lambda: receive_from_iot(container_name, queue_name, dest_folder, flag)
     )
+    logger.info('Finished receiving about to run inference')
+    try:
+        r = requests.get(
+            'http://0.0.0.0:5000/blob_events/run_pipeline/', params = {
+                'queue_name': queue_name,
+                'container_name': container_name
+            })
+        logger.info('Running inference')
+    except requests.exceptions.ConnectionError:
+        logger.info('Error in connecting to blob events endpoint.')
+

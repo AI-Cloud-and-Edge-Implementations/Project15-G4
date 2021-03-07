@@ -48,6 +48,12 @@ def find_elephants_in_images(dir_name, dest_folder, csv_file_path):
     boxing.write_labels_to_csv_file(dataset)
 
 
+def box_single_file(image_filename):
+    boxing = Boxing('', '', '', '', False)
+    boxed_image = boxing.create_boxes(image_filename)
+    return boxed_image
+
+
 def create_mono_spectrograms(image_folder, target_folder, write_file=False):
     """ Create the mono spectrograms.
 

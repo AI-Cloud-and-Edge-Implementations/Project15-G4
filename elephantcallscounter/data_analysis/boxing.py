@@ -104,7 +104,7 @@ class Boxing:
         if self.write_file:
             self.write_box_to_file(image, elephants, image_filename)
 
-        return len(elephants)
+        return image, len(elephants)
 
     def write_labels_to_csv_file(self, dataset):
         df = pd.DataFrame(dataset.items(), columns = ['file_name', 'number_of_elephants'])
