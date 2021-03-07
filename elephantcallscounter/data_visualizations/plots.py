@@ -1,10 +1,13 @@
 import librosa
 from librosa import display
+import logging
 import numpy as np
 from matplotlib import pyplot as plt
 import scipy
 
 plt.rcParams['agg.path.chunksize'] = 10000
+
+logger = logging.getLogger(__name__)
 
 
 class Plots:
