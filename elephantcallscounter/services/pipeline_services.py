@@ -32,7 +32,8 @@ def pipeline_run(file_path, csv_file_path):
         join_paths([get_project_root(), csv_file_path])
     )
     value = run_cnn('binaries/resnet', 'data/demo/spectrogram_bb')
-    device_id = file_path.split('_')[0]
+    file_name = file_path.split("/")[-1]
+    device_id = file_name.split('_')[0]
     URL = 'http://0.0.0.0:5000/elephants/add_elephant_count/'
     r = requests.get(url = URL, params = {
         'latitude': '20',
