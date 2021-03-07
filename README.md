@@ -149,5 +149,59 @@ foo@bar:~ flask events device_simulator tests/test_fixtures/ elephant-sound-data
 - Open the browser and browse to this location: 
 http://0.0.0.0:5000/elephants/elephants_count/?start_time=2020-01-10%2006:30:23&end_time=2021-01-11%2006:30:23
   
+## Project Structure:
+```bash
+project
+│
+├───docker ( The docker files)
+│
+├───documentation ( Documentation files )
+│
+├───researchanddevelopment ( R&D work )
+│
+├───elephantcallscounter ( Parent repository for the package )
+    |
+    ├── adapters (Interface for talking to external services)
+    |
+    ├── application (Core logic for flask api)
+    |
+    ├── binaries (Model files)
+    |
+    ├── common (Constants/ Enums and common interfaces)
+    |
+    ├── config (Config files environment variables parsers)
+    |
+    ├── data (Data for application)
+    |
+    ├── data_analysis (Code to generate spectrograms and boxing algorithms)
+    |
+    ├── data_import (Code to get data from azure and other services.)
+    |
+    ├── data_processing (Data processing like segmentation, thresholding, metadata processing etc)
+    |
+    ├── data_transformations (Filters and other data transforms)
+    |
+    ├── data_visualizations (Visualization tools)
+    |
+    ├── iot (Iot hub interface and edge code.)
+    |
+    ├── management (Commands and entry points)
+    |
+    ├── models (Neural network model code)
+    |
+    ├── tests (Integration and Unit tests)
+    |
+    ├── utils (Utility tools)
+    |
+    | __main__.py (application entrypoint)
+    | __init__.py (db and migration utilities initializer)
+    | app_factory.py(Entry point for flask app)
+|   .gitignore (The files to ignore by git)
+│   .env (Env file for the the .)
+|   README.md ( This readme file)
+|   requirements.txt ( Python packages required packages in order to run this project )
+```
+
+  
 ## Contribution
 If you want to contribute, reach out to one of the developers, or the Project 15 team.
