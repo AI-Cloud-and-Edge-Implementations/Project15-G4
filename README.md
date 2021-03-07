@@ -2,13 +2,13 @@
 Microsoft project 15 - Team 4 solution
 
 # Team 4 
-- Abhishekh Baskaran
-- Bas Geerdink
-- Chandan Konuri
-- Henrietta Ridley
-- Jay Padmanabhan
-- Paulo Henrique De Campos Filho
-- Vishweshwar Manthani
+- Abhishekh Baskaran - https://www.linkedin.com/in/abhishekh-jay-baskaran-566286bb/
+- Bas Geerdink - https://www.linkedin.com/in/geerdink/
+- Chandan Konuri - https://www.linkedin.com/in/konuri/
+- Henrietta Ridley - https://www.linkedin.com/in/henriettaridley/
+- Jay Padmanabhan - https://www.linkedin.com/in/jay-padmanabhan-95274b/
+- Paulo Henrique De Campos Filho - https://www.linkedin.com/in/paulohcampos/
+- Vishweshwar Manthani - https://www.linkedin.com/in/vishweshwar/
 
 # Goal
 Our goal was to enable researchers to be able to count the number of elephants in the wild at a specific point in time by interpreting recorded sound files to distinguish the variances in the elephants rumbles so we could say to a good degree of accuracy how many elephants were present in the recorded time frame.
