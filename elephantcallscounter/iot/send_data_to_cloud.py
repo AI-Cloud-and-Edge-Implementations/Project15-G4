@@ -6,6 +6,7 @@ import time
 from azure.iot.device.aio import IoTHubDeviceClient
 from azure.iot.device import Message
 
+from elephantcallscounter.adapters.azure_interface import AzureInterface
 from elephantcallscounter.config import env
 from elephantcallscounter.utils.path_utils import join_paths
 
@@ -21,7 +22,7 @@ def build_message(payload):
     return msg
 
 
-async def write_to_hub(source_path, list_of_files, counter, limit):
+async def write_to_hub(source_path, list_of_files, counter, limit, container_name, dest_folder):
     conn_str = env.IOT_HUB_CONN_STRING
 
     # The client object is used to interact with your Azure IoT hub.
@@ -34,15 +35,18 @@ async def write_to_hub(source_path, list_of_files, counter, limit):
         sleep_interval = 5
         while True:
             for f in list_of_files:
-                file = open(join_paths([source_path, f]), "rb")
-                file_content = file.read()
-                file.close()
                 payload = json.dumps({
                     'capturedate': time.time(),
                     'filename': f,
-                    'filecontent': str(file_content),
                     'finished': 'False'
                 })
+                azure_interface = AzureInterface(container_name)
+                azure_interface.send_to_azure(
+                    join_paths([source_path, f]),
+                    dest_folder,
+                    f,
+                    media_file = True
+                )
                 msg = build_message(payload)
                 await device_client.send_message(msg)
                 logger.info("done sending file " + str(f))

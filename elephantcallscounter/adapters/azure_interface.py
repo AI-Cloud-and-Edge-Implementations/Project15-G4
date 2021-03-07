@@ -26,17 +26,23 @@ class AzureInterface:
 
         return blob_container_client
 
-    def send_to_azure(self, original_file, dir_path, filename):
+    def send_to_azure(
+            self, original_file, dir_path, filename, media_file = True, remove_file = False
+    ):
         logger.info('Storing ' + filename + ' in Azure Blob...' + dir_path)
         try:
             blob_client = self.blob_service_client.get_blob_client(
                 container=self.container_name, blob=join_paths([dir_path, filename])
             )
             with open(original_file, "rb") as data:
-                blob_client.upload_blob(data)
+                if media_file:
+                    blob_client.upload_blob(data, blob_type = 'BlockBlob')
+                else:
+                    blob_client.upload_blob(data)
             # delete local file
-            os.remove(original_file)
-            logger.info('Done uploading file!', dir_path + filename)
+            if remove_file:
+                os.remove(original_file)
+            logger.info('Done uploading file! %s', dir_path + filename)
         except Exception as e:
             logger.info('Error while uploading ' + filename + ': ' + str(e))
 
@@ -53,4 +59,16 @@ class AzureInterface:
                 data.readinto(f)
         except azure.core.exceptions.ResourceNotFoundError:
             logger.info('Blob not found %s', source_file)
+
+    def delete_blob(self, blob_name):
+        try:
+            blob = BlobClient(
+                account_url = env.AZURE_STORAGE_ACCOUNT,
+                container_name = self.container_name,
+                blob_name = blob_name,
+                credential = env.STORAGE_SAS_KEY
+            )
+            blob.delete_blob()
+        except azure.core.exceptions.ResourceNotFoundError:
+            logger.info('Blob not found %s', blob_name)
 

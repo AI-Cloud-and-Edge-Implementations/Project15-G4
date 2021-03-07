@@ -46,4 +46,5 @@ def pipeline_run(folder_path, csv_file_path):
             'number_of_elephants': value[index]
         })
         logger.info('Number of elephants found after running pipeline %s', str(value))
-        return value
+
+    return value
