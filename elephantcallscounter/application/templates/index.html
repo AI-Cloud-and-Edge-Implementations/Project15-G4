@@ -4,10 +4,13 @@
     <title>Elephant Map</title>
     <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
     <style type="text/css">
-      /* Set the size of the div element that contains the map */
       #map {
         height: 400px;
         width: 100%;
+      }
+      table.center {
+          margin-left: auto;
+          margin-right: auto;
       }
     </style>
     <script>
@@ -37,7 +40,7 @@
       async
     ></script>
     <span style="font-size: xxx-large; font-family: Courier New,serif; "></span>
-    <table border="1">
+    <table border="1" class="center">
     {% for dict_item in number_of_elephants %}
           <tr>
             <th>Location</th>
