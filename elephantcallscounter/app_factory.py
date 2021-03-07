@@ -1,3 +1,5 @@
+import logging
+
 from flask import Flask
 from flask_script import Manager
 from flask_migrate import MigrateCommand
@@ -15,7 +17,33 @@ from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
 
 
+def setup_logging():
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
+    # create console handler and set level to debug
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+
+    # Set the logging level for all azure-* libraries
+    # Disable Logger for Azure Event Hubs
+    logging.getLogger("uamqp").setLevel(
+        logging.CRITICAL)  # Low level uAMQP are logged only for critical
+    logging.getLogger("azure").setLevel(
+        logging.CRITICAL)  # All azure clients are logged only for critical
+
+    # create formatter
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    # add formatter to ch
+    ch.setFormatter(formatter)
+
+    # add ch to logger
+    logger.addHandler(ch)
+
+
 def create_app():
+    setup_logging()
     app = Flask(__name__, template_folder = 'application/templates/')
     app.config.update({
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///elephantscounter.sqlite3',

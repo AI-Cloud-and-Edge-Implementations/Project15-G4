@@ -1,16 +1,21 @@
+import logging
+
 from flask import Blueprint
 from flask import request
 from elephantcallscounter.adapters.shared.audio_events_queue import AudioEventsQueue
 from elephantcallscounter.adapters.azure_interface import AzureInterface
 from elephantcallscounter.services.pipeline_services import pipeline_run
-from elephantcallscounter.utils.path_utils import join_paths
+
 from elephantcallscounter.utils.path_utils import get_project_root
+from elephantcallscounter.utils.path_utils import join_paths
 
 blob_blueprint = Blueprint(
     'blob_events',
     __name__,
     url_prefix = '/blob_events'
 )
+
+logger = logging.getLogger(__name__)
 
 
 @blob_blueprint.route('/run_pipeline/', methods = ['GET'])
@@ -23,9 +28,13 @@ def run_processing():
     messages = [message for message in messages]
     for message in messages:
         file_path = message['content'].split('/')[-1]
+        file_path = join_paths([get_project_root(), 'data/imported_data', file_path])
         azure_interface.download_from_azure(
             message['content'],
-            dest_file = join_paths([get_project_root(), file_path])
+            dest_file = file_path
         )
-        print('about to run pipeline on {}!'.format(file_path))
-        pipeline_run(file_path, 'data/labels/spec_images_labels.csv')
+    logger.info('about to run pipeline on {}!'.format('data/imported_data'))
+    pipeline_run('data/imported_data', 'data/labels/spec_images_labels.csv')
+    audio_events_queue.delete_processed_messages(messages)
+    logger.info('Deleted processed messages')
+    return {}

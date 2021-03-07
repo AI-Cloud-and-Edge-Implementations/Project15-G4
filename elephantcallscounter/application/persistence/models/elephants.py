@@ -1,6 +1,11 @@
+import logging
+
 from elephantcallscounter.app_factory import db
 
 from sqlalchemy import Column, DateTime, Integer, Float, Text
+
+
+logger = logging.getLogger(__name__)
 
 
 class Elephants(db.Model):
@@ -16,6 +21,6 @@ class Elephants(db.Model):
 
 
 def delete_all_elephants():
-    print('Deleting all elephant data')
+    logger.info('Deleting all elephant data')
     db.session.query(Elephants).delete()
     db.session.commit()

@@ -1,10 +1,13 @@
 import librosa
 from librosa import display
+import logging
 import numpy as np
 from matplotlib import pyplot as plt
 import scipy
 
 plt.rcParams['agg.path.chunksize'] = 10000
+
+logger = logging.getLogger(__name__)
 
 
 class Plots:
@@ -21,7 +24,7 @@ class Plots:
         :param sampling_rate:
         :return:
         """
-        print(f'Plotting FFT...')
+        logger.info(f'Plotting FFT...')
         n = len(audio)
         T = 1 / sampling_rate
         yf = scipy.fft.fft(audio)
@@ -40,7 +43,7 @@ class Plots:
             plt.savefig(f'data/spectrograms/fft_{filename}.png')
             # plt.show()
 
-        print('Done!')
+        logger.info('Done!')
 
     def plot_amp_time(self, samples, sampling_rate, plot=False):
         """ This tells us the loudness of the recording.
@@ -50,7 +53,7 @@ class Plots:
         :param sampling_rate:
         :return:
         """
-        print(f'Plotting loudness...')
+        logger.info(f'Plotting loudness...')
         librosa.display.waveplot(y=samples, sr=sampling_rate)
 
         if plot:
@@ -58,7 +61,7 @@ class Plots:
             plt.ylabel('Amplitude')
             plt.show()
 
-        print('Done!')
+        logger.info('Done!')
 
     def plot_and_save_spectrogram(self, input_data, sr, file_location, plot=False):
         """ Plot the spectrogram for the input data.
@@ -72,7 +75,7 @@ class Plots:
         :param plot: defaults to False
         :type plot: bool, optional
         """
-        print(f'Plotting and saving spectrogram for {file_location}...')
+        logger.info(f'Plotting and saving spectrogram for {file_location}...')
 
         stft_value = librosa.core.stft(input_data, n_fft=self.n_fft, hop_length=self.hop_length)
         spectrogram = np.abs(stft_value)
@@ -93,7 +96,7 @@ class Plots:
         if plot:
             plt.show()
 
-        print('Done!')
+        logger.info('Done!')
 
     def plot_mel(self, input_data, sr, plot=False):
         """ Plots the mel spectrogram of the source data.
@@ -105,7 +108,7 @@ class Plots:
         :param plot: defaults to False
         :type plot: bool, optional
         """
-        print(f'Plotting the mel spectrogram...')
+        logger.info(f'Plotting the mel spectrogram...')
         n_mels = 128
         S = librosa.feature.melspectrogram(
             input_data, sr=sr, n_fft=self.n_fft, hop_length=self.hop_length, n_mels=n_mels, htk=True
@@ -121,4 +124,4 @@ class Plots:
         if plot:
             plt.show()
 
-        print('Done!')
+        logger.info('Done!')

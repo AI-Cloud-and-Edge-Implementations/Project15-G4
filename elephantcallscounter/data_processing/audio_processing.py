@@ -1,5 +1,8 @@
 import librosa
+import logging
 import pydub
+
+logger = logging.getLogger(__name__)
 
 
 class AudioProcessing:
@@ -24,7 +27,7 @@ class AudioProcessing:
             extract.export(destination_file)
             return 1
         except pydub.exceptions.CouldntEncodeError as error:
-            print('Error cropping file: ', destination_file)
+            logger.info('Error cropping file: %s', destination_file)
             return -1
     
     @classmethod
@@ -37,5 +40,5 @@ class AudioProcessing:
         """
         # Keeping audio at original sample rate
         signal, sr = librosa.load(file_name, sr=sr)
-        print('Duration of samples {}s'.format(len(signal)/sr))
+        logger.info('Duration of samples {}s'.format(len(signal)/sr))
         return signal, sr
