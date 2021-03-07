@@ -29,12 +29,6 @@ def elephant_counter():
     end_time = request.args.get('end_time')
     start_time = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
     end_time = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
-    """
-    TODO: Add time based aggregation:
-            start_time >= Elephants.start_time
-    ).filter(
-        end_time <= Elephants.end_time
-    """
     elephants = db.session.query(Elephants).all()
     logger.info(start_time)
     logger.info(end_time)

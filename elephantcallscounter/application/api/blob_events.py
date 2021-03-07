@@ -6,6 +6,9 @@ from elephantcallscounter.adapters.shared.audio_events_queue import AudioEventsQ
 from elephantcallscounter.adapters.azure_interface import AzureInterface
 from elephantcallscounter.services.pipeline_services import pipeline_run
 
+from elephantcallscounter.utils.path_utils import get_project_root
+from elephantcallscounter.utils.path_utils import join_paths
+
 blob_blueprint = Blueprint(
     'blob_events',
     __name__,
@@ -25,11 +28,13 @@ def run_processing():
     messages = [message for message in messages]
     for message in messages:
         file_path = message['content'].split('/')[-1]
+        file_path = join_paths([get_project_root(), 'data/imported_data', file_path])
         azure_interface.download_from_azure(
             message['content'],
             dest_file = file_path
         )
         logger.info('about to run pipeline on {}!'.format(file_path))
         pipeline_run(file_path, 'data/labels/spec_images_labels.csv')
-
+    audio_events_queue.delete_processed_messages(messages)
+    logger.info('Deleted processed messages')
     return {}

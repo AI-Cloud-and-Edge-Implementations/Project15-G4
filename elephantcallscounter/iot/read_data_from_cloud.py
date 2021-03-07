@@ -60,7 +60,6 @@ class ReadDataFromCloud:
         await partition_context.update_checkpoint()
 
     async def on_error(self, partition_context, error):
-        # Put your code here. partition_context can be None in the on_error callback.
         if partition_context:
             logger.info("An exception: {} occurred during receiving from Partition: {}.".format(
                 partition_context.partition_id,

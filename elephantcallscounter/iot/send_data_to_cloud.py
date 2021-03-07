@@ -49,6 +49,7 @@ async def write_to_hub(source_path, list_of_files, counter, limit):
             try:
                 if counter['count'] == limit:
                     logger.info('Quitting...')
+                    logger.info('File limit reached %s', str(limit))
                     break
             except EOFError as e:
                 time.sleep(10000)
