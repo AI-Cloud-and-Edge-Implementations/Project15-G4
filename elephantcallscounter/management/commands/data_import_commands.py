@@ -69,5 +69,4 @@ def copy_data_from_azure_fast(context, container_name, source_file, destination_
     :param string destination_file:
     :return void:
     """
-    container_name = context.obj['container_name']
     download_data_from_azure_fast(container_name, source_file, destination_file)

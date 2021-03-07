@@ -56,7 +56,6 @@ class SegmentFiles:
                     file_name = os.path.join(folder_path, file_name)
                     cropped_file_name = os.path.join(folder_path, cropped_file_name)
                     files_to_crop.append((start_time, end_time, file_name, cropped_file_name))
-
         return files_to_crop
 
     def crop_files(self, folder_files):

@@ -31,12 +31,6 @@ class ReadDataFromCloud:
             logger.info("Got new event to process!")
             event_data = ast.literal_eval(event.body_as_str())
             logger.info("Received file name in queue: %s", event_data['filename'])
-            file_path = join_paths(
-                [
-                    get_project_root(),
-                    'data/imported_data/' + event_data['filename']
-                ]
-            )
             self.audio_events_queue.insert_message_queue(
                 join_paths([self.dest_folder, event_data['filename']])
             )
