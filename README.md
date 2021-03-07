@@ -57,9 +57,15 @@ foo@bar:~ docker-compose up --build
 ## Data Import Commands:
 - The following commands copy using azcopy.
 - To copy data from azure. 
+- Dependency: azcopy package: https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10
 ```bash
 foo@bar:~ docker exec -it ecc flask data_import copy_data_from_azure {source_file} {target_loc}
 ```
+- e.g:
+```bash
+foo@bar:~ flask data_import copy_data_from_azure elephant-sound-data TrainingSet/nn01b elephantcallscounter/data/segments/TrainingSet/
+```
+
 - To copy data to azure.
 ```bash
 foo@bar:~ docker exec -it ecc flask data_import copy_data_to_azure {source_file} {target_loc}
