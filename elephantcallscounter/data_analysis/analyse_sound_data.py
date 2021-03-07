@@ -1,11 +1,14 @@
 import numpy as np
 import os
-from pathlib import Path
 import librosa
+import logging
 
 from elephantcallscounter.data_transformations.filters import Filters
 from elephantcallscounter.data_visualizations.plots import Plots
 from elephantcallscounter.data_transformations.noise_reduction import NoiseReduction
+from elephantcallscounter.utils.path_utils import create_necessary_directories
+
+logger = logging.getLogger(__name__)
 
 
 class AnalyseSoundData:
@@ -16,13 +19,6 @@ class AnalyseSoundData:
         self.plot = Plots()
         self.hop_length = hop_length
         self.sr = sr
-
-    def create_necessary_directories(self):
-        """ This method creates the necessary directory structure.
-
-        :return void:
-        """
-        Path(self.save_image_location).mkdir(parents=True, exist_ok=True)
 
     @classmethod
     def load_data(cls, file_name, sr):
@@ -35,15 +31,15 @@ class AnalyseSoundData:
         # Keeping audio at original sample rate
         try:
             signal, sr = librosa.load(file_name, sr=sr)
-            print('Duration of sample: {} ms'.format(len(signal)/sr))
+            logger.info('Duration of sample: {} ms'.format(len(signal)/sr))
             return signal, sr
         except Exception as ex:
-            print('Failed to load data: ' + repr(ex))
+            logger.info('Failed to load data: ' + repr(ex))
             return None, None
 
     def analyse_audio(self):
         # .wav is lossless
-        self.create_necessary_directories()
+        create_necessary_directories(self.save_image_location)
 
         input_signal, sr = self.load_data(self.file_read_location, self.sr)
         if input_signal is None:
@@ -65,7 +61,9 @@ class AnalyseSoundData:
         filename = self.file_read_location.split('/')[-1]
 
         cutoff_high = 10
-        highpass_signal = Filters.butter_highpass_filter(lowpass_signal, cutoff_high, nyq, order, time)
+        highpass_signal = Filters.butter_highpass_filter(
+            lowpass_signal, cutoff_high, nyq, order, time
+        )
         self.plot.plot_and_save_spectrogram(
             highpass_signal,
             sr,
@@ -73,3 +71,5 @@ class AnalyseSoundData:
         )
         self.plot.plot_mel(highpass_signal, sr)
         self.plot.fft_plot(highpass_signal, sr, filename, plot=False)
+
+        return

@@ -1,77 +1,103 @@
+from collections import defaultdict
+import logging
 import os
-import pandas as pd
-from pydub import AudioSegment
 
-from data_analysis.analyse_sound_data import AnalyseSoundData
+from elephantcallscounter.data_processing.audio_processing import AudioProcessing
+from elephantcallscounter.data_processing.metadata_processing import MetadataProcessing
+from elephantcallscounter.utils.data_structures import RangeSet
+from elephantcallscounter.utils.path_utils import get_project_root
+
+logger = logging.getLogger(__name__)
 
 
-class FileSegmenter:
-    def __init__(self):
-        pass
+class SegmentFiles:
+    def __init__(self, start_fresh, file_range=30):
+        """ This class handles the segmentation of files after reading from azure.
 
-    @staticmethod
-    def segment_files(delete_data: bool = False):
-        # read metadata
-        train_or_test = 'test'
-
-        if train_or_test == 'train':
-            metadata_filepath = 'data/metadata/nn_ele_hb_00-24hr_TrainingSet_v2.txt'  # train
-        else:
-            metadata_filepath = 'data/metadata/nn_ele_00-24hr_GeneralTest_v4.txt'  # test
-        metadata = pd.read_csv(metadata_filepath, sep='\t', header=0)
-        print(f'Using metadata file {metadata_filepath}')
-
-        slack_time = 5000  # the amount of milliseconds before and after each interesting segment
-
-        # process raw files
-        for filename in os.listdir('data/raw'):
-            FileSegmenter.segment_file(filename, metadata, slack_time, train_or_test, delete_data)
+        :param bool start_fresh:
+        :param int file_range:
+        """
+        self.file_range = file_range
+        self.start_fresh = start_fresh
+        self.training_set = os.path.join(get_project_root(), 'data', 'segments', 'TrainingSet')
+        self.crop_set = os.path.join(get_project_root(), 'data', 'segments', 'CroppedTrainingSet')
 
     @staticmethod
-    def segment_file(filename, metadata, slack_time, train_or_test, delete_data: bool = False, create_spectrograms: bool = False):
-        print(f'Processing {filename}...')
-        file = AudioSegment.from_wav('data/raw/' + filename)
-        print(f'Processing file data/raw/{filename}...')
+    def generate_file_name(actual_file, start_time, end_time, extension):
+        return actual_file + '_' + str(start_time) + "_" + str(end_time) + '_cropped.' + extension
 
-        # get the relevant segments from the metadata
-        metadata_segments = metadata[metadata['filename'] == filename]
-        for index, metadata_segment in metadata_segments.iterrows():
-            try:
-                selection = metadata_segment["Selection"]
-                print(f' Generating segment {selection}...')
+    def ready_file_segments(
+            self,
+            metadata
+    ):
+        """ This method readies the file segments for further processing.
 
-                marginal = str(metadata_segment['marginals']).strip()
-                segment_path = f'data/segments/{train_or_test}/{filename}_segment_{selection}_{marginal}.wav'
+        :param pandas.DataFrame metadata:
+        :return:
+        """
+        files_to_crop = []
+        metadata['file_start_times'] = metadata['File Offset (s)']*1000 - self.file_range*1000
+        metadata['file_end_times'] = metadata['File Offset (s)']*1000 + self.file_range*1000
 
-                if os.path.exists(segment_path):
-                    print(f'Segment file {segment_path} already exists, skipping...')
-                else:
-                    start = (metadata_segment['File Offset (s)'] * 1000) - slack_time  # ms
-                    duration = (metadata_segment['duration'] * 1000) + (slack_time * 2)  # ms
-                    end = start + duration
-                    segment = file[start:end]
-                    segment.export(segment_path, format='wav')
-                    print(f' Found segment of {segment.duration_seconds} seconds, exported to {segment_path}.')
-
-                # spectrogram
-                if create_spectrograms:
-                    analyse_sound_data = AnalyseSoundData(
-                        file_read_location=os.path.join(
-                            os.getcwd(), segment_path  # f'data/segments/{train_or_test}/' + filename
-                        ),
-                        save_image_location=os.path.join(
-                            os.getcwd(), f'data/spectrograms/{train_or_test}/'  # + filename
-                        ),
-                        sr=1000,
-                        hop_length=256
+        file_dfs = MetadataProcessing.split_metadata_into_groups(metadata)
+        for file_metadata in file_dfs:
+            start_end_times = RangeSet()
+            for index, row in file_metadata.iterrows():
+                file_name = row['filename']
+                actual_file, extension = file_name.split(".")
+                start_time = row['file_start_times']
+                end_time = row['file_end_times']
+                if start_end_times.data_in_range(time_range = (start_time, end_time)):
+                    start_end_times.insert_data((start_time, end_time))
+                    cropped_file_name = self.generate_file_name(
+                        actual_file, start_time, end_time, extension
                     )
-                    analyse_sound_data.analyse_audio()
+                    folder_path = file_name.split("_")[0]
+                    file_name = os.path.join(folder_path, file_name)
+                    cropped_file_name = os.path.join(folder_path, cropped_file_name)
+                    files_to_crop.append((start_time, end_time, file_name, cropped_file_name))
+        return files_to_crop
 
-                # delete file
-                if delete_data:
-                    print(f'Deleting segment file {segment_path}...')
-                    os.remove(segment_path)
+    def crop_files(self, folder_files):
+        for file_data in folder_files:
+            original_file = os.path.join(
+                self.training_set, file_data[2]
+            )
+            cropped_file = os.path.join(
+                self.crop_set, file_data[3]
+            )
+            is_cropped = AudioProcessing.crop_file(
+                file_data[0],
+                file_data[1],
+                file_name = original_file,
+                destination_file = cropped_file
+            )
+            if is_cropped:
+                logger.info('Cropped File: %s', cropped_file)
 
-            except Exception as e:
-                print('  Error when creating segment: ' + str(e))
-        print('Done')
+    def clear_segments(self):
+        for folder in os.listdir(self.training_set):
+            for file in os.listdir(os.path.join(self.training_set, folder)):
+                os.remove(file)
+        for folder in os.listdir(self.crop_set):
+            for file in os.listdir(os.path.join(self.crop_set, folder)):
+                os.remove(file)
+
+    def process_segments(self, files_to_crop):
+        folder_based_grouping = defaultdict(list)
+        for file_data in files_to_crop:
+            folder_name = file_data[2].split('/')[0]
+            folder_based_grouping[folder_name].append(file_data)
+
+        if self.start_fresh:
+            self.clear_segments()
+
+        for folder_name, folder_files in folder_based_grouping.items():
+            os.makedirs(os.path.join(self.crop_set, folder_name), exist_ok = True)
+            files_to_delete = os.path.join(self.training_set, folder_name)
+            self.crop_files(folder_files)
+
+            # remove local file
+            for file_to_remove in os.listdir(files_to_delete):
+                os.remove(os.path.join(files_to_delete, file_to_remove))
+                logger.info("File removed: ", file_to_remove)
