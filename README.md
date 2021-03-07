@@ -7,6 +7,10 @@ The code is the deliverable of a project for the [Artificial Intelligence: Cloud
 As part of [Microsoft Project 15](https://microsoft.github.io/project15/), and the [Elephant Listening Project](https://elephantlisteningproject.org/) of Cornell University,
 the development team received the challenge of counting the number of elephants in a sound file.
 
+## Documentation and Results
+The explanation and results of this research project are captured in the presentation [(PowerPoint)](Project%2015%20Group%204.pptx) [(PDF)](Project%2015%20Group%204.pdf) in this repo.
+There is also a [Video](TODO) explaining the results by the project team.
+
 ## Literature and References
 * https://elephantlisteningproject.org/
 * https://azure.microsoft.com/en-us/resources/videos/project-15/
