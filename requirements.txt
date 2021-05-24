@@ -23,4 +23,4 @@ flask-googlemaps==0.4.1
 flask-script==2.0.6
 flask-sqlalchemy==2.4.4
 flask-migrate==2.7.0
-tensorflow==2.2.0
+tensorflow>=2.4.0
