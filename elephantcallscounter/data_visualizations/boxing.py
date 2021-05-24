@@ -15,7 +15,7 @@ class Boxing:
         We compare the distances in square roots; more distance is more likely to be a different elephant.
         :return: True if the rumbles belong the same elephant, False if not
         """
-        print(f'comparing rumbles {rumble1} and {rumble2}...')
+        print(f"comparing rumbles {rumble1} and {rumble2}...")
         # compare the time
         if ((rumble1[0] - rumble2[0]) ** 2) < 20000:
             # print('time overlaps')
@@ -35,7 +35,7 @@ class Boxing:
         :param image_filename:
         :return:
         """
-        print(f'Creating boxes for {self.image_folder + image_filename}...')
+        print(f"Creating boxes for {self.image_folder + image_filename}...")
 
         image = cv2.imread(self.image_folder + image_filename)
 
@@ -51,7 +51,9 @@ class Boxing:
         thresh_inverse = cv2.bitwise_not(gray)
 
         # create contours
-        contours, hierarchy = cv2.findContours(thresh_inverse, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        contours, hierarchy = cv2.findContours(
+            thresh_inverse, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE
+        )
         cv2.drawContours(ROI, contours, -1, (0, 255, 0), 1)
 
         # approximate contours to polygons + get bounding rects
@@ -73,8 +75,13 @@ class Boxing:
                 middle_x = math.floor(rect[0] + (width / 2))
                 middle_y = math.floor(rect[1] + (height / 2))
 
-                cv2.rectangle(ROI, (int(boxes[i][0]), int(boxes[i][1])),
-                              (int(boxes[i][0]+boxes[i][2]), int(boxes[i][1]+boxes[i][3])), cv2.COLOR_BGR2HSV, 2)
+                cv2.rectangle(
+                    ROI,
+                    (int(boxes[i][0]), int(boxes[i][1])),
+                    (int(boxes[i][0] + boxes[i][2]), int(boxes[i][1] + boxes[i][3])),
+                    cv2.COLOR_BGR2HSV,
+                    2,
+                )
 
                 elephant_rumbles.append((middle_x, middle_y))
 
@@ -83,22 +90,33 @@ class Boxing:
         for rumble in elephant_rumbles:
             # if the rumble has a similar frequency as others, don't count it
             # if the rumble has a similar mean time as others, don't count it
-            similar_rumbles = list(filter(lambda elephant: (self.same_elephant(rumble, elephant)), elephants))
+            similar_rumbles = list(
+                filter(
+                    lambda elephant: (self.same_elephant(rumble, elephant)), elephants
+                )
+            )
 
             if len(similar_rumbles) < 1:
-                print(f'Unique elephant at {rumble}')
+                print(f"Unique elephant at {rumble}")
                 elephants.append(rumble)
-                cv2.drawMarker(ROI, rumble, cv2.COLOR_LAB2LBGR, markerType=cv2.MARKER_STAR)
+                cv2.drawMarker(
+                    ROI, rumble, cv2.COLOR_LAB2LBGR, markerType=cv2.MARKER_STAR
+                )
 
-        print(f'Found {len(elephants)} elephant(s) in image!')
+        print(f"Found {len(elephants)} elephant(s) in image!")
 
         # put the ROI on top of the original image
         h, w = ROI.shape[0], ROI.shape[1]
-        image[y_top:y_top+h, x_left:x_left+w] = ROI
+        image[y_top : y_top + h, x_left : x_left + w] = ROI
 
-        boxed_path = self.target_folder + str(len(elephants)) + '_' + image_filename.replace('mono_', 'boxed_')
+        boxed_path = (
+            self.target_folder
+            + str(len(elephants))
+            + "_"
+            + image_filename.replace("mono_", "boxed_")
+        )
         cv2.imwrite(boxed_path, image)
-        print(f'Boxed image stored as {boxed_path}')
+        print(f"Boxed image stored as {boxed_path}")
 
 
 # b = Boxing('../data/spectrograms/mono/', '../data/spectrograms/boxed2/')

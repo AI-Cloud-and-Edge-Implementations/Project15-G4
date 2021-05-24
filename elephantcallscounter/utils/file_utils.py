@@ -6,25 +6,25 @@ from elephantcallscounter.utils.path_utils import get_project_root, join_paths
 
 
 def write_to_csv(data, file_name):
-    """ Function to write data to csv file.
+    """Function to write data to csv file.
     :param list data:
     :param string file_name:
     :return void:
     """
-    with open(file_name, 'w') as csv_file:
-        writer = csv.writer(csv_file, delimiter = ',')
+    with open(file_name, "w") as csv_file:
+        writer = csv.writer(csv_file, delimiter=",")
         for line in data:
             writer.writerow(line)
 
 
 def write_to_bin_file(data, file_name):
-    """ Function to write data to binary file.
+    """Function to write data to binary file.
 
     :param data:
     :param file_name:
     :return:
     """
-    with open(file_name, 'wb') as bin_file:
+    with open(file_name, "wb") as bin_file:
         bin_file.write(data)
 
 

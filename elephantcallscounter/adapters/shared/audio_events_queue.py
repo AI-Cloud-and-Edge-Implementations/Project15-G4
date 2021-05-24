@@ -1,7 +1,11 @@
 import logging
 
 from azure.core.exceptions import HttpResponseError, ResourceExistsError
-from azure.storage.queue import QueueClient, BinaryBase64EncodePolicy, BinaryBase64DecodePolicy
+from azure.storage.queue import (
+    QueueClient,
+    BinaryBase64EncodePolicy,
+    BinaryBase64DecodePolicy,
+)
 
 from elephantcallscounter.config import env
 
@@ -24,9 +28,9 @@ class AudioEventsQueue:
         try:
             self.queue_client.create_queue()
         except ResourceExistsError:
-            logger.info('Queue {} already exists!'.format(self.queue_name))
+            logger.info("Queue {} already exists!".format(self.queue_name))
         except HttpResponseError:
-            logger.info('Invalid queue name')
+            logger.info("Invalid queue name")
 
     def insert_message_queue(self, message):
         logger.info("Adding message: " + message)

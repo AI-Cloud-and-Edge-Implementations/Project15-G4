@@ -10,27 +10,23 @@ from elephantcallscounter.utils.path_utils import get_project_root
 
 
 def analyse_sound_data(file_path, dest_path):
-    """ Analyse the sound data and generate spectrograms.
+    """Analyse the sound data and generate spectrograms.
 
     :param str file_path:
     :param str dest_path:
     :return void:
     """
     sound_data_analyser = AnalyseSoundData(
-        file_read_location = os.path.join(
-            get_project_root(), file_path
-        ),
-        save_image_location = os.path.join(
-            get_project_root(), dest_path
-        ),
-        sr = 1000,
-        hop_length = 256
+        file_read_location=os.path.join(get_project_root(), file_path),
+        save_image_location=os.path.join(get_project_root(), dest_path),
+        sr=1000,
+        hop_length=256,
     )
     sound_data_analyser.analyse_audio()
 
 
 def find_elephants_in_images(dir_name, dest_folder, csv_file_path):
-    """ Analyse the spectrograms and generate the bounding box images.
+    """Analyse the spectrograms and generate the bounding box images.
 
     :param str dir_name:
     :param str dest_folder:
@@ -49,13 +45,13 @@ def find_elephants_in_images(dir_name, dest_folder, csv_file_path):
 
 
 def box_single_file(image_filename):
-    boxing = Boxing('', '', '', '', False)
+    boxing = Boxing("", "", "", "", False)
     boxed_image = boxing.create_boxes(image_filename)
     return boxed_image
 
 
 def create_mono_spectrograms(image_folder, target_folder, write_file=False):
-    """ Create the mono spectrograms.
+    """Create the mono spectrograms.
 
     :param list image_folder:
     :param string target_folder:

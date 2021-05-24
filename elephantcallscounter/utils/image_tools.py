@@ -3,7 +3,7 @@ import numpy as np
 
 
 def draw(img, rects, color):
-    """ Add a rectangle to an image.
+    """Add a rectangle to an image.
 
     :param np.ndarray img:
     :param cv2.Rectangle rects:
@@ -19,7 +19,7 @@ def draw(img, rects, color):
 
 
 def find_matches(img, template):
-    """ Match an image to a template and return the matched points sorted.
+    """Match an image to a template and return the matched points sorted.
 
     :param np.ndarray img:
     :param np.ndarray template:
@@ -32,13 +32,13 @@ def find_matches(img, template):
     res = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
     threshold = 0.7
     loc = np.where(res > threshold)
-    sorted_pts = sorted(zip(*loc), key = lambda t: res[t[0], t[1]], reverse = True)
+    sorted_pts = sorted(zip(*loc), key=lambda t: res[t[0], t[1]], reverse=True)
 
     return sorted_pts
 
 
 def threshold_image(img):
-    """ Threshold and input image using binary thresholding.
+    """Threshold and input image using binary thresholding.
 
     :param np.ndarray img:
     :return np.ndarray:
@@ -48,7 +48,7 @@ def threshold_image(img):
 
 
 def display_image(img, name):
-    """ This displays the image with the passed name in a new window.
+    """This displays the image with the passed name in a new window.
 
     :param np.ndarray img:
     :param string name:
@@ -59,8 +59,10 @@ def display_image(img, name):
     cv2.destroyAllWindows()
 
 
-def add_rectangles_to_img(new_rects, threshold_x, threshold_y, img, display_message = False):
-    """ This adds bounding box rectangles to an image.
+def add_rectangles_to_img(
+    new_rects, threshold_x, threshold_y, img, display_message=False
+):
+    """This adds bounding box rectangles to an image.
 
     :param list new_rects:
     :param float threshold_x:
@@ -74,22 +76,15 @@ def add_rectangles_to_img(new_rects, threshold_x, threshold_y, img, display_mess
         x, y = x + threshold_x, y + threshold_y
         left_x, left_y = x, y
         right_x, right_y = x + w, y + h
-        cv2.rectangle(
-            img,
-            (left_x, left_y),
-            (right_x, right_y),
-            (0, 255, 0),
-            2
-        )
+        cv2.rectangle(img, (left_x, left_y), (right_x, right_y), (0, 255, 0), 2)
         if display_message:
             cv2.putText(
-                img, 'Elephant Detected',
-                (x + w + 10, int(y - h)), 0, 0.3, (0, 255, 0)
+                img, "Elephant Detected", (x + w + 10, int(y - h)), 0, 0.3, (0, 255, 0)
             )
 
 
 def get_contours_based_on_area(img, area_threshold=20000):
-    """ This method returns the contours based on an area threshold.
+    """This method returns the contours based on an area threshold.
 
     :param np.ndarray img:
     :param int area_threshold:

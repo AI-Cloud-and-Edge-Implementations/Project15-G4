@@ -22,7 +22,9 @@ def build_message(payload):
     return msg
 
 
-async def write_to_hub(source_path, list_of_files, counter, limit, container_name, dest_folder):
+async def write_to_hub(
+    source_path, list_of_files, counter, limit, container_name, dest_folder
+):
     conn_str = env.IOT_HUB_CONN_STRING
 
     # The client object is used to interact with your Azure IoT hub.
@@ -35,39 +37,32 @@ async def write_to_hub(source_path, list_of_files, counter, limit, container_nam
         sleep_interval = 5
         while True:
             for f in list_of_files:
-                payload = json.dumps({
-                    'capturedate': time.time(),
-                    'filename': f,
-                    'finished': 'False'
-                })
+                payload = json.dumps(
+                    {"capturedate": time.time(), "filename": f, "finished": "False"}
+                )
                 azure_interface = AzureInterface(container_name)
                 azure_interface.send_to_azure(
-                    join_paths([source_path, f]),
-                    dest_folder,
-                    f,
-                    media_file = True
+                    join_paths([source_path, f]), dest_folder, f, media_file=True
                 )
                 msg = build_message(payload)
                 await device_client.send_message(msg)
                 logger.info("done sending file " + str(f))
-                counter['count'] += 1
-                logger.info(counter['count'])
+                counter["count"] += 1
+                logger.info(counter["count"])
                 await asyncio.sleep(sleep_interval)
 
     # Define behavior for halting the application
     def stdin_listener(counter, limit):
         while True:
             try:
-                if counter['count'] == limit:
-                    logger.info('Quitting...')
-                    logger.info('File limit reached %s', str(limit))
+                if counter["count"] == limit:
+                    logger.info("Quitting...")
+                    logger.info("File limit reached %s", str(limit))
                     break
             except EOFError as e:
                 time.sleep(10000)
 
-    tasks = asyncio.gather(
-        send_spectrogram(counter)
-    )
+    tasks = asyncio.gather(send_spectrogram(counter))
 
     # Run the stdin listener in the event loop
     loop = asyncio.get_running_loop()

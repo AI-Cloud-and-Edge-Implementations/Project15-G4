@@ -1,3 +1,6 @@
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+
 # Microsoft-Project-15-Team-4
 Microsoft project 15 - Team 4 solution
 

@@ -12,7 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class Boxing:
-    def __init__(self, image_folder, target_folder, csv_file_path, monochrome, write_file = False):
+    def __init__(
+        self, image_folder, target_folder, csv_file_path, monochrome, write_file=False
+    ):
         self.image_folder = image_folder
         self.target_folder = target_folder
         self.csv_file_path = csv_file_path
@@ -20,19 +22,18 @@ class Boxing:
         self.write_file = write_file
 
     def write_box_to_file(self, image, elephants, image_filename):
-        image_filename = image_filename.replace('mono_', 'boxed_')
+        image_filename = image_filename.replace("mono_", "boxed_")
         os.makedirs(
-            join_paths([self.target_folder, str(len(elephants))]),
-            exist_ok = True
+            join_paths([self.target_folder, str(len(elephants))]), exist_ok=True
         )
         boxed_path = join_paths(
             [self.target_folder, str(len(elephants)), image_filename]
         )
         cv2.imwrite(boxed_path, image)
-        logger.info(f'Boxed image stored as {boxed_path}')
+        logger.info(f"Boxed image stored as {boxed_path}")
 
     def create_boxes(self, image_filename):
-        logger.info(f'Creating boxes for {self.image_folder + image_filename}...')
+        logger.info(f"Creating boxes for {self.image_folder + image_filename}...")
 
         image = self.monochrome.create_monochrome(
             join_paths([get_project_root(), self.image_folder, image_filename])
@@ -74,9 +75,13 @@ class Boxing:
                 middle_x = math.floor(rect[0] + (width / 2))
                 middle_y = math.floor(rect[1] + (height / 2))
 
-                cv2.rectangle(ROI, (int(boxes[i][0]), int(boxes[i][1])),
-                              (int(boxes[i][0] + boxes[i][2]), int(boxes[i][1] + boxes[i][3])),
-                              cv2.COLOR_BGR2HSV, 2)
+                cv2.rectangle(
+                    ROI,
+                    (int(boxes[i][0]), int(boxes[i][1])),
+                    (int(boxes[i][0] + boxes[i][2]), int(boxes[i][1] + boxes[i][3])),
+                    cv2.COLOR_BGR2HSV,
+                    2,
+                )
 
                 elephant_rumbles.append((middle_x, middle_y))
 
@@ -87,19 +92,26 @@ class Boxing:
             # if the rumble has a similar mean time as others, don't count it
             similar_rumbles = list(
                 filter(
-                    lambda elephant: ((abs(elephant[0] - rumble[0]) < 20) or (
-                                abs(elephant[1] - rumble[1]) < 200)), elephants))
+                    lambda elephant: (
+                        (abs(elephant[0] - rumble[0]) < 20)
+                        or (abs(elephant[1] - rumble[1]) < 200)
+                    ),
+                    elephants,
+                )
+            )
 
             if len(similar_rumbles) < 1:
-                logger.info(f'Unique elephant at {rumble}')
+                logger.info(f"Unique elephant at {rumble}")
                 elephants.append(rumble)
-                cv2.drawMarker(ROI, rumble, cv2.COLOR_LAB2LBGR, markerType = cv2.MARKER_STAR)
+                cv2.drawMarker(
+                    ROI, rumble, cv2.COLOR_LAB2LBGR, markerType=cv2.MARKER_STAR
+                )
 
-        logger.info(f'Found {len(elephants)} elephant(s) in image!')
+        logger.info(f"Found {len(elephants)} elephant(s) in image!")
 
         # put the ROI on top of the original image
         h, w = ROI.shape[0], ROI.shape[1]
-        image[y_top:y_top + h, x_left:x_left + w] = ROI
+        image[y_top : y_top + h, x_left : x_left + w] = ROI
 
         if self.write_file:
             self.write_box_to_file(image, elephants, image_filename)
@@ -107,5 +119,5 @@ class Boxing:
         return image, len(elephants)
 
     def write_labels_to_csv_file(self, dataset):
-        df = pd.DataFrame(dataset.items(), columns = ['file_name', 'number_of_elephants'])
+        df = pd.DataFrame(dataset.items(), columns=["file_name", "number_of_elephants"])
         df.to_csv(self.csv_file_path)

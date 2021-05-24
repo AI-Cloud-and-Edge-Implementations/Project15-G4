@@ -13,58 +13,47 @@ from elephantcallscounter.common.constants import LOCATION
 
 logger = logging.getLogger(__name__)
 
-template_folder_loc = join_paths([get_project_root(), 'app/templates'])
+template_folder_loc = join_paths([get_project_root(), "app/templates"])
 
 elephant_blueprint = Blueprint(
-    'elephant',
-    __name__,
-    url_prefix = '/elephants',
-    template_folder = template_folder_loc
+    "elephant", __name__, url_prefix="/elephants", template_folder=template_folder_loc
 )
 
 
-@elephant_blueprint.route('/elephants_count/')
+@elephant_blueprint.route("/elephants_count/")
 def elephant_counter():
-    start_time = request.args.get('start_time')
-    end_time = request.args.get('end_time')
-    start_time = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
-    end_time = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
+    start_time = request.args.get("start_time")
+    end_time = request.args.get("end_time")
+    start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
+    end_time = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S")
     elephants = db.session.query(Elephants).all()
     logger.info(start_time)
     logger.info(end_time)
     elephant_output = [
-        {elephant.device_id: elephant.number_of_elephants}
-        for elephant in elephants
+        {elephant.device_id: elephant.number_of_elephants} for elephant in elephants
     ]
-    location_data = [
-        LOCATION[elephant.device_id]
-        for elephant in elephants
-    ]
+    location_data = [LOCATION[elephant.device_id] for elephant in elephants]
     return render_template(
-        'index.html',
-        number_of_elephants = elephant_output,
+        "index.html",
+        number_of_elephants=elephant_output,
         locations_data=location_data,
-        labels = list(LOCATION.keys())
+        labels=list(LOCATION.keys()),
     )
 
 
-@elephant_blueprint.route('/add_elephant_count/')
+@elephant_blueprint.route("/add_elephant_count/")
 def add_elephant_count():
-    start_time = datetime.strptime(
-        request.args.get('start_time'), '%Y-%m-%d %H:%M:%S'
-    )
-    end_time = datetime.strptime(
-        request.args.get('end_time'), '%Y-%m-%d %H:%M:%S'
-    )
+    start_time = datetime.strptime(request.args.get("start_time"), "%Y-%m-%d %H:%M:%S")
+    end_time = datetime.strptime(request.args.get("end_time"), "%Y-%m-%d %H:%M:%S")
     new_elephant = Elephants(
-        latitude = float(request.args.get('latitude')),
-        longitude = float(request.args.get('longitude')),
-        start_time = start_time,
-        end_time = end_time,
-        device_id = request.args.get('device_id'),
-        number_of_elephants = int(request.args.get('number_of_elephants'))
+        latitude=float(request.args.get("latitude")),
+        longitude=float(request.args.get("longitude")),
+        start_time=start_time,
+        end_time=end_time,
+        device_id=request.args.get("device_id"),
+        number_of_elephants=int(request.args.get("number_of_elephants")),
     )
     db.session.add(new_elephant)
     db.session.commit()
 
-    return {'message': 'new elephant added'}
+    return {"message": "new elephant added"}

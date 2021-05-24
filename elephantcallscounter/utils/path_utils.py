@@ -4,14 +4,14 @@ import os
 
 
 def get_project_root():
-    """ Function to return the roo location of the project.
+    """Function to return the roo location of the project.
     :return string:
     """
     return Path(__file__).parent.parent
 
 
 def split_file_path(strng, sep, pos):
-    """ This method splits the path on seperator at the respective position.
+    """This method splits the path on seperator at the respective position.
 
     :param strng:
     :param sep:
@@ -27,7 +27,7 @@ def join_paths(paths):
 
 
 def create_necessary_directories(save_loc):
-    """ This method creates the necessary directory structure.
+    """This method creates the necessary directory structure.
 
     :return void:
     """

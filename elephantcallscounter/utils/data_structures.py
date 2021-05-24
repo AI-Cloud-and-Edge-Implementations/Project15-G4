@@ -11,4 +11,3 @@ class RangeSet:
 
     def insert_data(self, time_range):
         self.data.append(time_range)
-

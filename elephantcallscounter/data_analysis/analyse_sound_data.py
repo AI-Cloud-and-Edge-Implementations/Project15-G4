@@ -22,7 +22,7 @@ class AnalyseSoundData:
 
     @classmethod
     def load_data(cls, file_name, sr):
-        """ This function loads the audio data from the file.
+        """This function loads the audio data from the file.
 
         :param string file_name:
         :param int sr:
@@ -31,10 +31,10 @@ class AnalyseSoundData:
         # Keeping audio at original sample rate
         try:
             signal, sr = librosa.load(file_name, sr=sr)
-            logger.info('Duration of sample: {} ms'.format(len(signal)/sr))
+            logger.info("Duration of sample: {} ms".format(len(signal) / sr))
             return signal, sr
         except Exception as ex:
-            logger.info('Failed to load data: ' + repr(ex))
+            logger.info("Failed to load data: " + repr(ex))
             return None, None
 
     def analyse_audio(self):
@@ -56,9 +56,11 @@ class AnalyseSoundData:
         order = 4  # sin wave can be approx represented as quadratic
         time = np.linspace(0, duration, len(input_signal), endpoint=False)
 
-        lowpass_signal = Filters.butter_lowpass_filter(input_signal, cutoff, nyq, order, time)
+        lowpass_signal = Filters.butter_lowpass_filter(
+            input_signal, cutoff, nyq, order, time
+        )
 
-        filename = self.file_read_location.split('/')[-1]
+        filename = self.file_read_location.split("/")[-1]
 
         cutoff_high = 10
         highpass_signal = Filters.butter_highpass_filter(
@@ -67,7 +69,9 @@ class AnalyseSoundData:
         self.plot.plot_and_save_spectrogram(
             highpass_signal,
             sr,
-            file_location=os.path.join(self.save_image_location, f'spec_image_{filename}.png')
+            file_location=os.path.join(
+                self.save_image_location, f"spec_image_{filename}.png"
+            ),
         )
         self.plot.plot_mel(highpass_signal, sr)
         self.plot.fft_plot(highpass_signal, sr, filename, plot=False)
