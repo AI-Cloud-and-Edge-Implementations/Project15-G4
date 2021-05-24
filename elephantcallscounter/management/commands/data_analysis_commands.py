@@ -1,16 +1,15 @@
-import click
-from flask import Blueprint
 import os
 
-from elephantcallscounter.services.data_analysis_service import analyse_sound_data
-from elephantcallscounter.services.data_analysis_service import create_mono_spectrograms
+import click
+from flask import Blueprint
+
 from elephantcallscounter.models.resnet_model import ElephantCounterResnet
 from elephantcallscounter.models.vgg_model import ElephantCounterVGG
-from elephantcallscounter.services.data_analysis_service import find_elephants_in_images
-from elephantcallscounter.services.data_analysis_service import run_cnn
-from elephantcallscounter.utils.path_utils import join_paths
-from elephantcallscounter.utils.path_utils import get_project_root
-from elephantcallscounter.utils.path_utils import split_file_path
+from elephantcallscounter.services.data_analysis_service import (
+    analyse_sound_data, create_mono_spectrograms, find_elephants_in_images,
+    run_cnn)
+from elephantcallscounter.utils.path_utils import (get_project_root,
+                                                   join_paths, split_file_path)
 
 data_analysis = Blueprint("data_analysis", __name__)
 

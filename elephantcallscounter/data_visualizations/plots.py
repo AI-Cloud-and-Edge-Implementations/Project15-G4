@@ -1,9 +1,10 @@
-import librosa
-from librosa import display
 import logging
+
+import librosa
 import numpy as np
-from matplotlib import pyplot as plt
 import scipy
+from librosa import display
+from matplotlib import pyplot as plt
 
 plt.rcParams["agg.path.chunksize"] = 10000
 

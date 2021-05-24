@@ -1,7 +1,9 @@
 import os
+
 import pandas as pd
 
-from elephantcallscounter.data_analysis.analyse_sound_data import AnalyseSoundData
+from elephantcallscounter.data_analysis.analyse_sound_data import \
+    AnalyseSoundData
 from elephantcallscounter.data_analysis.boxing import Boxing
 from elephantcallscounter.data_analysis.monochrome import Monochrome
 from elephantcallscounter.models.resnet_model import ElephantCounterResnet

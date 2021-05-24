@@ -1,10 +1,11 @@
 import asyncio
 import json
 import logging
-import uuid
 import time
-from azure.iot.device.aio import IoTHubDeviceClient
+import uuid
+
 from azure.iot.device import Message
+from azure.iot.device.aio import IoTHubDeviceClient
 
 from elephantcallscounter.adapters.azure_interface import AzureInterface
 from elephantcallscounter.config import env

@@ -1,11 +1,11 @@
-import cv2
+import logging
 import math
 import os
-import pandas as pd
-import logging
 
-from elephantcallscounter.utils.path_utils import get_project_root
-from elephantcallscounter.utils.path_utils import join_paths
+import cv2
+import pandas as pd
+
+from elephantcallscounter.utils.path_utils import get_project_root, join_paths
 
 logger = logging.getLogger(__name__)
 

@@ -1,9 +1,8 @@
 import logging
 
+from sqlalchemy import Column, DateTime, Float, Integer, Text
+
 from elephantcallscounter.app_factory import db
-
-from sqlalchemy import Column, DateTime, Integer, Float, Text
-
 
 logger = logging.getLogger(__name__)
 

@@ -1,4 +1,5 @@
 from environs import Env
+
 from elephantcallscounter.common import constants
 
 environment_loader = Env()

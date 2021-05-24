@@ -1,6 +1,6 @@
-from pathlib import Path
 import functools
 import os
+from pathlib import Path
 
 
 def get_project_root():

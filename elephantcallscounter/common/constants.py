@@ -1,4 +1,5 @@
 import os
+
 from elephantcallscounter.utils.path_utils import get_project_root
 
 TRAINING_FILE_PATH_DEFAULT = os.path.join(

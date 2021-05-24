@@ -1,13 +1,13 @@
 import logging
+
 import requests
 
-from elephantcallscounter.services.data_analysis_service import analyse_sound_data
-from elephantcallscounter.services.data_analysis_service import create_mono_spectrograms
-from elephantcallscounter.services.data_analysis_service import find_elephants_in_images
-from elephantcallscounter.management.commands.data_analysis_commands import run_cnn
-from elephantcallscounter.utils.path_utils import get_project_root
-from elephantcallscounter.utils.path_utils import join_paths
+from elephantcallscounter.management.commands.data_analysis_commands import \
+    run_cnn
+from elephantcallscounter.services.data_analysis_service import (
+    analyse_sound_data, create_mono_spectrograms, find_elephants_in_images)
 from elephantcallscounter.utils.file_utils import get_files_in_dir
+from elephantcallscounter.utils.path_utils import get_project_root, join_paths
 
 logger = logging.getLogger(__name__)
 

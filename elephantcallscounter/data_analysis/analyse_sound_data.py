@@ -1,11 +1,13 @@
-import numpy as np
-import os
-import librosa
 import logging
+import os
+
+import librosa
+import numpy as np
 
 from elephantcallscounter.data_transformations.filters import Filters
+from elephantcallscounter.data_transformations.noise_reduction import \
+    NoiseReduction
 from elephantcallscounter.data_visualizations.plots import Plots
-from elephantcallscounter.data_transformations.noise_reduction import NoiseReduction
 from elephantcallscounter.utils.path_utils import create_necessary_directories
 
 logger = logging.getLogger(__name__)

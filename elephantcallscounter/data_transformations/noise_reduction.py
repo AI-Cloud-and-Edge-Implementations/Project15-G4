@@ -1,6 +1,8 @@
-import os
 import logging
+import os
+
 import noisereduce as nr
+
 from elephantcallscounter.data_visualizations.plots import Plots
 
 logger = logging.getLogger(__name__)

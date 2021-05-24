@@ -1,8 +1,9 @@
-from collections import defaultdict
 import logging
-import pandas as pd
-import subprocess
 import os
+import subprocess
+from collections import defaultdict
+
+import pandas as pd
 
 from elephantcallscounter.config import env
 from elephantcallscounter.utils.decorators import handle_copy

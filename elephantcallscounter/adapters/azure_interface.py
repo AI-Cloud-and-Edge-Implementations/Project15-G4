@@ -1,12 +1,11 @@
-import os
 import logging
+import os
+
 import azure.core.exceptions
-from azure.storage.blob import BlobServiceClient
-from azure.storage.blob import BlobClient
+from azure.storage.blob import BlobClient, BlobServiceClient
 
 from elephantcallscounter.config import env
-from elephantcallscounter.utils.path_utils import get_project_root
-from elephantcallscounter.utils.path_utils import join_paths
+from elephantcallscounter.utils.path_utils import get_project_root, join_paths
 
 logger = logging.getLogger(__name__)
 

@@ -1,5 +1,6 @@
-import cv2
 import math
+
+import cv2
 
 
 class Boxing:

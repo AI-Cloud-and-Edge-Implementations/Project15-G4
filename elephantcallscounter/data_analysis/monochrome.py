@@ -1,8 +1,9 @@
-import cv2
 import logging
 
-from elephantcallscounter.utils.path_utils import create_necessary_directories
-from elephantcallscounter.utils.path_utils import join_paths
+import cv2
+
+from elephantcallscounter.utils.path_utils import (
+    create_necessary_directories, join_paths)
 
 logger = logging.getLogger(__name__)
 

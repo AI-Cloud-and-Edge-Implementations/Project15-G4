@@ -1,7 +1,6 @@
 import csv
 import os
 
-
 from elephantcallscounter.utils.path_utils import get_project_root, join_paths
 
 

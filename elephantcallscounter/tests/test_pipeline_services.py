@@ -1,7 +1,5 @@
 from elephantcallscounter.services.pipeline_services import pipeline_run
-
-from elephantcallscounter.utils.path_utils import get_project_root
-from elephantcallscounter.utils.path_utils import join_paths
+from elephantcallscounter.utils.path_utils import get_project_root, join_paths
 
 
 class TestPipelineServices:

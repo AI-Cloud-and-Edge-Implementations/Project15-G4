@@ -1,9 +1,7 @@
 import logging
 
 from azure.core.exceptions import HttpResponseError, ResourceExistsError
-from azure.storage.queue import (
-    QueueClient,
-)
+from azure.storage.queue import QueueClient
 
 from elephantcallscounter.config import env
 

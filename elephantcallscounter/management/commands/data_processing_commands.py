@@ -1,16 +1,16 @@
 import click
 from flask import Blueprint
 
-from elephantcallscounter.adapters.shared.audio_events_queue import AudioEventsQueue
 from elephantcallscounter.adapters.azure_interface import AzureInterface
-from elephantcallscounter.services.data_processing_service import create_file_segments
-from elephantcallscounter.data_processing.model_preprocessing import ModelPreprocessing
-from elephantcallscounter.utils.path_utils import get_project_root
-from elephantcallscounter.utils.path_utils import join_paths
-from elephantcallscounter.application.persistence.models.elephants import (
-    delete_all_elephants,
-)
-
+from elephantcallscounter.adapters.shared.audio_events_queue import \
+    AudioEventsQueue
+from elephantcallscounter.application.persistence.models.elephants import \
+    delete_all_elephants
+from elephantcallscounter.data_processing.model_preprocessing import \
+    ModelPreprocessing
+from elephantcallscounter.services.data_processing_service import \
+    create_file_segments
+from elephantcallscounter.utils.path_utils import get_project_root, join_paths
 
 data_processing = Blueprint("data_processing", __name__)
 

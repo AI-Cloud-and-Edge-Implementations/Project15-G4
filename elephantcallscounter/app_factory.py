@@ -1,24 +1,22 @@
 import logging
 
 from flask import Flask
-from flask_script import Manager
 from flask_migrate import MigrateCommand
+from flask_script import Manager
 
-from elephantcallscounter import db
-from elephantcallscounter import migrate
-from elephantcallscounter.application.api.elephants_view import elephant_blueprint
+from elephantcallscounter import db, migrate
 from elephantcallscounter.application.api.blob_events import blob_blueprint
-from elephantcallscounter.management.commands.data_import_commands import data_import
-from elephantcallscounter.management.commands.data_analysis_commands import (
-    data_analysis,
-)
-from elephantcallscounter.management.commands.data_processing_commands import (
-    data_processing,
-)
-from elephantcallscounter.management.commands.pipeline_commands import demo
+from elephantcallscounter.application.api.elephants_view import \
+    elephant_blueprint
+from elephantcallscounter.management.commands.data_analysis_commands import \
+    data_analysis
+from elephantcallscounter.management.commands.data_import_commands import \
+    data_import
+from elephantcallscounter.management.commands.data_processing_commands import \
+    data_processing
 from elephantcallscounter.management.commands.event_commands import events
-from elephantcallscounter.utils.path_utils import get_project_root
-from elephantcallscounter.utils.path_utils import join_paths
+from elephantcallscounter.management.commands.pipeline_commands import demo
+from elephantcallscounter.utils.path_utils import get_project_root, join_paths
 
 
 def setup_logging():

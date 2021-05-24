@@ -1,16 +1,17 @@
 import asyncio
 import logging
 import multiprocessing
-import requests
 import time
 
-from elephantcallscounter.adapters.shared.audio_events_queue import AudioEventsQueue
-from elephantcallscounter.iot.send_data_to_cloud import write_to_hub
+import requests
+
+from elephantcallscounter.adapters.shared.audio_events_queue import \
+    AudioEventsQueue
 from elephantcallscounter.iot.read_data_from_cloud import ReadDataFromCloud
+from elephantcallscounter.iot.send_data_to_cloud import write_to_hub
 from elephantcallscounter.utils.concurrency import run_in_parallel
-from elephantcallscounter.utils.path_utils import get_project_root
-from elephantcallscounter.utils.path_utils import join_paths
 from elephantcallscounter.utils.file_utils import get_files_in_dir
+from elephantcallscounter.utils.path_utils import get_project_root, join_paths
 
 logger = logging.getLogger(__name__)
 

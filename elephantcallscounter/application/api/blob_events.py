@@ -1,13 +1,12 @@
 import logging
 
-from flask import Blueprint
-from flask import request
-from elephantcallscounter.adapters.shared.audio_events_queue import AudioEventsQueue
-from elephantcallscounter.adapters.azure_interface import AzureInterface
-from elephantcallscounter.services.pipeline_services import pipeline_run
+from flask import Blueprint, request
 
-from elephantcallscounter.utils.path_utils import get_project_root
-from elephantcallscounter.utils.path_utils import join_paths
+from elephantcallscounter.adapters.azure_interface import AzureInterface
+from elephantcallscounter.adapters.shared.audio_events_queue import \
+    AudioEventsQueue
+from elephantcallscounter.services.pipeline_services import pipeline_run
+from elephantcallscounter.utils.path_utils import get_project_root, join_paths
 
 blob_blueprint = Blueprint("blob_events", __name__, url_prefix="/blob_events")
 

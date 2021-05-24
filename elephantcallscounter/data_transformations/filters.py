@@ -1,5 +1,5 @@
-from matplotlib import pyplot as plt
 import scipy
+from matplotlib import pyplot as plt
 from scipy.signal import butter
 
 

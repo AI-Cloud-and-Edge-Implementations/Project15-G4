@@ -3,12 +3,8 @@ from flask import Blueprint
 
 from elephantcallscounter.adapters.azure_interface import AzureInterface
 from elephantcallscounter.services.data_import_service import (
-    import_data_from_s3_using_boto,
-)
-from elephantcallscounter.services.data_import_service import copy_file_to_azure_fast
-from elephantcallscounter.services.data_import_service import (
-    download_data_from_azure_fast,
-)
+    copy_file_to_azure_fast, download_data_from_azure_fast,
+    import_data_from_s3_using_boto)
 
 data_import = Blueprint("data_import", __name__)
 

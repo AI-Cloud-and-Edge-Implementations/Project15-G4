@@ -1,9 +1,11 @@
-from collections import defaultdict
 import logging
 import os
+from collections import defaultdict
 
-from elephantcallscounter.data_processing.audio_processing import AudioProcessing
-from elephantcallscounter.data_processing.metadata_processing import MetadataProcessing
+from elephantcallscounter.data_processing.audio_processing import \
+    AudioProcessing
+from elephantcallscounter.data_processing.metadata_processing import \
+    MetadataProcessing
 from elephantcallscounter.utils.data_structures import RangeSet
 from elephantcallscounter.utils.path_utils import get_project_root
 

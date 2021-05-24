@@ -1,15 +1,13 @@
-from datetime import datetime
 import logging
+from datetime import datetime
 
-from flask import Blueprint
-from flask import render_template
-from flask import request
+from flask import Blueprint, render_template, request
 
 from elephantcallscounter import db
-from elephantcallscounter.application.persistence.models.elephants import Elephants
-from elephantcallscounter.utils.path_utils import get_project_root
-from elephantcallscounter.utils.path_utils import join_paths
+from elephantcallscounter.application.persistence.models.elephants import \
+    Elephants
 from elephantcallscounter.common.constants import LOCATION
+from elephantcallscounter.utils.path_utils import get_project_root, join_paths
 
 logger = logging.getLogger(__name__)
 

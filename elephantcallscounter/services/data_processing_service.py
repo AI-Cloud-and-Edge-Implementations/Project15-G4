@@ -1,5 +1,6 @@
+from elephantcallscounter.data_processing.metadata_processing import \
+    MetadataProcessing
 from elephantcallscounter.data_processing.segment_files import SegmentFiles
-from elephantcallscounter.data_processing.metadata_processing import MetadataProcessing
 
 
 def create_file_segments(file_name):

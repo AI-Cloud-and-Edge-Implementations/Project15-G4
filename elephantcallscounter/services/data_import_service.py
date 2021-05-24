@@ -1,10 +1,10 @@
 import logging
 import os
 
+from elephantcallscounter.adapters.amazon_interface import AmazonInterface
 from elephantcallscounter.config import env
 from elephantcallscounter.data_import.az_copy import AzureDataImporter
 from elephantcallscounter.utils.path_utils import get_project_root
-from elephantcallscounter.adapters.amazon_interface import AmazonInterface
 
 logger = logging.getLogger(__name__)
 

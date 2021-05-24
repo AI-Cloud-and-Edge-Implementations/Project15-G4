@@ -1,9 +1,9 @@
 import os
 
 from elephantcallscounter.adapters.azure_interface import AzureInterface
-from elephantcallscounter.services.data_processing_service import create_file_segments
-from elephantcallscounter.utils.path_utils import get_project_root
-from elephantcallscounter.utils.path_utils import join_paths
+from elephantcallscounter.services.data_processing_service import \
+    create_file_segments
+from elephantcallscounter.utils.path_utils import get_project_root, join_paths
 
 
 class TestFileSegments:
