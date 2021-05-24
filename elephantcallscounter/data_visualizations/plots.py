@@ -19,12 +19,13 @@ class Plots:
         """Fast fourier transform is for discrete signals while fourier transform is for continuous
         signals.
 
+        :param filename:
         :param plot:
         :param audio:
         :param sampling_rate:
         :return:
         """
-        logger.info(f"Plotting FFT...")
+        logger.info("Plotting FFT...")
         n = len(audio)
         T = 1 / sampling_rate
         yf = scipy.fft.fft(audio)
@@ -53,7 +54,7 @@ class Plots:
         :param sampling_rate:
         :return:
         """
-        logger.info(f"Plotting loudness...")
+        logger.info("Plotting loudness...")
         librosa.display.waveplot(y=samples, sr=sampling_rate)
 
         if plot:
@@ -83,7 +84,7 @@ class Plots:
         spectrogram = np.abs(stft_value)
 
         fig, ax = plt.subplots()
-        img = librosa.display.specshow(
+        librosa.display.specshow(
             spectrogram,
             cmap="gray_r",
             ax=ax,
@@ -92,6 +93,7 @@ class Plots:
             x_axis="s",
             y_axis="linear",
         )
+
         plt.title("Spectrogram")
         plt.ylim([10, 50])
         plt.xlabel("time")
@@ -116,9 +118,9 @@ class Plots:
         :param plot: defaults to False
         :type plot: bool, optional
         """
-        logger.info(f"Plotting the mel spectrogram...")
+        logger.info("Plotting the mel spectrogram...")
         n_mels = 128
-        S = librosa.feature.melspectrogram(
+        spectrogram = librosa.feature.melspectrogram(
             input_data,
             sr=sr,
             n_fft=self.n_fft,
@@ -126,10 +128,10 @@ class Plots:
             n_mels=n_mels,
             htk=True,
         )
-        S_DB = librosa.power_to_db(S, ref=np.max)
+        db_spectrogram = librosa.power_to_db(spectrogram, ref=np.max)
 
         librosa.display.specshow(
-            S_DB, sr=sr, hop_length=self.hop_length, x_axis="time", y_axis="mel"
+            db_spectrogram, sr=sr, hop_length=self.hop_length, x_axis="time", y_axis="mel"
         )
         plt.title("Mel Spectrogram")
         plt.colorbar(format="%+2.0f dB")

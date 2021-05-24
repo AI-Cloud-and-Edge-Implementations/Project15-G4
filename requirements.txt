@@ -6,7 +6,7 @@ azureml-dataprep
 boto3~=1.16.49
 botocore~=1.19.49
 click==7.1.2
-environs
+environs~=9.3.2
 pydub~=0.24.1
 pytest
 pandas==0.25.3
@@ -14,7 +14,7 @@ matplotlib~=3.3.3
 scipy==1.4.1
 numpy~=1.19.2
 librosa==0.8.0
-noisereduce
+noisereduce~=1.1.0
 soundfile==0.10.3.post1
 split-folders==0.4.3
 opencv-python==4.5.1.48
@@ -24,3 +24,8 @@ flask-script==2.0.6
 flask-sqlalchemy==2.4.4
 flask-migrate==2.7.0
 tensorflow>=2.4.0
+
+requests~=2.25.1
+scikit-learn~=0.24.2
+SQLAlchemy~=1.4.15
+alembic~=1.6.3

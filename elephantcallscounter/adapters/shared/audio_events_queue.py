@@ -3,8 +3,6 @@ import logging
 from azure.core.exceptions import HttpResponseError, ResourceExistsError
 from azure.storage.queue import (
     QueueClient,
-    BinaryBase64EncodePolicy,
-    BinaryBase64DecodePolicy,
 )
 
 from elephantcallscounter.config import env

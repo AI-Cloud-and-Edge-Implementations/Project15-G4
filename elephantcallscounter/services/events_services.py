@@ -52,7 +52,7 @@ def device_simulator(source_dir, container_name, queue_name, dest_folder):
     )
     logger.info("Finished receiving about to run inference")
     try:
-        r = requests.get(
+        requests.get(
             "http://0.0.0.0:5000/blob_events/run_pipeline/",
             params={"queue_name": queue_name, "container_name": container_name},
         )

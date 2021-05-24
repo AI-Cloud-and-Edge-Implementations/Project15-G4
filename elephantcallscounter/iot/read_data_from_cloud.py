@@ -1,13 +1,10 @@
-import asyncio
 import ast
-from azure.eventhub.aio import EventHubConsumerClient
+import asyncio
 import logging
-import requests
 
-from elephantcallscounter.adapters.azure_interface import AzureInterface
+from azure.eventhub.aio import EventHubConsumerClient
+
 from elephantcallscounter.config import env
-from elephantcallscounter.utils.file_utils import write_to_bin_file
-from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
 
 logger = logging.getLogger(__name__)

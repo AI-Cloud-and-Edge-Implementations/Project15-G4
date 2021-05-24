@@ -18,7 +18,7 @@ class NoiseReduction:
         self.plot = Plots()
 
     def noise_reduce_and_plot_spectral_grating(
-        self, signal, sr, duration, filename, plot=False
+            self, signal, sr, duration, filename, plot=False
     ):
         """Reduce the noisy file and plot the spectrogram.
 
@@ -36,7 +36,7 @@ class NoiseReduction:
         """
         logger.info("Reducing noise...")
 
-        noise_clip = signal[0 : duration * 1000]
+        noise_clip = signal[0: duration * 1000]
         reduced_noise = nr.reduce_noise(
             signal,
             noise_clip=noise_clip,

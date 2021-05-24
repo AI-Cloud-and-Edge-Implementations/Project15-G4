@@ -41,7 +41,7 @@ def copy_file_to_azure_fast(container_name, source_file_name, dest_folder):
         container_name=container_name,
     )
     logger.info("Sending file: %s to %s", source_file_name, dest_folder)
-    p1 = az_data_importer.az_upload_data_to_blob(
+    az_data_importer.az_upload_data_to_blob(
         source_path=source_file_name, destination_path=dest_folder
     )
     logger.info(f"Processing {source_file_name} finished!")
@@ -65,7 +65,7 @@ def download_data_from_azure_fast(container_name, source_folder, dest_folder):
         blob_string=env.AZURE_STORAGE_ACCOUNT,
         container_name=container_name,
     )
-    p1 = az_data_importer.az_download_data_from_blob(
+    az_data_importer.az_download_data_from_blob(
         source_path=source_folder, destination_path=dest_folder
     )
     logger.info(f"Processing {source_folder} finished!")

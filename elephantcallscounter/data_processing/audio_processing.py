@@ -26,7 +26,7 @@ class AudioProcessing:
             extract = song[start_sec:end_sec]
             extract.export(destination_file)
             return 1
-        except pydub.exceptions.CouldntEncodeError as error:
+        except pydub.exceptions.CouldntEncodeError:
             logger.info("Error cropping file: %s", destination_file)
             return -1
 

@@ -4,7 +4,6 @@ import os
 import pandas as pd
 import logging
 
-
 from elephantcallscounter.utils.path_utils import get_project_root
 from elephantcallscounter.utils.path_utils import join_paths
 
@@ -13,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class Boxing:
     def __init__(
-        self, image_folder, target_folder, csv_file_path, monochrome, write_file=False
+            self, image_folder, target_folder, csv_file_path, monochrome, write_file=False
     ):
         self.image_folder = image_folder
         self.target_folder = target_folder
@@ -93,8 +92,8 @@ class Boxing:
             similar_rumbles = list(
                 filter(
                     lambda elephant: (
-                        (abs(elephant[0] - rumble[0]) < 20)
-                        or (abs(elephant[1] - rumble[1]) < 200)
+                            (abs(elephant[0] - rumble[0]) < 20)
+                            or (abs(elephant[1] - rumble[1]) < 200)
                     ),
                     elephants,
                 )
@@ -111,7 +110,7 @@ class Boxing:
 
         # put the ROI on top of the original image
         h, w = ROI.shape[0], ROI.shape[1]
-        image[y_top : y_top + h, x_left : x_left + w] = ROI
+        image[y_top: y_top + h, x_left: x_left + w] = ROI
 
         if self.write_file:
             self.write_box_to_file(image, elephants, image_filename)

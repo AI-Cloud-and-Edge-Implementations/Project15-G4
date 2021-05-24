@@ -107,17 +107,16 @@ class Boxing:
 
         # put the ROI on top of the original image
         h, w = ROI.shape[0], ROI.shape[1]
-        image[y_top : y_top + h, x_left : x_left + w] = ROI
+        image[y_top: y_top + h, x_left: x_left + w] = ROI
 
         boxed_path = (
-            self.target_folder
-            + str(len(elephants))
-            + "_"
-            + image_filename.replace("mono_", "boxed_")
+                self.target_folder
+                + str(len(elephants))
+                + "_"
+                + image_filename.replace("mono_", "boxed_")
         )
         cv2.imwrite(boxed_path, image)
         print(f"Boxed image stored as {boxed_path}")
-
 
 # b = Boxing('../data/spectrograms/mono/', '../data/spectrograms/boxed2/')
 # b.create_contours_and_boxes('mono_nn01d_20180730_000000.wav_segment_366_nan.wav.png')
