@@ -18,7 +18,7 @@ noisereduce~=1.1.0
 soundfile==0.10.3.post1
 split-folders==0.4.3
 opencv-python==4.5.1.48
-flask==1.1.2
+flask==2.3.2
 flask-googlemaps==0.4.1
 flask-script==2.0.6
 flask-sqlalchemy==2.4.4
